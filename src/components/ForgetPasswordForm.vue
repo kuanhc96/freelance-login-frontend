@@ -1,0 +1,9 @@
+<template>
+  <BaseCard>
+    <form>
+      <label for="email">Enter your email</label>
+      <input type="email" id="email" required />
+      <button type="submit">Send Reset Link</button>
+    </form>
+  </BaseCard>
+</template>
