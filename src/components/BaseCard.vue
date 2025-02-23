@@ -6,6 +6,14 @@
 </template>
 
 <style scoped>
+div {
+  margin: 2rem auto;
+  max-width: 30rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 1rem;
+}
+
 .base-card {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -17,13 +25,4 @@
   width: 100px;
   height: auto;
   margin-bottom: 10px;
-}
-
-button {
-  background-color: #F4A7B9; /* Lemonade Pink */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
 }

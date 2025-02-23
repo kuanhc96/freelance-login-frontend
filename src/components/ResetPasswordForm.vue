@@ -1,11 +1,35 @@
 <template>
-  <BaseCard>
-    <form>
-      <label for="new-password">New Password</label>
-      <input type="password" id="new-password" required />
-      <label for="retype-password">Retype Password</label>
-      <input type="password" id="retype-password" required />
-      <button type="submit">Reset Password</button>
-    </form>
-  </BaseCard>
+  <section>
+    <BaseCard>
+      <h2> Reset Password </h2>
+      <form>
+        <div>
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" required />
+        </div>
+        <div>
+          <label for="retype-password">Retype Password</label>
+          <input type="password" id="retype-password" required />
+        </div>
+        <div>
+          <button type="submit">Reset Password</button>
+        </div>
+      </form>
+      <div>
+        <router-link to="/login">Login</router-link>
+      </div>
+    </BaseCard>
+  </section>  
 </template>
+
+<style scoped>
+
+section {
+  margin: 2rem auto;
+  max-width: 30rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+  padding: 1rem;
+}
+
+</style>
