@@ -13,8 +13,8 @@ export default {
 
 <style scoped>
 div {
-  max-width: 7rem;
-  max-height: 7rem;
+  max-width: 20rem;
+  max-height: auto;
   margin: 2rem auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
