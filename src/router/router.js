@@ -11,6 +11,8 @@ import CoursesList from '../pages/courses/CoursesList'
 import CourseDetails from '../pages/courses/CourseDetails'
 import TransactionsList from '../pages/transactions/TransactionsList'
 import TransactionDetails from '../pages/transactions/TransactionDetails'
+import NotFound from '../pages/NotFound.vue'
+import Dashboard from '../pages/Dash-Board.vue'
 
 const routes = [
   { path: '/login', component: LoginForm },
@@ -19,7 +21,7 @@ const routes = [
   { path: '/resetPassword', component: ResetPasswordForm },
 
   { path: '/', redirect: '/dashboard' },
-  { path: '/dashboard', component: null },
+  { path: '/dashboard', component: Dashboard },
   { path: '/instructors', component: InstructorsList },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: null} // /coaches/c1/contact
@@ -28,7 +30,8 @@ const routes = [
   { path: '/courses/:id', component: CourseDetails },
   { path: '/transactions', component: TransactionsList },
   { path: '/transactions/:id', component: TransactionDetails },
-  { path: '/:notFound(.*)', component: null }
+  { path: '/:notFound(.*)', redirect: '/notFound' },
+  { path: '/notFound', component: NotFound }
 ];
 
 const router = createRouter({
