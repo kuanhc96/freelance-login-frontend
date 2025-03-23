@@ -1,8 +1,19 @@
 <template>
-  <div class="base-summary">
-    <slot></slot>
-  </div>
+  <router-link :to="`/$baseUrl/$id`">
+    <div class="base-summary">
+      <slot></slot>
+    </div>
+  </router-link>
 </template>
+
+<script>
+export default {
+  props: {
+    baseUrl: String,
+    id: String
+  }
+}
+</script>
 
 <style scoped>
 div {
