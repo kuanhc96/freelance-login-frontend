@@ -1,5 +1,5 @@
 <template>
-    <base-summary :baseUrl='instructors' :id="`$instructorGUID`">
+    <base-summary :baseUrl="`instructors`" :id="`${instructorGUID}`">
         <h3>{{ instructorName }}</h3> 
         <p>Email: {{email}}</p>
         <p>ID: {{instructorGUID}}</p>

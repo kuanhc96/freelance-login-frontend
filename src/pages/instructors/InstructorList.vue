@@ -1,5 +1,6 @@
 <template>
     <h1>Instructors</h1>
+    <button>Refresh</button>
     <ul>
         <li>
             <instructor-summary/>

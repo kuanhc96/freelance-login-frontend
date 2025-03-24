@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/$baseUrl/$id`">
+  <router-link :to="`/${baseUrl}/${id}`">
     <div class="base-summary">
       <slot></slot>
     </div>
