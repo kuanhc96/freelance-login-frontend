@@ -1,23 +1,39 @@
 <template>
-    <base-summary :baseUrl="`instructors`" :id="`${instructorGUID}`">
+    <base-summary>
         <h3>{{ instructorName }}</h3> 
-        <p>Email: {{email}}</p>
-        <p>ID: {{instructorGUID}}</p>
+        <h4>Email: {{email}}</h4>
+        <div>
+            <span v-for="subject in filteredSubjects" :key="subject.subjectName">{{subject.subjectName}}</span>
+        </div>
+        <div class="actions">
+            <router-link :to="contactLink">Contact</router-link>
+            <router-link :to="detailsLink">View Details</router-link>
+        </div>
     </base-summary>
 </template>
 
 <script>
 import BaseSummary from './BaseSummary.vue';
 export default {
-    data() {
-        return {
-            instructorGUID: 'Test1234',
-            email: 'example@test.com',
-            instructorName: 'Alice Ho'
-        }
-    },
+    props: [
+        'instructorGUID', 'instructorName', 'email'
+    ],
     components: {
         BaseSummary
+    },
+    computed: {
+        contactLink() {
+            return this.$route.path + '/' + this.instructorGUID + '/contact';
+        },
+        detailsLink() {
+            return this.$route.path + '/' + this.instructorGUID;
+        },
+        filteredSubjects() {
+            return this.$store.getters['subjects/subjects'];
+        },
+        hasSubjects() {
+            return this.$store.getters['subjects/hasSubjects']
+        }
     }
     
 }
