@@ -1,6 +1,8 @@
 <template>
     <h1>Instructors</h1>
-    <button>Refresh</button>
+    <div class="refresh">
+        <button>Refresh</button>
+    </div>
     <ul v-if="hasInstructors">
         <instructor-summary 
             v-for="instructor in filteredInstructors" 
@@ -14,7 +16,7 @@
 </template>
 
 <script>
-import InstructorSummary from '../../components/summary/InstructorSummary.vue'
+import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 export default {
     components: {
         InstructorSummary
@@ -30,3 +32,17 @@ export default {
     
 }
 </script>
+
+<style scoped>
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.refresh {
+  display: flex;
+  justify-content: space-between;
+}
+
+</style>

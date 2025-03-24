@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import BaseContainer from './BaseContainer.vue';
-import BaseCard from './BaseCard.vue';
+import BaseContainer from './ui/BaseContainer.vue';
+import BaseCard from './ui/BaseCard.vue';
 import CourseSummary from './Courses/CourseSummary.vue';
 export default {
   components: {

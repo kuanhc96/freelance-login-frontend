@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import BaseSummary from './BaseSummary.vue';
+import BaseSummary from '../summary/BaseSummary.vue';
 export default {
     props: [
         'instructorGUID', 'instructorName', 'email'
