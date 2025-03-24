@@ -10,7 +10,7 @@
 <script>
 export default {
     props: {
-        model: {
+        mode: {
             type: String,
             required: false,
             default: null
