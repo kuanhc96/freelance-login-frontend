@@ -6,8 +6,8 @@
             <span v-for="subject in filteredSubjects" :key="subject.subjectName">{{subject.subjectName}}</span>
         </div>
         <div class="actions">
-            <router-link :to="contactLink">Contact</router-link>
-            <router-link :to="detailsLink">View Details</router-link>
+            <base-button link :to="contactLink">Contact</base-button>
+            <base-button link :to="detailsLink">View Details</base-button>
         </div>
     </base-summary>
 </template>

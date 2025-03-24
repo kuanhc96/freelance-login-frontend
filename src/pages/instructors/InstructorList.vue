@@ -1,18 +1,22 @@
 <template>
     <h1>Instructors</h1>
-    <div class="refresh">
-        <button>Refresh</button>
-    </div>
-    <ul v-if="hasInstructors">
-        <instructor-summary 
-            v-for="instructor in filteredInstructors" 
-            :key="instructor.id"
-            :instructorGUID="instructor.instructorGUID"
-            :instructorName="instructor.instructorName"
-            :email="instructor.email"
-        ></instructor-summary>
-    </ul>
-    <h2 v-else>No coaches found</h2>
+    <section>
+        <base-card>
+        <div class="refresh">
+            <base-button mode="outline">Refresh</base-button>
+        </div>
+        <ul v-if="hasInstructors">
+            <instructor-summary 
+                v-for="instructor in filteredInstructors" 
+                :key="instructor.id"
+                :instructorGUID="instructor.instructorGUID"
+                :instructorName="instructor.instructorName"
+                :email="instructor.email"
+            ></instructor-summary>
+        </ul>
+        <h2 v-else>No coaches found</h2>
+        </base-card>
+    </section>
 </template>
 
 <script>
