@@ -8,9 +8,19 @@ export default {
         return {
             subjects: [
                 {
-                    subjectName: '1-1 golf 60 minutes',
+                    subjectName: 'golf',
                     instructorName: 'Alice Ho',
                     price: 3000
+                },
+                {
+                    subjectName: 'english',
+                    instructorName: 'Alice Ho',
+                    price: 300
+                },
+                {
+                    subjectName: 'holes',
+                    instructorName: 'Alice Ho',
+                    price: 7000
                 }
             ]
         }

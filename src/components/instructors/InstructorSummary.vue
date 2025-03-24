@@ -3,7 +3,11 @@
         <h3>{{ instructorName }}</h3> 
         <h4>Email: {{email}}</h4>
         <div>
-            <span v-for="subject in filteredSubjects" :key="subject.subjectName">{{subject.subjectName}}</span>
+            <base-badge v-for="subject in filteredSubjects" 
+                :key="subject.subjectName"
+                :type="subject.subjectName"
+                :title="subject.subjectName"
+            >{{subject.subjectName}}</base-badge>
         </div>
         <div class="actions">
             <base-button link mode="outline" :to="contactLink">Contact</base-button>
