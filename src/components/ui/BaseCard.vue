@@ -16,7 +16,7 @@ div {
 .base-card {
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #C1D5A7; /* Sage Green */
+  background-color: #b6f0a7; /* Sage Green */
   padding: 20px;
 }
 
