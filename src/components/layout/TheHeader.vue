@@ -1,5 +1,6 @@
 <template>
 <header>
+    <img src="@/assets/logo.png" alt="Logo" class="logo" />
     <nav>
         <h1>
             <router-link to="/">Freelancer App</router-link> 
@@ -20,6 +21,12 @@
 </template>
 
 <style scoped>
+.logo {
+  width: auto;
+  height: 100%;
+  padding: 10px;
+}
+
 header {
   width: 100%;
   height: 5rem;

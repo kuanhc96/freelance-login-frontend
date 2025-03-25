@@ -1,6 +1,5 @@
 <template>
   <div class="base-card">
-    <img src="@/assets/logo.png" alt="Logo" class="logo" />
     <slot></slot>
   </div>
 </template>
@@ -21,9 +20,4 @@ div {
   padding: 20px;
 }
 
-.logo {
-  width: 100px;
-  height: auto;
-  margin-bottom: 10px;
-}
 </style>
