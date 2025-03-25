@@ -7,7 +7,7 @@
                 :key="subject.subjectName"
                 :type="subject.subjectName"
                 :title="subject.subjectName"
-            >{{subject.subjectName}}</base-badge>
+            ></base-badge>
         </div>
         <div class="actions">
             <base-button link mode="outline" :to="contactLink">Contact</base-button>

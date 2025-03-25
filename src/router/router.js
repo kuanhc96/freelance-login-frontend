@@ -12,6 +12,7 @@ import CoursesList from '../pages/courses/CoursesList'
 import CourseDetails from '../pages/courses/CourseDetails'
 import TransactionsList from '../pages/transactions/TransactionsList'
 import TransactionDetails from '../pages/transactions/TransactionDetails'
+import SubjectDetails from '../pages/subjects/SubjectDetails'
 import NotFound from '../pages/NotFound.vue'
 import Dashboard from '../pages/Dash-Board.vue'
 
@@ -31,6 +32,8 @@ const routes = [
   { path: '/courses/:id', component: CourseDetails },
   { path: '/transactions', component: TransactionsList },
   { path: '/transactions/:id', component: TransactionDetails },
+  { path: '/subjects', component: null },
+  { path: '/subjects/:id', component: SubjectDetails },
   { path: '/:notFound(.*)', redirect: '/notFound' },
   { path: '/notFound', component: NotFound }
 ];

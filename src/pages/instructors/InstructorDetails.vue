@@ -3,6 +3,17 @@
     <section>
         <base-card>
             <h2>{{instructorName}} </h2> 
+            <p>{{ description }}</p> 
+        </base-card>
+    </section>
+    <section>
+        <base-card>
+            <h2>Available Subjects</h2>
+            <base-badge v-for="subject in filteredSubjects" 
+                :key="subject.subjectName"
+                :type="subject.subjectName"
+                :title="subject.subjectName"
+            ></base-badge>
         </base-card>
     </section>
     <section>
@@ -12,16 +23,6 @@
                 <base-button link :to="contactLink">Contact</base-button>
             </header>
             <router-view/>
-        </base-card>
-    </section>
-    <section>
-        <base-card>
-            <base-badge v-for="subject in filteredSubjects" 
-                :key="subject.subjectName"
-                :type="subject.subjectName"
-                :title="subject.subjectName"
-            >{{subject.subjectName}}</base-badge>
-            <p>{{ description }}</p> 
         </base-card>
     </section>
 </template>
