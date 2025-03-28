@@ -1,7 +1,7 @@
 <template>
   <section>
     <BaseCard>
-      <form>
+      <form @submit.prevent="submitForm">
         <div>
           <label for="email">Email</label>
           <input type="email" id="email" required />
@@ -71,6 +71,11 @@ export default {
     return {
       selectedRole: '' // Will hold the value "student" or "instructor" depending on which radio is checked
     };
+  },
+  methods: {
+    submitForm() {
+      console.log("LOL");
+    }
   }
 };
 </script>
