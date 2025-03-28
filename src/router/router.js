@@ -8,6 +8,7 @@ import ResetPasswordForm from '../components/login/ResetPasswordForm.vue';
 import InstructorsList from '../pages/instructors/InstructorList'
 import InstructorDetails from '../pages/instructors/InstructorDetails'
 import InstructorContact from '../pages/instructors/InstructorContact'
+import SearchInstructors from '../pages/instructors/SearchInstructors'
 import CoursesList from '../pages/courses/CoursesList'
 import CourseDetails from '../pages/courses/CourseDetails'
 import TransactionsList from '../pages/transactions/TransactionsList'
@@ -25,6 +26,7 @@ const routes = [
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', component: Dashboard },
   { path: '/instructors', component: InstructorsList },
+  { path: '/instructors/search', component: SearchInstructors },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
   ]},

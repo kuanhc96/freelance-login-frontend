@@ -15,6 +15,9 @@
             <li>
                 <router-link to="/transactions">Transaction History</router-link> 
             </li>
+            <li>
+                <router-link to="/instructors/search">Search Instructors</router-link> 
+            </li>
         </ul>
     </nav>
 </header>
