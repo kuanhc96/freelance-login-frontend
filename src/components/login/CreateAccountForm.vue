@@ -31,6 +31,25 @@
           </select>
         </div>
         <div>
+          <h3>Register as...</h3>
+          <div>
+            <input
+                    type="radio"
+                    id="student"
+                    value="student"
+                    v-model="selectedRole"
+            />
+            <label for="student">Student</label>
+            <input
+                    type="radio"
+                    id="instructor"
+                    value="instructor"
+                    v-model="selectedRole"
+            />
+            <label for="instructor">Instructor</label>
+          </div>
+        </div>
+        <div>
           <button type="submit">Create Account</button>
         </div>
       </form>
@@ -40,6 +59,16 @@
     </BaseCard>
   </section>
 </template>
+<script>
+export default {
+  data() {
+    return {
+      selectedRole: '' // Will hold the value "student" or "instructor" depending on which radio is checked
+    };
+  }
+};
+</script>
+
 <style scoped>
 
 section {
