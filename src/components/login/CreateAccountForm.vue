@@ -50,6 +50,12 @@
           </div>
         </div>
         <div>
+          <h4 for="description">Description</h4>
+        <div>
+          <textarea id="description" rows=6></textarea>
+        </div>
+        </div>
+        <div>
           <button type="submit">Create Account</button>
         </div>
       </form>
