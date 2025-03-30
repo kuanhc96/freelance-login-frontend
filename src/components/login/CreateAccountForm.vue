@@ -31,6 +31,23 @@
           </select>
         </div>
         <div>
+          Gender
+          <input
+                  type="radio"
+                  id="male"
+                  value="male"
+                  v-model="selectedGender"
+          />
+          <label for="male">Male</label>
+          <input
+                  type="radio"
+                  id="female"
+                  value="female"
+                  v-model="selectedGender"
+          />
+          <label for="female">Female</label>
+        </div>
+        <div>
           <h3>Register as...</h3>
           <div>
             <input
@@ -69,7 +86,8 @@
 export default {
   data() {
     return {
-      selectedRole: '' // Will hold the value "student" or "instructor" depending on which radio is checked
+      selectedRole: '', // Will hold the value "student" or "instructor" depending on which radio is checked
+      selectedGender: '' // Will hold the value "student" or "instructor" depending on which radio is checked
     };
   },
   methods: {
