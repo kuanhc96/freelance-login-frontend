@@ -86,13 +86,50 @@
 export default {
   data() {
     return {
+      email: '',
+      name:'',
+      password: '',
+      birthYear: 0,
+      birthMonth: 0,
+      birthDay: 0,
+      retypePassword:'',
       selectedRole: '', // Will hold the value "student" or "instructor" depending on which radio is checked
-      selectedGender: '' // Will hold the value "student" or "instructor" depending on which radio is checked
+      selectedGender: '', // Will hold the value "male" or "female" depending on which radio is checked
+      description: '',
+      apiEndpoint: ''
     };
   },
   methods: {
     submitForm() {
-      console.log("LOL");
+      if (this.password === this.retypePassword) {
+        console.log("LOL");
+        this.apiEndpoint = '';
+        
+        if (this.selectedRole === 'student') {
+          this.apiEndpoint = 'http://localhost:8081/createStudent'
+        } else {
+          this.apiEndpoint = 'http://localhost:8081/createInstructor'
+        }
+
+        fetch(this.apiEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: this.name,
+                email: this.email,
+                password: this.password,
+                birthYear: this.birthYear,
+                birthMonth: this.birthMonth,
+                birthDay: this.birthDay,
+                gender: this.selectedGender,
+                description: this.description
+            }),
+        });
+      } else {
+        console.log('password and retype password must match');
+      }
     }
   }
 };
