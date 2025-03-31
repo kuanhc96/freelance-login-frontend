@@ -93,6 +93,7 @@ section {
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
+  background-color: #b6f0a7; /* Sage Green */
 }
 
 .form-control {
