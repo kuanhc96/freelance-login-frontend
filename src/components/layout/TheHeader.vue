@@ -1,24 +1,34 @@
 <template>
 <header>
-    <img src="@/assets/logo.png" alt="Logo" class="logo" />
-    <nav>
-        <h1>
-            <router-link to="/">Freelancer App</router-link> 
-        </h1>
-        <ul>
-            <li>
-                <router-link to="/instructors">Instructors</router-link> 
+    <nav class="navbar navbar-expand-lg bg-success fixed-top mb-5">
+      <div class="container">
+        <router-link to="/" class="navbar-brand w-auto">
+          <img src="@/assets/logo.png" alt="Logo" class="logo">
+            <span>
+              Freelancer App
+            </span>
+        </router-link> 
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="navbar-item">
+                <router-link to="/instructors" class="nav-link active">Instructors</router-link> 
             </li>
-            <li>
-                <router-link to="/courses">Courses</router-link> 
+            <li class="navbar-item">
+                <router-link to="/courses" class="nav-link active">Courses</router-link> 
             </li>
-            <li>
-                <router-link to="/transactions">Transaction History</router-link> 
+            <li class="navbar-item">
+                <router-link to="/transactions" class="nav-link active">Transaction History</router-link> 
             </li>
-            <li>
-                <router-link to="/instructors/search">Search Instructors</router-link> 
+            <li class="navbar-item">
+                <router-link to="/instructors/search" class="nav-link active">Search Instructors</router-link> 
             </li>
         </ul>
+
+      </div>
     </nav>
 </header>
 </template>
@@ -26,17 +36,12 @@
 <style scoped>
 .logo {
   width: auto;
-  height: 100%;
+  height: 5rem;
   padding: 10px;
 }
 
-header {
-  width: 100%;
-  height: 5rem;
-  background-color: #b6f0a7; /* Sage Green */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.bg-success {
+  background-color:#b6f0a7 !important;
 }
 
 header a {
