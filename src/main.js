@@ -2,9 +2,11 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router/router.js';
 import store from './store/index.js';
-import BaseCard from './components/ui/BaseCard.vue'
-import BaseButton from './components/ui/BaseButton.vue'
-import BaseBadge from './components/ui/BaseBadge.vue'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.css';
+import BaseCard from './components/ui/BaseCard.vue';
+import BaseButton from './components/ui/BaseButton.vue';
+import BaseBadge from './components/ui/BaseBadge.vue';
 
 const app = createApp(App);
 app.use(router);
