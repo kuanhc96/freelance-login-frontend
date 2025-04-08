@@ -3,8 +3,8 @@
     <nav class="navbar navbar-expand-lg bg-success fixed-top mb-5">
       <div class="container">
         <router-link to="/" class="navbar-brand w-auto">
-          <img src="@/assets/logo.png" alt="Logo" class="logo">
-            <span>
+          <img src="@/assets/logo.png" alt="Logo" id="logo-img">
+            <span id="logo-text">
               Freelancer App
             </span>
         </router-link> 
@@ -34,10 +34,16 @@
 </template>
 
 <style scoped>
-.logo {
+#logo-img {
   width: auto;
   height: 5rem;
   padding: 10px;
+}
+
+#logo-text {
+  color: white;
+  font-weight: bold;
+  font-size: 120%;
 }
 
 .bg-success {
@@ -52,29 +58,14 @@ header a {
   border: 1px solid transparent;
 }
 
-a:active,
-a:hover,
-a.router-link-active {
+li a:active,
+li a:hover,
+li a.router-link-active {
   border: 1px solid #e677d3;
 }
 
-h1 {
-  margin: 0;
-}
-
-h1 a {
-  color: white;
-  margin: 0;
-}
-
-h1 a:hover,
-h1 a:active,
-h1 a.router-link-active {
-  border-color: transparent;
-}
-
 header nav {
-  width: 90%;
+  width: 100%;
   margin: auto;
   display: flex;
   justify-content: space-between;

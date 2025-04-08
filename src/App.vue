@@ -26,7 +26,8 @@ html {
 }
 
 body {
-  margin: 0
+  margin: 0;
+  padding-top:8rem;
 }
 
 /* #app {
