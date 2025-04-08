@@ -191,9 +191,9 @@ export default {
         this.apiEndpoint = '';
         
         if (this.selectedRole === 'student') {
-          this.apiEndpoint = 'http://localhost:8081/createStudent'
+          this.apiEndpoint = 'http://localhost:8081/student/createStudent'
         } else {
-          this.apiEndpoint = 'http://localhost:8081/createInstructor'
+          this.apiEndpoint = 'http://localhost:8081/instructor/createInstructor'
         }
 
         fetch(this.apiEndpoint, {
