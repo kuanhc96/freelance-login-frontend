@@ -18,7 +18,7 @@
           <label for="retype-password">Retype Password</label>
           <input type="password" id="retype-password" required />
         </div>
-        <div>
+        <!-- <div>
           <label for="birthday">Birthday (optional)</label>
           <select id="year">
             <option>Year</option>
@@ -29,7 +29,7 @@
           <select id="day">
             <option>Day</option>
           </select>
-        </div>
+        </div> -->
         <div>
           <label>Gender</label>
           <span>
@@ -45,6 +45,7 @@
                   type="radio"
                   id="female"
                   value="female"
+                    class="ms-3"
                   v-model="selectedGender"
           />
           <label for="female">Female</label>
@@ -64,6 +65,7 @@
                     id="instructor"
                     value="instructor"
                     v-model="selectedRole"
+                    class="ms-3"
             />
             <label for="instructor">Instructor</label>
           </div>
