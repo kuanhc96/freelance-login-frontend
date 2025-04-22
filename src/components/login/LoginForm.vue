@@ -1,18 +1,17 @@
 <template>
   <section>
-    <BaseCard>
-      <h2>Login</h2>
+    <BaseCard card-title="Login">
       <form>
-        <div>
-          <label for="email">User Email </label>
-          <input type="email" id="email" required />
+        <div class="mb-3">
+          <label class="form-label" for="email">User Email </label>
+          <input class="form-control" type="email" id="email" required />
         </div>
-        <div>
-          <label for="password">Password </label>
-          <input type="password" id="password" required />
+        <div class="mb-3">
+          <label class="form-label" for="password">Password </label>
+          <input class="form-control" type="password" id="password" required />
         </div>
-        <div>
-          <button type="submit">Login</button>
+        <div class="mb-3">
+          <button class="btn btn-secondary" type="submit">Login</button>
         </div>
       </form>
       <div>
@@ -25,26 +24,39 @@
   </section>
 </template>
 
+<script>
+import BaseCard from '../ui/BaseCard.vue';
+export default {
+  components: {
+    BaseCard
+  }
+}
+</script>
+
+
 <style scoped>
-section {
+.btn-secondary {
+  background-color:#F4A7B9 !important;
+}
+/* section {
   margin: 2rem auto;
   max-width: 30rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
-  background-color: #b6f0a7; /* Sage Green */
-}
+  background-color: #b6f0a7;  // Sage Green
+} */
 
-button {
-  background-color: #F4A7B9; /* Lemonade Pink */
+/* button {
+  background-color: #F4A7B9; /* Lemonade Pink 
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   color: white;
   cursor: pointer;
-}
+} */
 
-.form-control {
+/* .form-control {
   margin: 0.5rem 0;
 }
 
@@ -109,6 +121,6 @@ h3 {
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
-}
+} */
 
 </style>

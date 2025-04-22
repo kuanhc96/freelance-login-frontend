@@ -1,83 +1,81 @@
 <template>
   <section>
-    <BaseCard>
+    <BaseCard card-title="Create Account">
       <form @submit.prevent="submitForm">
-        <div>
-          <label for="email">Email</label>
-          <input type="email" id="email" required />
+        <div class="mb-3">
+          <label class="form-label" for="email">Email</label>
+          <input class="form-control" type="email" id="email" required />
         </div>
-        <div>
-          <label for="name">Name</label>
-          <input type="text" id="name" required />
+        <div class="mb-3">
+          <label class="form-label" for="name">Name</label>
+          <input class="form-control" type="text" id="name" required />
         </div>
-        <div>
-          <label for="password">Password</label>
-          <input type="password" id="password" required />
+        <div class="mb-3">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-control" type="password" id="password" required />
         </div>
-        <div>
-          <label for="retype-password">Retype Password</label>
-          <input type="password" id="retype-password" required />
+        <div class="mb-3">
+          <label class="form-label" for="retype-password">Retype Password</label>
+          <input class="form-control" type="password" id="retype-password" required />
         </div>
-        <!-- <div>
-          <label for="birthday">Birthday (optional)</label>
-          <select id="year">
-            <option>Year</option>
-          </select>
-          <select id="month">
-            <option>Month</option>
-          </select>
-          <select id="day">
-            <option>Day</option>
-          </select>
-        </div> -->
-        <div>
-          <label>Gender</label>
-          <span>
+        <div class="mb-3">
+          <label for="dateInput" class="form-label">Birthday</label>
+          <input type="date" value="1996-01-01" class="form-control" id="dateInput">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Gender</label>
+          <div class="form-check">
             <input
-                    type="radio"
-                    id="male"
-                    value="male"
-                    v-model="selectedGender"
+              class="form-check-input"
+              type="radio"
+              name="gender"
+              id="male"
+              value="male"
+              v-model="selectedGender"
             />
-            <label for="male">Male</label>
-          </span>
-          <input
-                  type="radio"
-                  id="female"
-                  value="female"
-                    class="ms-3"
-                  v-model="selectedGender"
-          />
-          <label for="female">Female</label>
-        </div>
-        <div>
-          <h3>Register as...</h3>
-          <div>
+            <label class="form-check-label" for="male">Male</label>
+          </div>
+          <div class="form-check">
             <input
-                    type="radio"
-                    id="student"
-                    value="student"
-                    v-model="selectedRole"
+              class="form-check-input"
+              type="radio"
+              name="gender"
+              id="female"
+              value="female"
+              v-model="selectedGender"
+            />
+            <label class="form-check-label" for="female">Female</label>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Register as...</label>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="student"
+              value="student"
+              v-model="selectedRole"
             />
             <label for="student">Student</label>
+          </div>
+          <div class="form-check">
             <input
-                    type="radio"
-                    id="instructor"
-                    value="instructor"
-                    v-model="selectedRole"
-                    class="ms-3"
+              class="form-check-input"
+              type="radio"
+              id="instructor"
+              value="instructor"
+              v-model="selectedRole"
             />
             <label for="instructor">Instructor</label>
           </div>
         </div>
-        <div>
-          <h4 for="description">Description</h4>
-        <div>
-          <textarea id="description" rows=6></textarea>
+        <div class="mb-3">
+            <label class="form-label" for="description">Description</label>
+            <textarea class="form-control" placeholder="Short Bio" id="description" rows=6></textarea>
         </div>
-        </div>
-        <div>
-          <button type="submit">Create Account</button>
+        <div class="mb-3">
+          <button class="btn btn-secondary" type="submit">Create Account</button>
         </div>
       </form>
       <div>
@@ -88,14 +86,17 @@
 </template>
 
 <style scoped>
+.btn-secondary {
+  background-color: #e677d3
+}
 
-section {
+/* section {
   margin: 2rem auto;
   max-width: 30rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
-  background-color: #b6f0a7; /* Sage Green */
+  background-color: #b6f0a7; /* Sage Green 
 }
 
 .form-control {
@@ -163,12 +164,16 @@ h3 {
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
-}
+} */
 
 </style>
 
 <script>
+import BaseCard from '../ui/BaseCard.vue';
 export default {
+  components: {
+    BaseCard,
+  },
   data() {
     return {
       email: '',

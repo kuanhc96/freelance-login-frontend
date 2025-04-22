@@ -1,14 +1,13 @@
 <template>
 <section>
-  <BaseCard>
-    <h2>Forgot Password</h2>
+  <BaseCard card-title="Forgot Password">
     <form>
-      <div>
-        <label for="email">Enter your email</label>
-        <input type="email" id="email" required />
+      <div class="mb-3">
+        <label class="form-label" for="email">Enter your email</label>
+        <input class="form-control" type="email" id="email" required />
       </div>
       <div>
-        <button type="submit">Send Reset Link</button>
+        <button class="btn btn-secondary" type="submit">Send Reset Link</button>
       </div>
     </form>
       <div>
@@ -18,19 +17,33 @@
   </section>
 </template>
 
-<style scoped>
+<script>
+import BaseCard from '../ui/BaseCard.vue';
+export default {
+  components: {
+    BaseCard
+  }
+  
+}
+</script>
 
-section {
+<style scoped>
+.btn-secondary {
+  background-color: #e677d3
+}
+
+
+/* section {
   margin: 2rem auto;
   max-width: 30rem;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
   padding: 1rem;
-  background-color: #b6f0a7; /* Sage Green */
+  background-color: #b6f0a7; /* Sage Green 
 }
 
 button {
-  background-color: #F4A7B9; /* Lemonade Pink */
+  background-color: #F4A7B9; /* Lemonade Pink 
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
@@ -103,6 +116,6 @@ h3 {
 .invalid input,
 .invalid textarea {
   border: 1px solid red;
-}
+} */
 
 </style>
