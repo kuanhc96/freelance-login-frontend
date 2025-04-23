@@ -1,7 +1,6 @@
 <template>
-    <base-summary>
-        <h3>{{ instructorName }}</h3> 
-        <h4>Email: {{email}}</h4>
+    <base-summary summary-title="Alice Ho">
+        <p>Email: {{email}}</p>
         <div>
             <base-badge v-for="subject in filteredSubjects" 
                 :key="subject.subjectName"

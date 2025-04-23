@@ -1,7 +1,6 @@
 <template>
-    <h1>Instructors</h1>
     <section>
-        <base-card>
+        <base-card card-title="Instructors">
         <div class="refresh">
             <base-button mode="outline">Refresh</base-button>
         </div>
@@ -21,9 +20,11 @@
 
 <script>
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
+import BaseCard from '../../components/ui/BaseCard.vue'
 export default {
     components: {
-        InstructorSummary
+        InstructorSummary,
+        BaseCard
     },
     computed: {
         filteredInstructors() {
@@ -38,7 +39,7 @@ export default {
 </script>
 
 <style scoped>
-ul {
+/* ul {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -47,6 +48,6 @@ ul {
 .refresh {
   display: flex;
   justify-content: space-between;
-}
+} */
 
 </style>

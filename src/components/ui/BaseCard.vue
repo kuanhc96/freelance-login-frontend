@@ -1,8 +1,8 @@
 <template>
   <div class="d-flex justify-content-center m-5">
-    <div class="card base-card bg-primary col-10">
+    <div class="card base-card bg-primary col-md-10">
       <div class="card-body">
-        <h5 class="card-title">{{cardTitle}}</h5>
+        <h2 class="card-title">{{cardTitle}}</h2>
         <slot></slot>
       </div>
     </div>
