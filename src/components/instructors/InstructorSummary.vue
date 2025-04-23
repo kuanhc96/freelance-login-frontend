@@ -1,7 +1,7 @@
 <template>
     <base-summary summary-title="Alice Ho">
         <p>Email: {{email}}</p>
-        <div>
+        <div class="mb-3">
             <base-badge v-for="subject in filteredSubjects" 
                 :key="subject.subjectName"
                 :type="subject.subjectName"
@@ -9,7 +9,7 @@
             ></base-badge>
         </div>
         <div class="actions">
-            <base-button link mode="outline" :to="contactLink">Contact</base-button>
+            <base-button link :to="contactLink">Contact</base-button>
             <base-button link :to="detailsLink">View Details</base-button>
         </div>
     </base-summary>

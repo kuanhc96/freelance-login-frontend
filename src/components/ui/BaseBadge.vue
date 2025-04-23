@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style scoped>
-.badge {
+/* .badge {
   background-color: #ccc;
   color: #252525;
   border-radius: 30px;
@@ -45,6 +45,6 @@ export default {
 .holes {
   background-color: #8d006e;
   color: white;
-}
+} */
 
 </style>

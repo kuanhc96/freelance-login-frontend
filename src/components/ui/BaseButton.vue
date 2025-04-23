@@ -1,8 +1,8 @@
 <template>
-    <button v-if="!link" :to="to" :class="mode">
+    <button v-if="!link" :to="to" class="btn btn-outline-primary m-1">
         <slot></slot>
     </button>
-    <router-link v-else :to="to" :class="mode">
+    <router-link v-else :to="to" class="btn btn-secondary m-1">
         <slot></slot>
     </router-link>
 </template>
@@ -10,11 +10,6 @@
 <script>
 export default {
     props: {
-        mode: {
-            type: String,
-            required: false,
-            default: null
-        },
         link: {
             type: Boolean,
             required: false,
@@ -30,7 +25,7 @@ export default {
 </script>
 
 <style scoped>
-button,
+/* button,
 a {
   text-decoration: none;
   padding: 0.75rem 1.5rem;
@@ -69,6 +64,6 @@ button:active {
 .outline:hover,
 .outline:active {
   background-color: #edd2ff;
-}
+} */
 
 </style>
