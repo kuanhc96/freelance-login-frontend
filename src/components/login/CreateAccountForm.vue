@@ -4,23 +4,23 @@
       <form @submit.prevent="submitForm">
         <div class="mb-3">
           <label class="form-label" for="email">Email</label>
-          <input class="form-control" type="email" id="email" required />
+          <input class="form-control" type="email" id="email" v-model="email" required />
         </div>
         <div class="mb-3">
           <label class="form-label" for="name">Name</label>
-          <input class="form-control" type="text" id="name" required />
+          <input class="form-control" type="text" id="name" v-model="name" required />
         </div>
         <div class="mb-3">
           <label class="form-label" for="password">Password</label>
-          <input class="form-control" type="password" id="password" required />
+          <input class="form-control" type="password" id="password" v-model="password" required />
         </div>
         <div class="mb-3">
           <label class="form-label" for="retype-password">Retype Password</label>
-          <input class="form-control" type="password" id="retype-password" required />
+          <input class="form-control" type="password" id="retype-password" v-model="retypePassword" required />
         </div>
         <div class="mb-3">
           <label for="dateInput" class="form-label">Birthday</label>
-          <input type="date" value="1996-01-01" class="form-control" id="dateInput">
+          <input type="date" value="1996-01-01" class="form-control" id="dateInput" v-model="dateInput">
         </div>
         <div class="mb-3">
           <label class="form-label">Gender</label>
@@ -30,7 +30,7 @@
               type="radio"
               name="gender"
               id="male"
-              value="male"
+              value="MALE"
               v-model="selectedGender"
             />
             <label class="form-check-label" for="male">Male</label>
@@ -41,7 +41,7 @@
               type="radio"
               name="gender"
               id="female"
-              value="female"
+              value="FEMALE"
               v-model="selectedGender"
             />
             <label class="form-check-label" for="female">Female</label>
@@ -72,7 +72,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control" placeholder="Short Bio" id="description" rows=6></textarea>
+            <textarea class="form-control" placeholder="Short Bio" id="description" rows=6 v-model="description"></textarea>
         </div>
         <div class="mb-3">
           <button class="btn btn-secondary" type="submit">Create Account</button>
@@ -179,9 +179,7 @@ export default {
       email: '',
       name:'',
       password: '',
-      birthYear: 0,
-      birthMonth: 0,
-      birthDay: 0,
+      dateInput: '',
       retypePassword:'',
       selectedRole: '', // Will hold the value "student" or "instructor" depending on which radio is checked
       selectedGender: '', // Will hold the value "male" or "female" depending on which radio is checked
@@ -192,7 +190,6 @@ export default {
   methods: {
     submitForm() {
       if (this.password === this.retypePassword) {
-        console.log("LOL");
         this.apiEndpoint = '';
         
         if (this.selectedRole === 'student') {
@@ -201,7 +198,7 @@ export default {
           this.apiEndpoint = 'http://localhost:8081/instructor/createInstructor'
         }
 
-        fetch(this.apiEndpoint, {
+        const response = fetch(this.apiEndpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -210,15 +207,18 @@ export default {
                 name: this.name,
                 email: this.email,
                 password: this.password,
-                birthYear: this.birthYear,
-                birthMonth: this.birthMonth,
-                birthDay: this.birthDay,
+                birthday: this.dateInput,
                 gender: this.selectedGender,
                 description: this.description
             }),
         });
+        if (response.ok) {
+          this.$router.push('/login');
+        } else {
+          alert('an error occurred when creating an account')
+        }
       } else {
-        console.log('password and retype password must match');
+        alert('password and retype password must match');
       }
     }
   }
