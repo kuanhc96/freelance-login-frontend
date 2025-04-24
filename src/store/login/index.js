@@ -9,7 +9,7 @@ export default {
             isLoggedIn: false,
             userId: '',
             subscribedIds: [],
-            role: 'student'
+            role: ''
         }
     },
     mutations,
