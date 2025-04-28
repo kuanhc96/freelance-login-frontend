@@ -19,6 +19,7 @@ import Dashboard from '../pages/Dash-Board.vue'
 
 const routes = [
   { path: '/login', component: LoginForm },
+  { path: '/login?logout=true', component: LoginForm },
   { path: '/createAccount', component: CreateAccountForm },
   { path: '/forgetPassword', component: ForgetPasswordForm },
   { path: '/resetPassword', component: ResetPasswordForm },
