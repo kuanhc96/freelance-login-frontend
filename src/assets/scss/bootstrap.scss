@@ -1,5 +1,5 @@
 // Font
-$font-family-sans-serif: 'Open Sans', sans-serif;
+$font-family-sans-serif: 'Montserrat', sans-serif;
 
 // colors
 $primary: #b6f0a7;
@@ -9,7 +9,8 @@ $light: #f3f6f9;
 
 // navbar
 $navbar-padding-y: 1rem;
-$navbar-dark-color: #fff;
+$navbar-nav-link-padding-x: 0.8rem;
+$navbar-dark-color: $dark;
 $navbar-dark-hover-color: $secondary;
 
 // Buttons
