@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand-lg bg-success fixed-top mb-5">
       <div class="container">
         <router-link to="/" class="navbar-brand w-auto">
-          <img src="@/assets/logo.png" alt="Logo" id="logo-img">
+          <img src="@/assets/images/logo.png" alt="Logo" id="logo-img">
             <span id="logo-text">
               Freelancer App
             </span>
