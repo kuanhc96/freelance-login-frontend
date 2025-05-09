@@ -10,15 +10,15 @@
           <label class="form-label" for="password">Password </label>
           <input class="form-control" type="password" id="password" v-model="password" required />
         </div>
-        <div class="mb-3">
+        <div class="d-grid vstack mb-3">
           <button class="btn btn-secondary" type="submit">Login</button>
         </div>
       </form>
       <div>
-        <router-link to="/createAccount">Create an account</router-link>
+        <router-link class="btn btn-primary mb-3" to="/createAccount">Create an account</router-link>
       </div>
       <div>
-        <router-link to="/forgetPassword">Forgot password?</router-link>
+        <router-link class="btn btn-primary" to="/forgetPassword">Forgot password?</router-link>
       </div>
     </BaseCard>
   </section>
