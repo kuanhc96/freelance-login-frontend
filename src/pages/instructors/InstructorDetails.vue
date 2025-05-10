@@ -20,7 +20,7 @@
         <base-card>
             <header>
                 <h2> Interested? Reach out now! </h2> 
-                <base-button link :to="contactLink">Contact</base-button>
+                <button link :to="contactLink">Contact</button>
             </header>
             <router-view/>
         </base-card>

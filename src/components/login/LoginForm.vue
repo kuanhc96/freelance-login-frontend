@@ -15,9 +15,7 @@
         </div>
       </form>
       <div>
-        <router-link class="btn btn-primary mb-3" to="/createAccount">Create an account</router-link>
-      </div>
-      <div>
+        <router-link class="btn btn-primary me-3" to="/createAccount">Create an account</router-link>
         <router-link class="btn btn-primary" to="/forgetPassword">Forgot password?</router-link>
       </div>
     </BaseCard>

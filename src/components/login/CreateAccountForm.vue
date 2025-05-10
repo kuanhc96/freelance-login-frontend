@@ -79,7 +79,7 @@
         </div>
       </form>
       <div>
-        <router-link to="/login">Login</router-link>
+        <router-link class="btn btn-primary" to="/login">Login</router-link>
       </div>
     </BaseCard>
   </section>

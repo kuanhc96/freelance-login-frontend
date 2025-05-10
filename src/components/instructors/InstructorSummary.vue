@@ -9,8 +9,8 @@
             ></base-badge>
         </div>
         <div class="actions">
-            <base-button link :to="contactLink">Contact</base-button>
-            <base-button link :to="detailsLink">View Details</base-button>
+            <button class="btn btn-primary me-2">Contact</button>
+            <button class="btn btn-secondary">View Details</button>
         </div>
     </base-summary>
 </template>

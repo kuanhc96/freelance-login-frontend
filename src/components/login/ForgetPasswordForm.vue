@@ -6,12 +6,12 @@
         <label class="form-label" for="email">Enter your email</label>
         <input class="form-control" type="email" id="email" required />
       </div>
-      <div>
+      <div class="mb-3">
         <button class="btn btn-secondary" type="submit">Send Reset Link</button>
       </div>
     </form>
       <div>
-        <router-link to="/login">Login</router-link>
+        <router-link class="btn btn-primary" to="/login">Login</router-link>
       </div>
   </BaseCard>
   </section>

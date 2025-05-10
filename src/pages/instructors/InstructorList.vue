@@ -2,7 +2,7 @@
     <section>
         <base-card card-title="Instructors">
         <div class="refresh">
-            <base-button mode="outline">Refresh</base-button>
+            <button class="btn btn-primary">Refresh</button>
         </div>
         <ul v-if="hasInstructors">
             <instructor-summary 
