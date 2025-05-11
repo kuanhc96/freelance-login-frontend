@@ -1,6 +1,8 @@
 <template>
 <header>
-    <div class="navbar navbar-expand-lg navbar-dark bg-light fixed-top">
+    <div class="navbar navbar-expand-lg navbar-dark bg-light fixed-top"
+         v-if="isLoggedIn"
+    >
       <div class="container">
         <router-link to="/" class="navbar-brand">
           <img src="@/assets/images/logo.png" alt="Logo" id="logo-img" width="150"/>
@@ -45,6 +47,16 @@
     </div>
 </header>
 </template>
+
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters['login/isLoggedIn'];
+    }
+  }
+}
+</script>
 
 <style scoped>
 </style>
