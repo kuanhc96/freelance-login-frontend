@@ -9,11 +9,9 @@
     <section>
         <base-card>
             <h2>Available Subjects</h2>
-            <base-badge v-for="subject in filteredSubjects" 
+            <span v-for="subject in filteredSubjects" 
                 :key="subject.subjectName"
-                :type="subject.subjectName"
-                :title="subject.subjectName"
-            ></base-badge>
+            >{{subject.subjectName}}</span>
         </base-card>
     </section>
     <section>

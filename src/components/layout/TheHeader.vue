@@ -35,7 +35,7 @@
           <span class="nav-item">
             <span class="fa-stack">
               <a href="#">
-                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fas fa-circle fa-stack-2x text-secondary"></i>
                 <i class="fab fa-twitter fa-stack-1x text-dark"></i>
               </a>
             </span>

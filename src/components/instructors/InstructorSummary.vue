@@ -2,15 +2,14 @@
     <base-summary summary-title="Alice Ho">
         <p>Email: {{email}}</p>
         <div class="mb-3">
-            <base-badge v-for="subject in filteredSubjects" 
+            <span class="badge bg-info me-2" 
+                v-for="subject in filteredSubjects" 
                 :key="subject.subjectName"
-                :type="subject.subjectName"
-                :title="subject.subjectName"
-            ></base-badge>
+            >{{subject.subjectName}}</span>
         </div>
         <div class="actions">
-            <button class="btn btn-primary me-2">Contact</button>
-            <button class="btn btn-secondary">View Details</button>
+            <router-link :to="contactLink" class="btn btn-primary me-2">Contact</router-link>
+            <router-link :to="detailsLink" class="btn btn-secondary">View Details</router-link>
         </div>
     </base-summary>
 </template>
