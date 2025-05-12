@@ -2,7 +2,7 @@
     <base-summary summary-title="Alice Ho">
         <p>Email: {{email}}</p>
         <div class="mb-3">
-            <span class="badge bg-info me-2" 
+            <span class="badge text-bg-light me-2" 
                 v-for="subject in filteredSubjects" 
                 :key="subject.subjectName"
             >{{subject.subjectName}}</span>

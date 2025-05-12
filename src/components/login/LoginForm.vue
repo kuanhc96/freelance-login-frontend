@@ -45,12 +45,22 @@ export default {
       })
       .then(response => {
         if (response.ok) {
-          this.$store.dispatch('login', response.success, response.userId, response.subscribedIds, response.role) // TODO: call dispatch to save login info in store
-          this.$router.push('/')
+          return response.json();
         } else {
           console.log(response);
         }
       })
+      .then(data => {
+          this.$store.dispatch('login/login', {
+            status: data.success,
+            userId: data.userId,
+            subscribedIds: data.subscribedIds, 
+            role: data.role
+          }); 
+          this.$router.push('/')
+        }
+
+      )
 
     }
   }
