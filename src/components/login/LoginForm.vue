@@ -54,7 +54,6 @@ export default {
           this.$store.dispatch('login/login', {
             status: data.success,
             userId: data.userId,
-            subscribedIds: data.subscribedIds, 
             role: data.role
           }); 
           this.$router.push('/')

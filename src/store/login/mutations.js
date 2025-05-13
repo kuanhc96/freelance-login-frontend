@@ -5,9 +5,6 @@ export default {
     SET_USER_ID(state, userId) {
         state.userId = userId;
     },
-    SET_SUBSCRIBED_INSTRUCTOR_IDS(state, subscribedIds) {
-        state.subscribedIds = subscribedIds;
-    },
     SET_ROLE(state, role) {
         state.role = role;
     },
