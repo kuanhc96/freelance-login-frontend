@@ -1,9 +1,6 @@
 <template>
     <section>
         <base-card card-title="Instructors">
-        <div class="refresh">
-            <button class="btn btn-primary">Refresh</button>
-        </div>
         <ul v-if="hasInstructors">
             <instructor-summary 
                 v-for="instructor in filteredInstructors" 
