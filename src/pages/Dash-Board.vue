@@ -1,48 +1,45 @@
 <template>
    <section>
       <base-card card-title="Dashboard">
-         <div class="row">
-            <div class="m-3">
-               <div class="card ">
-                  <div class="card-body">
-                     <h4 class="card-title">Announcement</h4>
-                     <p class="card-text">
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                     </p>
-                  </div>
-               </div>
+         <div class="row d-flex justify-content-center my-3">
+            <div class="col-md-10">
+               <base-summary summaryTitle="Announcements">
+                  <p class="card-text">
+                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                  </p>
+               </base-summary>
             </div>
-            <div class="col-md-6">
-               <div class="card ">
-                  <div class="card-body">
-                     <h4 class="card-title">Upcoming Lesson</h4>
-                     <p class="card-text">Lorem ipsum dolor sit amet.</p>
-                  </div>
-               </div>
+         </div>
+         <div class="row d-flex justify-content-center mb-3">
+            <div class="col-md-4">
+               <base-summary summaryTitle="Upcoming Lessons">
+                  <p class="card-text">
+                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                  </p>
+               </base-summary>
             </div>
-            <div class="col-md-6">
-               <div class="card ">
-                  <div class="card-body">
-                     <h4 class="card-title">Most Recent Transaction</h4>
-                     <p class="card-text">Lorem ipsum dolor sit amet.</p>
-                  </div>
-               </div>
+            <div class="col-md-4">
+               <base-summary summaryTitle="Most Recent Transactions">
+                  <p class="card-text">
+                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                  </p>
+               </base-summary>
             </div>
-            <div class="col-md-6">
-               <div class="card ">
-                  <div class="card-body">
-                     <h4 class="card-title">Subscribed Instructors</h4>
-                     <p class="card-text">Lorem ipsum dolor sit amet.</p>
-                  </div>
-               </div>
+         </div>
+         <div class="row d-flex justify-content-center mb-3">
+            <div class="col-md-4">
+               <base-summary summaryTitle="Subscribed Instructors">
+                  <p class="card-text">
+                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                  </p>
+               </base-summary>
             </div>
-            <div class="col-md-6">
-               <div class="card ">
-                  <div class="card-body">
-                     <h4 class="card-title">Account Information</h4>
-                     <p class="card-text">Lorem ipsum dolor sit amet.</p>
-                  </div>
-               </div>
+            <div class="col-md-4">
+               <base-summary summaryTitle="Acount Information">
+                  <p class="card-text">
+                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                  </p>
+               </base-summary>
             </div>
          </div>
       </base-card>
@@ -51,9 +48,11 @@
 
 <script>
 import BaseCard from '../components/ui/BaseCard.vue';
+import BaseSummary from '../components/ui/BaseSummary.vue';
 export default {
     components: {
-        BaseCard
+        BaseCard,
+        BaseSummary
     },
    
 }

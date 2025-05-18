@@ -1,5 +1,5 @@
 <template>
-    <div class="base-summary m-5 card">
+    <div class="base-summary card h-100">
       <div class="card-body">
         <h3 class="card-title">{{summaryTitle}}</h3>
         <div class="card-text">

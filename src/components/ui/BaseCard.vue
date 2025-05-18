@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <!-- <div class="container"> -->
     <div class="d-flex justify-content-center">
       <div class="card base-card bg-light col-md-10 mt-7 rounded-4">
         <div class="card-body">
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
