@@ -1,6 +1,6 @@
 <template>
   <section>
-    <BaseCard card-title="Login">
+    <BaseCard card-title="Login" @refresh="refresh">
       <form @submit.prevent="submitForm">
         <div class="mb-3">
           <label class="form-label" for="email">User Email </label>
@@ -75,6 +75,11 @@ export default {
     }
   },
   methods: {
+    refresh() {
+      this.email = '';
+      this.password = '';
+      this.$router.push("/login");
+    },
     submitForm() {
       fetch("http://localhost:8081/apiLogin", {
         method: 'POST',

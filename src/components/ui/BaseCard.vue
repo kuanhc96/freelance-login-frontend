@@ -6,7 +6,7 @@
           <div class="d-flex justify-content-between">
             <h2 class="card-title">{{cardTitle}}</h2>
             <div class="refresh">
-                <button class="btn btn-primary">Refresh</button>
+                <button class="btn btn-primary" @click="refresh">Refresh</button>
             </div>
           </div>
           <slot></slot>
@@ -20,7 +20,12 @@
 export default {
   props: [
     'cardTitle',
-  ]
+  ],
+  methods: {
+    refresh() {
+      this.$emit('refresh');
+    }
+  }
 }
 </script>
 
