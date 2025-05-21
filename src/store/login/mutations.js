@@ -11,7 +11,6 @@ export default {
     LOGOUT(state) {
         state.isLoggedIn = false;
         state.userId = null;
-        state.subscribedIds = [];
         state.role = null;
     }
 

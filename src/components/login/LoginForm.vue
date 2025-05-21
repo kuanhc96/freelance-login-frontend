@@ -26,29 +26,43 @@
 import BaseCard from '../ui/BaseCard.vue';
 export default {
   async created() {
-    try {
-      const response = await fetch(
-        'http://localhost:8081/checkLogin', {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLogout = urlParams.get('logout') === 'true';
+    if (isLogout) {
+      try {
+        this.$store.dispatch('login/logout'); 
+        await fetch('http://localhost:8081/apiLogout', {
           method: 'POST',
           credentials: 'include'
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Not authenticated')
+        })
+      } catch (err) {
+        console.warn('Failed to logout on backend')
       }
+    } else {
+      try {
+        const response = await fetch(
+          'http://localhost:8081/checkLogin', {
+            method: 'POST',
+            credentials: 'include'
+          }
+        );
 
-      const data = await response.json();
-      this.$store.dispatch('login/login', {
-        status: data.success,
-        userId: data.userId,
-        role: data.role
-      }); 
+        if (!response.ok) {
+          throw new Error('Not authenticated')
+        }
 
-      this.$router.push('/');
-    } catch (err) {
-      console.warn('Authentication failed with loginToken');
-      this.$router.push('/login');
+        const data = await response.json();
+        this.$store.dispatch('login/login', {
+          status: data.success,
+          userId: data.userId,
+          role: data.role
+        }); 
+
+        this.$router.push('/');
+      } catch (err) {
+        console.warn('Authentication failed with loginToken');
+        this.$router.push('/login');
+      }
     }
   },
   components: {
