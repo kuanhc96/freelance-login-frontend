@@ -36,12 +36,16 @@ export default {
   },
   methods: {
     submitForm() {
-      const basicAuth = btoa(this.email + ':' + this.password);
-      fetch("http://localhost:8081/testLogin", {
-        method: 'GET',
+      fetch("http://localhost:8081/apiLogin", {
+        method: 'POST',
+        credentials: 'include',
         headers: {
-          'Authorization': 'Basic ' + basicAuth
+          'Content-Type': 'application/json'
         },
+        body: JSON.stringify({
+          'email': this.email,
+          'password': this.password
+        }),
       })
       .then(response => {
         if (response.ok) {
@@ -51,12 +55,14 @@ export default {
         }
       })
       .then(data => {
-          this.$store.dispatch('login/login', {
-            status: data.success,
-            userId: data.userId,
-            role: data.role
-          }); 
-          this.$router.push('/')
+          if (data) {
+            this.$store.dispatch('login/login', {
+              status: data.success,
+              userId: data.userId,
+              role: data.role
+            }); 
+            this.$router.push('/')
+          }
         }
 
       )
