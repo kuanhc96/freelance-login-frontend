@@ -25,6 +25,32 @@
 <script>
 import BaseCard from '../ui/BaseCard.vue';
 export default {
+  async created() {
+    try {
+      const response = await fetch(
+        'http://localhost:8081/checkLogin', {
+          method: 'POST',
+          credentials: 'include'
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Not authenticated')
+      }
+
+      const data = await response.json();
+      this.$store.dispatch('login/login', {
+        status: data.success,
+        userId: data.userId,
+        role: data.role
+      }); 
+
+      this.$router.push('/');
+    } catch (err) {
+      console.warn('Authentication failed with loginToken');
+      this.$router.push('/login');
+    }
+  },
   components: {
     BaseCard
   },
