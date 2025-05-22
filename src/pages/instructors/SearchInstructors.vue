@@ -4,10 +4,34 @@
             card-title="Instructors"
             @refresh="refresh"
         >
-            <ul class="my-3 p-1" v-if="hasAllInstructors">
+            <div class="row mt-3">
+                <div class="input-group">
+                    <label for="search-instructors" class="border rounded-start input-group-text">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </label>
+                    <input 
+                        id="search-instructors" 
+                        type="text" 
+                        placeholder="Search Instructors" 
+                        class="form-control fs-6 rounded-end"
+                        v-model="keyword"
+                    >
+                </div>
+            </div>
+            <ul class="my-3 p-1" v-if="isKeywordBlank">
                 <instructor-summary
                     class="mb-3"
                     v-for="instructor in allInstructors"
+                    :key="instructor.id"
+                    :instructorGUID="instructor.instructorGUID"
+                    :instructorName="instructor.instructorName"
+                    :email="instructor.email"
+                ></instructor-summary>
+            </ul> 
+            <ul class="my-3 p-1" v-else>
+                <instructor-summary
+                    class="mb-3"
+                    v-for="instructor in filteredInstructors"
                     :key="instructor.id"
                     :instructorGUID="instructor.instructorGUID"
                     :instructorName="instructor.instructorName"
@@ -26,6 +50,11 @@ export default {
     components: {
         InstructorSummary,
         BaseCard
+    },
+    data() {
+        return {
+            keyword: ''
+        }
     },
     async created() {
         const response = await fetch('http://localhost:8081/instructor/getAllInstructors', {
@@ -56,6 +85,14 @@ export default {
         }
     },
     computed: {
+        isKeywordBlank() {
+            return this.keyword === '';
+        },
+        filteredInstructors() {
+            const allInstructors = this.$store.getters['instructors/allInstructors'];
+            const filtered = allInstructors.filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+            return filtered
+        },
         allInstructors() {
             return this.$store.getters['instructors/allInstructors'];
         },
