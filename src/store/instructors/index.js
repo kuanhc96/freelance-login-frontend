@@ -6,13 +6,8 @@ export default {
     namespaced: true,
     state() {
         return {
-            instructors: [
-                {
-                    instructorName: 'Alice Ho',
-                    email: 'example@test.com',
-                    instructorGUID: 'Test1234'
-                }
-            ]
+            instructors: [],
+            allInstructors: []
         }
     },
     mutations,
