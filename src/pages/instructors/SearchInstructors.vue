@@ -26,6 +26,7 @@
                             :instructorGUID="instructor.instructorGUID"
                             :instructorName="instructor.instructorName"
                             :email="instructor.email"
+                            :portraitPath="'../../assets/images/alice.jpg'"
                         ></instructor-summary>
                     
                     </ul> 
