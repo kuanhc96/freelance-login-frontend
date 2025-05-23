@@ -4,40 +4,43 @@
             card-title="Instructors"
             @refresh="refresh"
         >
-            <div class="row mt-3">
-                <div class="input-group">
-                    <label for="search-instructors" class="border rounded-start input-group-text">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </label>
-                    <input 
-                        id="search-instructors" 
-                        type="text" 
-                        placeholder="Search Instructors" 
-                        class="form-control fs-6 rounded-end"
-                        v-model="keyword"
-                    >
+            <div class="d-flex align-items-center flex-column">
+                <div class="col-md-10">
+                    <div class="input-group mt-3">
+                        <label for="search-instructors" class="border rounded-start input-group-text">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </label>
+                        <input 
+                            id="search-instructors" 
+                            type="text" 
+                            placeholder="Search Instructors" 
+                            class="form-control fs-6 rounded-end col-md-10"
+                            v-model="keyword"
+                        >
+                    </div>
+                    <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
+                        <instructor-summary
+                            class="mb-3"
+                            v-for="instructor in allInstructors"
+                            :key="instructor.id"
+                            :instructorGUID="instructor.instructorGUID"
+                            :instructorName="instructor.instructorName"
+                            :email="instructor.email"
+                        ></instructor-summary>
+                    
+                    </ul> 
+                    <ul class="d-flex align-items-center list-group my-3 p-1" v-else>
+                        <instructor-summary
+                            class="mb-3"
+                            v-for="instructor in filteredInstructors"
+                            :key="instructor.id"
+                            :instructorGUID="instructor.instructorGUID"
+                            :instructorName="instructor.instructorName"
+                            :email="instructor.email"
+                        ></instructor-summary>
+                    </ul> 
                 </div>
             </div>
-            <ul class="my-3 p-1" v-if="isKeywordBlank">
-                <instructor-summary
-                    class="mb-3"
-                    v-for="instructor in allInstructors"
-                    :key="instructor.id"
-                    :instructorGUID="instructor.instructorGUID"
-                    :instructorName="instructor.instructorName"
-                    :email="instructor.email"
-                ></instructor-summary>
-            </ul> 
-            <ul class="my-3 p-1" v-else>
-                <instructor-summary
-                    class="mb-3"
-                    v-for="instructor in filteredInstructors"
-                    :key="instructor.id"
-                    :instructorGUID="instructor.instructorGUID"
-                    :instructorName="instructor.instructorName"
-                    :email="instructor.email"
-                ></instructor-summary>
-            </ul> 
         </base-card>
 
     </section>

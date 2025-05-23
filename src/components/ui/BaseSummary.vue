@@ -1,10 +1,7 @@
 <template>
-    <div class="base-summary card h-100">
+    <div class="base-summary card w-100 h-100">
       <div class="card-body">
-        <h3 class="card-title">{{summaryTitle}}</h3>
-        <div class="card-text">
-          <slot></slot>
-        </div>
+        <slot></slot>
       </div>
     </div>
 </template>
