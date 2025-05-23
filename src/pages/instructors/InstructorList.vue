@@ -1,10 +1,6 @@
 <template>
-    <h1>Instructors</h1>
     <section>
-        <base-card>
-        <div class="refresh">
-            <base-button mode="outline">Refresh</base-button>
-        </div>
+        <base-card card-title="Instructors">
         <ul v-if="hasInstructors">
             <instructor-summary 
                 v-for="instructor in filteredInstructors" 
@@ -21,9 +17,11 @@
 
 <script>
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
+import BaseCard from '../../components/ui/BaseCard.vue'
 export default {
     components: {
-        InstructorSummary
+        InstructorSummary,
+        BaseCard
     },
     computed: {
         filteredInstructors() {
@@ -38,15 +36,4 @@ export default {
 </script>
 
 <style scoped>
-ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.refresh {
-  display: flex;
-  justify-content: space-between;
-}
-
 </style>

@@ -1,114 +1,122 @@
 <template>
   <section>
-    <BaseCard>
-      <h2>Login</h2>
-      <form>
-        <div>
-          <label for="email">User Email </label>
-          <input type="email" id="email" required />
+    <BaseCard card-title="Login" @refresh="refresh">
+      <form @submit.prevent="submitForm">
+        <div class="mb-3">
+          <label class="form-label" for="email">User Email </label>
+          <input class="form-control" type="email" id="email" v-model="email" required />
         </div>
-        <div>
-          <label for="password">Password </label>
-          <input type="password" id="password" required />
+        <div class="mb-3">
+          <label class="form-label" for="password">Password </label>
+          <input class="form-control" type="password" id="password" v-model="password" required />
         </div>
-        <div>
-          <button type="submit">Login</button>
+        <div class="d-grid vstack mb-3">
+          <button class="btn btn-secondary" type="submit">Login</button>
         </div>
       </form>
       <div>
-        <router-link to="/createAccount">Create an account</router-link>
-      </div>
-      <div>
-        <router-link to="/forgetPassword">Forgot password?</router-link>
+        <router-link class="btn btn-primary me-3" to="/createAccount">Create an account</router-link>
+        <router-link class="btn btn-primary" to="/forgetPassword">Forgot password?</router-link>
       </div>
     </BaseCard>
   </section>
 </template>
 
-<style scoped>
-section {
-  margin: 2rem auto;
-  max-width: 30rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  padding: 1rem;
-  background-color: #b6f0a7; /* Sage Green */
-}
+<script>
+import BaseCard from '../ui/BaseCard.vue';
+export default {
+  async created() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLogout = urlParams.get('logout') === 'true';
+    if (isLogout) {
+      try {
+        this.$store.dispatch('login/logout'); 
+        await fetch('http://localhost:8081/apiLogout', {
+          method: 'POST',
+          credentials: 'include'
+        })
+      } catch (err) {
+        console.warn('Failed to logout on backend')
+      }
+    } else {
+      try {
+        const response = await fetch(
+          'http://localhost:8081/checkLogin', {
+            method: 'POST',
+            credentials: 'include'
+          }
+        );
 
-button {
-  background-color: #F4A7B9; /* Lemonade Pink */
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-}
+        if (!response.ok) {
+          throw new Error('Not authenticated')
+        }
 
-.form-control {
-  margin: 0.5rem 0;
-}
+        const data = await response.json();
+        this.$store.dispatch('login/login', {
+          status: data.success,
+          userId: data.userId,
+          role: data.role
+        }); 
 
-label {
-  font-weight: bold;
-  display: block;
-  margin-bottom: 0.5rem;
-}
+        this.$router.push('/');
+      } catch (err) {
+        console.warn('Authentication failed with loginToken');
+        this.$router.push('/login');
+      }
+    }
+  },
+  components: {
+    BaseCard
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+    }
+  },
+  methods: {
+    refresh() {
+      this.email = '';
+      this.password = '';
+      this.$router.push("/login");
+    },
+    submitForm() {
+      fetch("http://localhost:8081/apiLogin", {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'email': this.email,
+          'password': this.password
+        }),
+      })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          console.log(response);
+        }
+      })
+      .then(data => {
+          if (data) {
+            this.$store.dispatch('login/login', {
+              status: data.success,
+              userId: data.userId,
+              role: data.role
+            }); 
+            this.$router.push('/')
+          }
+        }
 
-input[type='checkbox'] + label {
-  font-weight: normal;
-  display: inline;
-  margin: 0 0 0 0.5rem;
-}
+      )
 
-input[type='radio'] + label {
-  font-weight: normal;
-  display: inline;
-  margin: 0 0 0 0.5rem;
+    }
+  }
 }
+</script>
 
-input,
-textarea {
-  display: block;
-  width: 100%;
-  border: 1px solid #ccc;
-  font: inherit;
-}
 
-input:focus,
-textarea:focus {
-  background-color: #f0e6fd;
-  outline: none;
-  border-color: #3d008d;
-}
-
-input[type='checkbox'] {
-  display: inline;
-  width: auto;
-  border: none;
-}
-
-input[type='radio'] {
-  display: inline;
-  width: auto;
-  border: none;
-}
-
-input[type='checkbox']:focus {
-  outline: #3d008d solid 1px;
-}
-
-h3 {
-  margin: 0.5rem 0;
-  font-size: 1rem;
-}
-
-.invalid label {
-  color: red;
-}
-
-.invalid input,
-.invalid textarea {
-  border: 1px solid red;
-}
-
+<style lang="scss" scoped>
 </style>

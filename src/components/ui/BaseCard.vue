@@ -1,23 +1,34 @@
 <template>
-  <div class="base-card">
-    <slot></slot>
-  </div>
+  <!-- <div class="container"> -->
+    <div class="d-flex justify-content-center">
+      <div class="card base-card bg-light col-md-10 mt-7 rounded-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between">
+            <h2 class="card-title">{{cardTitle}}</h2>
+            <div class="refresh">
+                <button class="btn btn-primary" @click="refresh">Refresh</button>
+            </div>
+          </div>
+          <slot></slot>
+        </div>
+      </div>
+    </div>
+  <!-- </div> -->
 </template>
 
-<style scoped>
-div {
-  margin: 2rem auto;
-  max-width: 30rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  padding: 1rem;
+<script>
+export default {
+  props: [
+    'cardTitle',
+  ],
+  methods: {
+    refresh() {
+      this.$emit('refresh');
+    }
+  }
 }
+</script>
 
-.base-card {
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  background-color: #b6f0a7; /* Sage Green */
-  padding: 20px;
-}
 
+<style lang="scss" scoped>
 </style>

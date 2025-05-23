@@ -18,7 +18,7 @@ export default {
                     price: 300
                 },
                 {
-                    subjectName: 'holes',
+                    subjectName: '18 holes',
                     instructorName: 'Alice Ho',
                     price: 7000
                 }

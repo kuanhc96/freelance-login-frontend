@@ -8,8 +8,7 @@ export default {
         return {
             isLoggedIn: false,
             userId: '',
-            subscribedIds: [],
-            role: 'student'
+            role: ''
         }
     },
     mutations,

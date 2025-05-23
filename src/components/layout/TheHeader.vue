@@ -1,91 +1,65 @@
 <template>
 <header>
-    <img src="@/assets/logo.png" alt="Logo" class="logo" />
-    <nav>
-        <h1>
-            <router-link to="/">Freelancer App</router-link> 
-        </h1>
-        <ul>
-            <li>
-                <router-link to="/instructors">Instructors</router-link> 
+    <div class="navbar navbar-expand-lg navbar-dark bg-light fixed-top"
+         v-if="isLoggedIn"
+    >
+      <div class="container">
+        <router-link to="/" class="navbar-brand">
+          <img src="@/assets/images/logo.png" alt="Logo" id="logo-img" width="150"/>
+        </router-link> 
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+                <router-link to="/instructors" class="nav-link">Instructors</router-link> 
             </li>
-            <li>
-                <router-link to="/courses">Courses</router-link> 
+            <li class="nav-item">
+                <router-link to="/courses" class="nav-link ">Courses</router-link> 
             </li>
-            <li>
-                <router-link to="/transactions">Transaction History</router-link> 
+            <li class="nav-item">
+                <router-link to="/transactions" class="nav-link ">Transaction</router-link> 
             </li>
-            <li>
-                <router-link to="/instructors/search">Search Instructors</router-link> 
+            <li class="nav-item">
+                <router-link to="/instructors/search" class="nav-link ">Search</router-link> 
+            </li>
+            <li class="nav-item">
+                <router-link to="/login?logout=true" class="nav-link ">Logout</router-link> 
             </li>
         </ul>
-    </nav>
+        <span class="nav-item">
+            <span class="fa-stack">
+              <a href="#">
+                <i class="fas fa-circle fa-stack-2x"></i>
+                <i class="fab fa-facebook-f fa-stack-1x text-dark"></i>
+              </a>
+            </span>
+          </span>
+          <span class="nav-item">
+            <span class="fa-stack">
+              <a href="#">
+                <i class="fas fa-circle fa-stack-2x text-secondary"></i>
+                <i class="fab fa-twitter fa-stack-1x text-dark"></i>
+              </a>
+            </span>
+          </span>
+
+      </div>
+    </div>
 </header>
 </template>
 
+<script>
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters['login/isLoggedIn'];
+    }
+  }
+}
+</script>
+
 <style scoped>
-.logo {
-  width: auto;
-  height: 100%;
-  padding: 10px;
-}
-
-header {
-  width: 100%;
-  height: 5rem;
-  background-color: #b6f0a7; /* Sage Green */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-header a {
-  text-decoration: none;
-  color: #e677d3;
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid transparent;
-}
-
-a:active,
-a:hover,
-a.router-link-active {
-  border: 1px solid #e677d3;
-}
-
-h1 {
-  margin: 0;
-}
-
-h1 a {
-  color: white;
-  margin: 0;
-}
-
-h1 a:hover,
-h1 a:active,
-h1 a.router-link-active {
-  border-color: transparent;
-}
-
-header nav {
-  width: 90%;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-li {
-  margin: 0 0.5rem;
-}
 </style>

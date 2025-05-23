@@ -12,16 +12,4 @@ export default {
 </script>
 
 <style scoped>
-div {
-  max-width: 20rem;
-  max-height: auto;
-  margin: 2rem auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-  padding: 1rem;
-  background-color: #F4A7B9; /* Lemonade Pink */
-}
-
-h2 {
-  text-align: center;
-}
 </style>
