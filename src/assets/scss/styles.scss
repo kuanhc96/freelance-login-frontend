@@ -20,3 +20,9 @@ section {
         max-height: 150px;
     }
 }
+
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
