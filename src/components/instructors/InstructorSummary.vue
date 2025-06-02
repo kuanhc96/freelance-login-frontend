@@ -2,7 +2,7 @@
     <div class="card w-100 h-100">
         <div class="card-body">
             <div class="d-flex justify-content-center align-items-stretch w-100 hstack gap-4">
-                <div class="d-flex flex-column align-items-center">
+                <div class="d-flex flex-column align-items-center justify-content-center">
                     <div class="portrait-img rounded-circle overflow-hidden border " style="width:250px; height:250px;">
                         <img class="h-100 w-100 object-fit-cover" :src="portraitPath" alt="portrait"> 
                     </div>
@@ -27,9 +27,25 @@
 
 <script>
 export default {
-    props: [
-        'instructorGUID', 'instructorName', 'email', 'portraitPath'
-    ],
+    props: {
+        instructorGUID: {
+            type: String,
+            required: true
+        },
+        instructorName: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true
+        },
+        portraitPath: {
+            type: String,
+            required: true
+        },
+
+    },
     components: {
     },
     computed: {
@@ -44,7 +60,16 @@ export default {
         },
         hasSubjects() {
             return this.$store.getters['subjects/hasSubjects']
+        },
+        resolvedPortrait() {
+            return new URL(this.portraitPath, import.meta.url).href;
         }
+    },
+    methods: {
+        resolveImage(path) {
+            return new URL(path, import.meta.url).href;
+        }
+
     }
     
 }
