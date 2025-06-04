@@ -16,8 +16,10 @@
                         >{{subject.subjectName}}</span>
                     </div>
                     <div class="actions d-flex flex-wrap flex-md-nowrap w-100 gap-2 justify-content-center">
-                        <router-link :to="contactLink" class="btn btn-primary  flex-fill text-center">View Details</router-link>
-                        <router-link :to="detailsLink" class="btn btn-secondary flex-fill text-center">{{ getSubscribeOrUnsubscribeText }}</router-link>
+                        <router-link :to="detailsLink" class="btn btn-primary  flex-fill text-center">View Details</router-link>
+                        <button @click="subscribeOrUnsubscribe" class="btn btn-secondary flex-fill text-center">
+                            {{ getSubscribeOrUnsubscribeText }}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -82,8 +84,40 @@ export default {
         resolveImage(path) {
             return new URL(path, import.meta.url).href;
         },
-        subscribe() {
-            
+        async subscribeOrUnsubscribe() {
+            try {
+                const csrfToken = Cookies.get('XSRF-TOKEN');
+                const response = await fetch(
+                    'http://localhost:8081/subscription', {
+                        method: this.displaySubscribe? 'POST' : 'DELETE',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify({
+                            'studentGUID': this.$store.getters['login/getUserId'],
+                            'instructorGUID': this.instructorGUID
+                        })
+                    }
+                );
+                
+                
+                console.log('success?')
+                if (response.ok) {
+                    const result = await response.json()
+                    console.log(result)
+                    // TODO: should have a pop-up that says success
+                } else {
+                    const result = await response.json()
+                    console.log(result)
+                    // TODO: should have a pop-up that says failed
+
+                }
+            } catch(err) {
+                    console.log('FAILED')
+                    // TODO: should have a pop-up that says failed
+            }
         }
 
     }
