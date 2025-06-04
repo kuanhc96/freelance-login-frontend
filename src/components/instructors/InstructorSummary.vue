@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
     props: {
         instructorGUID: {
