@@ -16,8 +16,8 @@
                         >{{subject.subjectName}}</span>
                     </div>
                     <div class="actions d-flex flex-wrap flex-md-nowrap w-100 gap-2 justify-content-center">
-                        <router-link :to="contactLink" class="btn btn-primary  flex-fill text-center">Subscribe</router-link>
-                        <router-link :to="detailsLink" class="btn btn-secondary flex-fill text-center">View Details</router-link>
+                        <router-link :to="contactLink" class="btn btn-primary  flex-fill text-center">View Details</router-link>
+                        <router-link :to="detailsLink" class="btn btn-secondary flex-fill text-center">{{ getSubscribeOrUnsubscribeText }}</router-link>
                     </div>
                 </div>
             </div>
@@ -44,6 +44,10 @@ export default {
             type: String,
             required: true
         },
+        displaySubscribe: {
+            type: Boolean,
+            default: true
+        }
 
     },
     components: {
@@ -63,11 +67,21 @@ export default {
         },
         resolvedPortrait() {
             return new URL(this.portraitPath, import.meta.url).href;
+        },
+        getSubscribeOrUnsubscribeText() {
+            if (this.displaySubscribe) {
+                return 'Subscribe'
+            } else {
+                return 'Unsubscribe'
+            }
         }
     },
     methods: {
         resolveImage(path) {
             return new URL(path, import.meta.url).href;
+        },
+        subscribe() {
+            
         }
 
     }

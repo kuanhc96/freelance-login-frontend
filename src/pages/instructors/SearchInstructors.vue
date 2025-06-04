@@ -27,6 +27,7 @@
                             :instructorName="instructor.instructorName"
                             :email="instructor.email"
                             :portraitPath="'/alice.jpg'"
+                            :display-subscribe="true"
                         ></instructor-summary>
                     
                     </ul> 
@@ -38,6 +39,8 @@
                             :instructorGUID="instructor.instructorGUID"
                             :instructorName="instructor.instructorName"
                             :email="instructor.email"
+                            :portraitPath="'/alice.jpg'"
+                            
                         ></instructor-summary>
                     </ul> 
                 </div>
