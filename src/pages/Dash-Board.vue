@@ -30,6 +30,7 @@
             <div class="col-md-4">
                <base-summary summaryTitle="Subscribed Instructors">
                   <p class="card-text">
+                     {{ getSubscribedInstructors }}
                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                   </p>
                </base-summary>
@@ -52,8 +53,28 @@ import BaseSummary from '../components/ui/BaseSummary.vue';
 export default {
     components: {
         BaseCard,
-        BaseSummary
+        BaseContainer
     },
+   async created() {
+        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+          method: 'GET',
+          credentials: 'include'
+        })
+
+        if (response.ok) {
+            const data = await response.json();
+            this.$store.dispatch('instructors/setInstructors', { instructors: data })
+        }
+        
+   },
+   computed: {
+      getSubscribedInstructorsEndpoint() {
+         return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
+      },
+      getSubscribedInstructors() {
+         return this.$store.getters['instructors/instructors']
+      }
+   }
    
 }
 </script>
