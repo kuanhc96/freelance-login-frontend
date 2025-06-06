@@ -1,7 +1,7 @@
 <template>
     <section>
         <base-card 
-            card-title="Instructors"
+            card-title="Search For Instructors"
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
