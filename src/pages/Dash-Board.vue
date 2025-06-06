@@ -15,7 +15,7 @@
             </div>
          </div>
          <div class="row mb-3 justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Upcoming Courses</h2>
@@ -25,7 +25,7 @@
                   </div>
                </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Most Recent Transactions</h2>
@@ -37,7 +37,7 @@
             </div>
          </div>
          <div class="row mb-3 justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Subscribed Instructors</h2>
@@ -48,7 +48,7 @@
                   </div>
                </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Account Information</h2>
