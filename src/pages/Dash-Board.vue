@@ -72,6 +72,9 @@ export default {
         BaseCard,
     },
    async created() {
+      if (!this.$store.getters['login/isLoggedIn']) {
+         this.$router.push('/login');
+      } else {
         const response = await fetch(this.getSubscribedInstructorsEndpoint, {
           method: 'GET',
           credentials: 'include'
@@ -81,7 +84,7 @@ export default {
             const data = await response.json();
             this.$store.dispatch('instructors/setInstructors', { instructors: data })
         }
-        
+      }
    },
    computed: {
       getSubscribedInstructorsEndpoint() {
