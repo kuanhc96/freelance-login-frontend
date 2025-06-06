@@ -1,10 +1,10 @@
 <template>
    <section>
       <base-card card-title="Dashboard">
-         <div class="row d-flex justify-content-center my-3">
+      <div class="d-flex flex-column ">
+         <div class="row my-3 justify-content-center">
             <div class="col-md-10">
-               <!-- <base-container title="Announcements"> -->
-               <div class="card">
+               <div class="card w-100 h-100">
                   <div class="card-body">
                      <h2 class="card-title">Announcements</h2>
                      <p class="card-text">
@@ -12,53 +12,64 @@
                      </p>
                   </div>
                </div>
-               <!-- </base-container> -->
             </div>
          </div>
-         <div class="row d-flex justify-content-center mb-3">
+         <div class="row mb-3 justify-content-center">
             <div class="col-md-4">
-               <base-container title="Upcoming Lessons">
-                  <p class="card-text">
-                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                  </p>
-               </base-container>
+               <div class="card w-100 h-100">
+                  <div class="card-body">
+                     <h2 class="card-title">Upcoming Courses</h2>
+                     <p class="card-text">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                     </p>
+                  </div>
+               </div>
             </div>
             <div class="col-md-4">
-               <base-container title="Most Recent Transactions">
-                  <p class="card-text">
-                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                  </p>
-               </base-container>
-            </div>
-         </div>
-         <div class="row d-flex justify-content-center mb-3">
-            <div class="col-md-4">
-               <base-container title="Subscribed Instructors">
-                  <p class="card-text">
-                     {{ getSubscribedInstructors }}
-                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                  </p>
-               </base-container>
-            </div>
-            <div class="col-md-4">
-               <base-container title="Acount Information">
-                  <p class="card-text">
-                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                  </p>
-               </base-container>
+               <div class="card w-100 h-100">
+                  <div class="card-body">
+                     <h2 class="card-title">Most Recent Transactions</h2>
+                     <p class="card-text">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                     </p>
+                  </div>
+               </div>
             </div>
          </div>
+         <div class="row mb-3 justify-content-center">
+            <div class="col-md-4">
+               <div class="card w-100 h-100">
+                  <div class="card-body">
+                     <h2 class="card-title">Subscribed Instructors</h2>
+                     <p class="card-text">
+                        {{ getSubscribedInstructors }}
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                     </p>
+                  </div>
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="card w-100 h-100">
+                  <div class="card-body">
+                     <h2 class="card-title">Account Information</h2>
+                     <p class="card-text">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                     </p>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+      </div>
       </base-card>
    </section>
 </template>
 
 <script>
 import BaseCard from '../components/ui/BaseCard.vue';
-import BaseContainer from '../components/ui/BaseContainer.vue';
 export default {
     components: {
         BaseCard,
-        BaseContainer
     },
    async created() {
         const response = await fetch(this.getSubscribedInstructorsEndpoint, {
