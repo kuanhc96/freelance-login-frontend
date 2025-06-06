@@ -3,44 +3,49 @@
       <base-card card-title="Dashboard">
          <div class="row d-flex justify-content-center my-3">
             <div class="col-md-10">
-               <base-summary summaryTitle="Announcements">
-                  <p class="card-text">
-                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                  </p>
-               </base-summary>
+               <!-- <base-container title="Announcements"> -->
+               <div class="card">
+                  <div class="card-body">
+                     <h2 class="card-title">Announcements</h2>
+                     <p class="card-text">
+                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
+                     </p>
+                  </div>
+               </div>
+               <!-- </base-container> -->
             </div>
          </div>
          <div class="row d-flex justify-content-center mb-3">
             <div class="col-md-4">
-               <base-summary summaryTitle="Upcoming Lessons">
+               <base-container title="Upcoming Lessons">
                   <p class="card-text">
                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                   </p>
-               </base-summary>
+               </base-container>
             </div>
             <div class="col-md-4">
-               <base-summary summaryTitle="Most Recent Transactions">
+               <base-container title="Most Recent Transactions">
                   <p class="card-text">
                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                   </p>
-               </base-summary>
+               </base-container>
             </div>
          </div>
          <div class="row d-flex justify-content-center mb-3">
             <div class="col-md-4">
-               <base-summary summaryTitle="Subscribed Instructors">
+               <base-container title="Subscribed Instructors">
                   <p class="card-text">
                      {{ getSubscribedInstructors }}
                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                   </p>
-               </base-summary>
+               </base-container>
             </div>
             <div class="col-md-4">
-               <base-summary summaryTitle="Acount Information">
+               <base-container title="Acount Information">
                   <p class="card-text">
                      Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                   </p>
-               </base-summary>
+               </base-container>
             </div>
          </div>
       </base-card>
@@ -49,7 +54,7 @@
 
 <script>
 import BaseCard from '../components/ui/BaseCard.vue';
-import BaseSummary from '../components/ui/BaseSummary.vue';
+import BaseContainer from '../components/ui/BaseContainer.vue';
 export default {
     components: {
         BaseCard,

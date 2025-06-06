@@ -1,9 +1,9 @@
 // router.js
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginForm from '../components/login/LoginForm.vue';
-import CreateAccountForm from '../components/login/CreateAccountForm.vue';
-import ForgetPasswordForm from '../components/login/ForgetPasswordForm.vue';
-import ResetPasswordForm from '../components/login/ResetPasswordForm.vue';
+import LoginForm from '../pages/login/LoginForm.vue';
+import CreateAccountForm from '../pages/login/CreateAccountForm.vue';
+import ForgetPasswordForm from '../pages/login/ForgetPasswordForm.vue';
+import ResetPasswordForm from '../pages/login/ResetPasswordForm.vue';
 
 import InstructorsList from '../pages/instructors/InstructorList'
 import InstructorDetails from '../pages/instructors/InstructorDetails'
