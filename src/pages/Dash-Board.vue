@@ -4,7 +4,7 @@
       <div class="d-flex flex-column ">
          <div class="row my-3 justify-content-center">
             <div class="col-md-10">
-               <div class="card w-100 h-100">
+               <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Announcements</h2>
                      <p class="card-text">
@@ -16,7 +16,7 @@
          </div>
          <div class="row mb-3 justify-content-center">
             <div class="col-md-4">
-               <div class="card w-100 h-100">
+               <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Upcoming Courses</h2>
                      <p class="card-text">
@@ -26,7 +26,7 @@
                </div>
             </div>
             <div class="col-md-4">
-               <div class="card w-100 h-100">
+               <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Most Recent Transactions</h2>
                      <p class="card-text">
@@ -38,7 +38,7 @@
          </div>
          <div class="row mb-3 justify-content-center">
             <div class="col-md-4">
-               <div class="card w-100 h-100">
+               <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Subscribed Instructors</h2>
                      <p class="card-text">
@@ -49,7 +49,7 @@
                </div>
             </div>
             <div class="col-md-4">
-               <div class="card w-100 h-100">
+               <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Account Information</h2>
                      <p class="card-text">
