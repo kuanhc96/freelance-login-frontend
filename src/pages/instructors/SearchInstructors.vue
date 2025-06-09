@@ -5,7 +5,7 @@
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
-                <div class="col-md-10">
+                <div class="col-md-10 col-10">
                     <div class="input-group mt-3">
                         <label for="search-instructors" class="border rounded-start input-group-text">
                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -21,7 +21,7 @@
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
-                            v-for="instructor in allInstructors"
+                            v-for="instructor in unsubscribedInstructors"
                             :key="instructor.id"
                             :instructorGUID="instructor.instructorGUID"
                             :instructorName="instructor.instructorName"
@@ -64,47 +64,49 @@ export default {
         }
     },
     async created() {
-        const response = await fetch('http://localhost:8081/instructor/getAllInstructors', {
-            method: 'GET',
-            credentials: 'include'
-        });
+        if (!this.$store.getters['instructors/hasUnsubscribedInstructors']) {
+            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
+                method: 'GET',
+                credentials: 'include'
+            })
 
-        var allInstructors = [];
-        if (response.ok) {
-            allInstructors = await response.json();
+            if (response.ok) {
+                const data = await response.json();
+                this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
+            }
         }
-
-        this.$store.dispatch('instructors/setAllInstructors', {allInstructors: allInstructors})
     },
     methods: {
         async refresh() {
-            const response = await fetch('http://localhost:8081/instructor/getAllInstructors', {
+            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
                 method: 'GET',
                 credentials: 'include'
-            });
+            })
+            console.log(response)
 
-            var allInstructors = [];
             if (response.ok) {
-                allInstructors = await response.json();
-            } 
-            this.$store.dispatch('instructors/setAllInstructors', {allInstructors: allInstructors})
-
+                const data = await response.json();
+                this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
+                console.log(this.unsubscribedInstructors)
+            }
         }
     },
     computed: {
         isKeywordBlank() {
             return this.keyword === '';
         },
+        getUnsubscribedInstructorsEndpoint() {
+            return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserId'];
+        },
         filteredInstructors() {
-            const allInstructors = this.$store.getters['instructors/allInstructors'];
-            const filtered = allInstructors.filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+            const filtered = this.$store.getters['instructors/unsubscribedInstructors'].filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
             return filtered
         },
-        allInstructors() {
-            return this.$store.getters['instructors/allInstructors'];
+        unsubscribedInstructors() {
+            return this.$store.getters['instructors/unsubscribedInstructors']
         },
         hasAllInstructors() {
-            return this.$store.getters['instructors/hasAllInstructors']
+            return this.$store.getters['instructors/hasUnsubscribedInstructors']
         }
     }
     

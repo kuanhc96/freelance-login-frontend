@@ -5,7 +5,7 @@
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
-                <div class="col-md-10">
+                <div class="col-md-10 col-10">
                     <div class="input-group mt-3">
                         <label for="search-instructors" class="border rounded-start input-group-text">
                             <i class="fa-solid fa-magnifying-glass"></i>
@@ -79,6 +79,20 @@ export default {
         getSubscribedInstructorsEndpoint() {
             return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
         }
+    },
+    async created() {
+        if (!this.$store.getters['instructors/hasInstructors']) {
+            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+                method: 'GET',
+                credentials: 'include'
+            })
+
+            if (response.ok) {
+                const data = await response.json();
+                this.$store.dispatch('instructors/setInstructors', { instructors: data })
+            }
+        }
+
     },
     methods: {
         async refresh() {

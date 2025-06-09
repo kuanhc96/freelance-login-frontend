@@ -5,6 +5,12 @@ export default {
     hasInstructors(state) {
         return state.instructors && state.instructors.length > 0;
     },
+    unsubscribedInstructors(state) {
+        return state.unsubscribedInstructors;
+    },
+    hasUnsubscribedInstructors(state) {
+        return state.unsubscribedInstructors && state.unsubscribedInstructors.length > 0;
+    },
     allInstructors(state) {
         return state.allInstructors;
     },
