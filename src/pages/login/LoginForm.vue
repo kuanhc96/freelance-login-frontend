@@ -10,6 +10,30 @@
           <label class="form-label" for="password">Password </label>
           <input class="form-control" type="password" id="password" v-model="password" required />
         </div>
+        <div class="mb-3">
+          <label class="form-label">Login as...</label>
+          <div class="form-check">
+            <input
+              class="form-check-input "
+              type="radio"
+              id="student"
+              value="STUDENT"
+              v-model="selectedRole"
+              checked
+            />
+            <label for="student">Student</label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="instructor"
+              value="INSTRUCTOR"
+              v-model="selectedRole"
+            />
+            <label for="instructor">Instructor</label>
+          </div>
+        </div>
         <div class="d-grid vstack mb-3">
           <button class="btn btn-secondary" type="submit">Login</button>
         </div>
@@ -25,6 +49,16 @@
 <script>
 import BaseCard from '../../components/ui/BaseCard.vue';
 export default {
+  components: {
+    BaseCard
+  },
+  data() {
+    return {
+      email: '',
+      password: '',
+      selectedRole: 'STUDENT'
+    }
+  },
   async created() {
     const urlParams = new URLSearchParams(window.location.search);
     const isLogout = urlParams.get('logout') === 'true';
@@ -65,15 +99,6 @@ export default {
       }
     }
   },
-  components: {
-    BaseCard
-  },
-  data() {
-    return {
-      email: '',
-      password: '',
-    }
-  },
   methods: {
     refresh() {
       this.email = '';
@@ -81,6 +106,7 @@ export default {
       this.$router.push("/login");
     },
     submitForm() {
+      console.log(this.selectedRole)
       fetch("http://localhost:8081/apiLogin", {
         method: 'POST',
         credentials: 'include',
@@ -89,7 +115,8 @@ export default {
         },
         body: JSON.stringify({
           'email': this.email,
-          'password': this.password
+          'password': this.password,
+          'role': this.selectedRole
         }),
       })
       .then(response => {
