@@ -6,18 +6,11 @@
         >
             <div class="d-flex align-items-center flex-column">
                 <div class="col-md-10 col-10">
-                    <div class="input-group mt-3">
-                        <label for="search-instructors" class="border rounded-start input-group-text">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </label>
-                        <input 
-                            id="search-instructors" 
-                            type="text" 
-                            placeholder="Search Instructors" 
-                            class="form-control fs-6 rounded-end col-md-10"
-                            v-model="keyword"
-                        >
-                    </div>
+                    <the-search-bar
+                        :id="search-instructors" 
+                        :placeholder="'Search Instructors'" 
+                        v-model="keyword"
+                    ></the-search-bar>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
@@ -51,6 +44,7 @@
 <script>
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
+import TheSearchBar from '../../components/layout/TheSearchBar.vue'
 export default {
     data() {
         return {
@@ -59,7 +53,8 @@ export default {
     },
     components: {
         InstructorSummary,
-        BaseCard
+        BaseCard,
+        TheSearchBar
     },
     computed: {
         isKeywordBlank() {
@@ -73,7 +68,7 @@ export default {
         },
         filteredInstructors() {
             const subscribedInstructors = this.$store.getters['instructors/instructors'];
-            const filtered = subscribedInstructors.filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+            const filtered = subscribedInstructors.filter(instructor => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
             return filtered
         },
         getSubscribedInstructorsEndpoint() {
