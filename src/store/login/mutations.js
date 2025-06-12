@@ -8,10 +8,14 @@ export default {
     SET_ROLE(state, role) {
         state.role = role;
     },
+    SET_EMAIL(state, email) {
+        state.email = email;
+    },
     LOGOUT(state) {
         state.isLoggedIn = false;
-        state.userId = null;
-        state.role = null;
+        state.userId = '';
+        state.role = '';
+        state.email = '';
     }
 
 }

@@ -89,7 +89,8 @@ export default {
         this.$store.dispatch('login/login', {
           status: data.success,
           userId: data.userId,
-          role: data.role
+          role: data.role,
+          email: data.email
         }); 
 
         this.$router.push('/');
@@ -131,7 +132,8 @@ export default {
             this.$store.dispatch('login/login', {
               status: data.success,
               userId: data.userId,
-              role: data.role
+              role: data.role,
+              email: data.email
             }); 
             this.$router.push('/')
           }
