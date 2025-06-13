@@ -7,7 +7,7 @@
             <div class="d-flex align-items-center flex-column">
                 <div class="col-md-10 col-10">
                     <the-search-bar
-                        :id="search-instructors" 
+                        :id="'search-instructors'" 
                         :placeholder="'Search Instructors'" 
                         v-model="keyword"
                     ></the-search-bar>
