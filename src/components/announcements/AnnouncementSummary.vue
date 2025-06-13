@@ -14,7 +14,7 @@
                     </div>
                 </button>
             </h2>
-            <div class="accordion-collapse collapse show" :id="announcementId" data-bs-parent="#myAccordion">
+            <div class="accordion-collapse collapse " :id="announcementId" data-bs-parent="#myAccordion">
                 <div class="accordion-body d-flex justify-content-between align-items-center">
                     <div class="">
                         {{ announcement }}
