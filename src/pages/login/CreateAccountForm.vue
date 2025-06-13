@@ -54,7 +54,7 @@
               class="form-check-input"
               type="radio"
               id="student"
-              value="student"
+              value="STUDENT"
               v-model="selectedRole"
             />
             <label for="student">Student</label>
@@ -64,7 +64,7 @@
               class="form-check-input"
               type="radio"
               id="instructor"
-              value="instructor"
+              value="INSTRUCTOR"
               v-model="selectedRole"
             />
             <label for="instructor">Instructor</label>
@@ -110,21 +110,15 @@ export default {
   methods: {
     submitForm() {
       if (this.password === this.retypePassword) {
-        this.apiEndpoint = '';
         
-        if (this.selectedRole === 'student') {
-          this.apiEndpoint = 'http://localhost:8081/student/createStudent'
-        } else {
-          this.apiEndpoint = 'http://localhost:8081/instructor/createInstructor'
-        }
-
-        const response = fetch(this.apiEndpoint, {
+        const response = fetch('http://localhost:8081/user/createUser', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 name: this.name,
+                role: this.selectedRole,
                 email: this.email,
                 password: this.password,
                 birthday: this.dateInput,
