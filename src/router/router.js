@@ -6,6 +6,8 @@ import ForgetPasswordForm from '../pages/login/ForgetPasswordForm.vue';
 import ResetPasswordForm from '../pages/login/ResetPasswordForm.vue';
 
 import InstructorsList from '../pages/instructors/InstructorList'
+import AnnouncementsList from '../pages/announcements/AnnouncementsList.vue'
+import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
 import InstructorDetails from '../pages/instructors/InstructorDetails'
 import InstructorContact from '../pages/instructors/InstructorContact'
 import SearchInstructors from '../pages/instructors/SearchInstructors'
@@ -27,6 +29,8 @@ const routes = [
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', component: Dashboard },
   { path: '/instructors', component: InstructorsList },
+  { path: '/announcements', component: AnnouncementsList },
+  { path: '/announcements/create', component: AnnouncementForm },
   { path: '/instructors/search', component: SearchInstructors },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
