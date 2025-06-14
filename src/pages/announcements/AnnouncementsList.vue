@@ -104,6 +104,35 @@ export default {
     },
     methods: {
         async refresh() {
+            if (!this.$store.getters['instructors/hasInstructors']) {
+                const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+
+                if (response.ok) {
+                    const data = await response.json();
+                    this.$store.dispatch('instructors/setInstructors', { instructors: data })
+                }
+
+            } 
+
+            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            for (const instructor of subscribedInstructors) {
+                const instructorGUID = instructor.userGUID;
+
+                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data);
+                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+                }
+
+            }
+
         },
         getAnnouncementsUrl(instructorGUID) {
             return "http://localhost:8081/announcement/" + instructorGUID;
