@@ -15,12 +15,53 @@
                 </button>
             </h2>
             <div class="accordion-collapse collapse " :id="announcementId" data-bs-parent="#myAccordion">
-                <div class="accordion-body d-flex justify-content-between align-items-center">
+                <div class="accordion-body ">
                     <div class="">
+                        <span class="fs-4">
+                            {{ title }}
+                        </span>
+                    </div>
+                    <div class="">
+                        <span class="fw-bold">
+                            Published on {{ getHumanReadableDate }}
+                            by {{ name }}
+                        </span>
+                    </div>
+                    <div class="text-truncate mb-2">
                         {{ announcement }}
                     </div>
                     <div class="">
-                        <button class="btn btn-primary btn-sm">See Details</button>
+                        <!-- modal button -->
+                        <button 
+                            class="btn btn-primary btn-sm" 
+                            data-bs-toggle="modal" 
+                            :data-bs-target="'#modal' + announcementId"
+                        >
+                            See Details
+                        </button>
+                        <!-- modal -->
+                        <div class="modal fade" :id="'modal' + announcementId">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5">
+                                            {{ title }}
+                                        </h1>
+                                        <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ announcement }}
+                                    </div>
+                                    <div class="modal-footer d-flex justify-content-between">
+                                        <span class="fw-bold">
+                                            Published on {{ getHumanReadableDate }}
+                                            by {{ name }}
+                                        </span>
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
@@ -54,8 +95,6 @@ export default {
             required: true
         }
     },
-    async created() {
-    },
     computed: {
         isNew() {
             const inputDate = new Date(this.date);
@@ -65,6 +104,16 @@ export default {
 
             return inputDate >= oneWeekAgo && inputDate <= now;
         },
+        getHumanReadableDate() {
+            const date = new Date(this.date);
+            const options = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            return date.toLocaleDateString('en-US', options);
+        }
     }
 }
 </script>
