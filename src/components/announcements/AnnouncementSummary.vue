@@ -30,14 +30,14 @@
                     <div class="text-truncate mb-2">
                         {{ announcement }}
                     </div>
-                    <div class="">
+                    <div class="d-flex justify-content-end">
                         <!-- modal button -->
                         <button 
-                            class="btn btn-primary btn-sm" 
+                            class="badge btn btn-secondary" 
                             data-bs-toggle="modal" 
                             :data-bs-target="'#modal' + announcementId"
                         >
-                            See Details
+                            See Details >>
                         </button>
                         <!-- modal -->
                         <div class="modal fade" :id="'modal' + announcementId">
