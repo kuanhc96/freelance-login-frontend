@@ -20,6 +20,9 @@
                 <router-link to="/lessons" class="nav-link ">Lessons</router-link> 
             </li>
             <li class="nav-item">
+                <router-link to="/subjects" class="nav-link ">Subjects</router-link> 
+            </li>
+            <li class="nav-item">
                 <router-link to="/transactions" class="nav-link ">Transaction</router-link> 
             </li>
             <li class="nav-item">
@@ -56,7 +59,7 @@ export default {
   computed: {
     isLoggedIn() {
       return this.$store.getters['login/isLoggedIn'];
-    }
+    },
   }
 }
 </script>
