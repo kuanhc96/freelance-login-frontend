@@ -11,8 +11,7 @@ import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
 import InstructorDetails from '../pages/instructors/InstructorDetails'
 import InstructorContact from '../pages/instructors/InstructorContact'
 import SearchInstructors from '../pages/instructors/SearchInstructors'
-import CoursesList from '../pages/courses/CoursesList'
-import CourseDetails from '../pages/courses/CourseDetails'
+import LessonsList from '../pages/lessons/LessonsList'
 import TransactionsList from '../pages/transactions/TransactionsList'
 import TransactionDetails from '../pages/transactions/TransactionDetails'
 import SubjectDetails from '../pages/subjects/SubjectDetails'
@@ -35,8 +34,7 @@ const routes = [
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
   ]},
-  { path: '/courses', component: CoursesList },
-  { path: '/courses/:id', component: CourseDetails },
+  { path: '/lessons', component: LessonsList },
   { path: '/transactions', component: TransactionsList },
   { path: '/transactions/:id', component: TransactionDetails },
   { path: '/subjects', component: null },

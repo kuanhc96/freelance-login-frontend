@@ -17,7 +17,7 @@
                 <router-link to="/instructors" class="nav-link">Instructors</router-link> 
             </li>
             <li class="nav-item">
-                <router-link to="/courses" class="nav-link ">Courses</router-link> 
+                <router-link to="/lessons" class="nav-link ">Lessons</router-link> 
             </li>
             <li class="nav-item">
                 <router-link to="/transactions" class="nav-link ">Transaction</router-link> 

@@ -11,7 +11,7 @@
                            Announcements
                         </div>
                         <div v-if="getRole==='INSTRUCTOR'" class="d-flex gap-2">
-                           <router-link to="/announcements/create" class="btn btn-secondary btn-sm">Add New</router-link>
+                           <router-link to="/announcements/create" class="btn btn-primary btn-sm">Add New</router-link>
                         </div>
                      </h2>
                      <dashboard-announcement 
@@ -37,7 +37,8 @@
             <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
-                     <h2 class="card-title">Upcoming Courses</h2>
+                     <h2 class="card-title">Upcoming Lessons</h2>
+                     <dashboard-course></dashboard-course>
                      <p class="card-text">
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                      </p>
@@ -64,7 +65,7 @@
                            Subscribed Instructors
                         </div>
                         <div v-if="getRole==='STUDENT'" class="d-flex gap-2">
-                           <router-link to="/instructors/search" class="btn btn-secondary btn-sm">Search</router-link>
+                           <router-link to="/instructors/search" class="btn btn-primary btn-sm">Search</router-link>
                         </div>
                      </h3>
                      <dashboard-instructor v-for="instructor in getSubscribedInstructors"
@@ -102,11 +103,13 @@
 import BaseCard from '../components/ui/BaseCard.vue';
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
 import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
+import DashboardCourse from '../components/lessons/DashboardLesson.vue'
 export default {
     components: {
         BaseCard,
         DashboardAnnouncement,
-        DashboardInstructor
+        DashboardInstructor,
+        DashboardCourse
     },
    async created() {
       if (!this.$store.getters['login/isLoggedIn']) {
