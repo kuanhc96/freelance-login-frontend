@@ -23,10 +23,10 @@
                         :name="announcement.instructorName"
                         :announcement="announcement.announcement"
                      ></dashboard-announcement>
-                     <div v-if="getMostRecentAnnouncements.length > 3" class="d-flex justify-content-center">
+                     <div v-if="getAnnouncements.length > 3" class="d-flex justify-content-center">
                         <div class="fs-bold fs-2">...</div>
                      </div>
-                     <div v-if="getMostRecentAnnouncements.length > 3" class="d-flex justify-content-center">
+                     <div v-if="getAnnouncements.length > 3" class="d-flex justify-content-center">
                         <router-link to="/announcements" class="btn btn-primary btn-sm stretched-link">View All</router-link>
                      </div>
                   </div>
@@ -146,10 +146,13 @@ export default {
          return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
       },
       getSubscribedInstructors() {
-         return this.$store.getters['instructors/instructors']
+         return this.$store.getters['instructors/instructors'];
+      },
+      getAnnouncements() {
+         return this.$store.getters['announcements/getAnnouncements'];
       },
       getMostRecentAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'].slice(0, 3)
+         return this.$store.getters['announcements/getAnnouncements'].slice(0, 3);
       },
       getRole() {
          return this.$store.getters['login/getRole'];
