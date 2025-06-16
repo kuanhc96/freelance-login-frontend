@@ -1,7 +1,3 @@
-import mutations from './mutations.js';
-import actions from './actions.js';
-import getters from './getters.js';
-
 export default {
     namespaced: true,
     state() {
@@ -22,11 +18,27 @@ export default {
                     instructorName: 'Alice Ho',
                     price: 7000
                 }
-            ]
+            ],
+            instructorGUIDToSubjectsMap: new Map(),
         }
     },
-    mutations,
-    actions,
-    getters
+    mutations: {
+        ADD_SUBJECTS(state, { instructorGUID, subjects }) {
+            state.instructorGUIDToSubjectsMap[instructorGUID] = subjects;
+        }
+    },
+    actions: {
+        addSubjects({commit}, {instructorGUID, subjects}) {
+            commit('ADD_SUBJECTS', {instructorGUID, subjects});
+        }
+    },
+    getters: {
+        getSubjectsByInstructorGUID: (state) => (instructorGUID) => {
+            return state.instructorGUIDToSubjectsMap[instructorGUID] || [];
+        },
+        hasSubjectsByInstructorGUID: (state) => (instructorGUID) => {
+            return state.instructorToSubjectsMap[instructorGUID] && state.instructorToSubjectsMap[instructorGUID].length > 0;
+        }
+    }
 }
 

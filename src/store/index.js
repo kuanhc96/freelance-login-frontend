@@ -15,7 +15,7 @@ const store = createStore({
     plugins: [
         createPersistedState({
             key: 'freelance-app',
-            paths: ['login', 'instructors', 'announcements']
+            paths: ['login', 'instructors', 'announcements', 'subjects']
         })
     ]
 })
