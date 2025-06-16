@@ -59,11 +59,25 @@
             <div class="col-md-5">
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
-                     <h2 class="card-title">Subscribed Instructors</h2>
-                     <p class="card-text">
-                        {{ getSubscribedInstructors }}
-                        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
-                     </p>
+                     <h3 class="card-title d-flex justify-content-between align-items-center">
+                        <div class="">
+                           Subscribed Instructors
+                        </div>
+                        <div v-if="getRole==='STUDENT'" class="d-flex gap-2">
+                           <router-link to="/instructors/search" class="btn btn-secondary btn-sm">Search</router-link>
+                        </div>
+                     </h3>
+                     <dashboard-instructor v-for="instructor in getSubscribedInstructors"
+                        :key="instructor.userGUID"
+                        :instructorName="instructor.name"
+                        :email="instructor.email"
+                        :portrait-path="'/alice.jpg'"></dashboard-instructor>
+                     <div v-if="getSubscribedInstructors.length > 3" class="d-flex justify-content-center">
+                        <div class="fs-bold fs-2">...</div>
+                     </div>
+                     <div v-if="getSubscribedInstructors.length > 3" class="d-flex justify-content-center">
+                        <router-link to="/instructors" class="btn btn-primary btn-sm stretched-link">View All</router-link>
+                     </div>
                   </div>
                </div>
             </div>
@@ -87,10 +101,12 @@
 <script>
 import BaseCard from '../components/ui/BaseCard.vue';
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
+import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
 export default {
     components: {
         BaseCard,
-        DashboardAnnouncement
+        DashboardAnnouncement,
+        DashboardInstructor
     },
    async created() {
       if (!this.$store.getters['login/isLoggedIn']) {
