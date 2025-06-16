@@ -37,7 +37,8 @@ export default {
             return state.instructorGUIDToSubjectsMap[instructorGUID] || [];
         },
         hasSubjectsByInstructorGUID: (state) => (instructorGUID) => {
-            return state.instructorToSubjectsMap[instructorGUID] && state.instructorToSubjectsMap[instructorGUID].length > 0;
+            const list = state.instructorGUIDToSubjectsMap[instructorGUID];
+            return !(Array.isArray(list) && list.length > 0);
         }
     }
 }

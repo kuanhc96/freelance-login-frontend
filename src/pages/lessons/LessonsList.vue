@@ -1,3 +1,7 @@
 <template>
-    <h1>Test</h1>
+    <section>
+        <base-card :card-title="'Lessons'">
+
+        </base-card>
+    </section>
 </template>
