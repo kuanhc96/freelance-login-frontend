@@ -11,7 +11,7 @@
                            Announcements
                         </div>
                         <div v-if="getRole==='INSTRUCTOR'" class="d-flex gap-2">
-                           <button class="btn btn-secondary btn-sm">Add New</button>
+                           <router-link to="/announcements/create" class="btn btn-secondary btn-sm">Add New</router-link>
                         </div>
                      </h2>
                      <dashboard-announcement 
