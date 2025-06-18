@@ -143,6 +143,33 @@ export default {
             };
 
             return date.toLocaleDateString('en-US', options);
+        },
+        getRole() {
+            return this.$store.getters['login/getRole'];
+        },
+    },
+    methods: {
+        async submitEditedAnnouncement() {
+            console.log('Edited Title: ' + this.editedTitle);
+            const csrfToken = Cookies.get('XSRF-TOKEN');
+            const response = await fetch('http://localhost:8081/announcement/update', {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    'announcementGUID': this.announcementId,
+                    'title': this.editedTitle,
+                    'announcement': this.editedAnnouncement,
+                    'announcementStatus': this.editedStatus
+                })
+            });
+
+            if (response.ok) {
+                this.$emit('announcementUpdated');
+            }
         }
     }
 }
