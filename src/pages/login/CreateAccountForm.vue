@@ -72,7 +72,7 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control" placeholder="Short Bio" id="description" rows=6 v-model="description"></textarea>
+            <textarea class="form-control" placeholder="Short Bio" id="description" rows="6" v-model="description"></textarea>
         </div>
         <div class="mb-3">
           <button class="btn btn-secondary" type="submit">Create Account</button>

@@ -4,12 +4,14 @@
             <div class="card bg-light w-100">
                 <div class="card-body">
                     <div class="w-100 me-2 d-flex justify-content-between align-items-center">
-                        <span v-if="isNew && getRole === 'STUDENT'" class="badge bg-secondary">
-                            New!
-                        </span>  
-                        <span>
-                            {{ title }} 
-                        </span>
+                        <div class="">
+                            <span v-if="isNew && getRole === 'STUDENT'" class="badge bg-secondary me-2">
+                                New!
+                            </span>  
+                            <span>
+                                {{ title }} 
+                            </span>
+                        </div>
                         <span v-if="getRole === 'STUDENT'">by {{ name }} </span>
                         <span v-else>Published on {{ getHumanReadableDate }}</span>
                     </div>
@@ -17,7 +19,7 @@
                         <div class="text-truncate">{{ announcement }}</div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <!-- modal button -->
+                        <!-- modal for editing announcement -->
                         <button 
                             v-if="getRole==='INSTRUCTOR'" 
                             class="badge btn btn-secondary" 
@@ -56,7 +58,7 @@
                         <div class="modal fade" :id="'modalEdit' + announcementId">
                            <div class="modal-dialog">
                                <div class="modal-content">
-                                    <form action="">
+                                    <form @submit.prevent="submitEditedAnnouncement()" action="">
                                         <div class="modal-header">
                                             <div class="w-100 d-flex justify-content-between align-items-center">
                                                 <label for="editedTitle" class="form-label m-0">Title</label>
@@ -87,7 +89,6 @@
                                             <button class="btn btn-primary" data-bs-dismiss="modal" @click="submitEditedAnnouncement">Save</button>
                                             <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         </div>
-
                                     </form>
                                </div>
                            </div>
@@ -101,7 +102,19 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
+    emits: [
+        'announcementUpdated'
+    ],
+    data() {
+        return {
+            editedTitle: this.title,
+            editedAnnouncement: this.announcement,
+            editedStatus: this.status
+        }
+    },
     props: {
         title: {
             type: String,
@@ -117,7 +130,11 @@ export default {
             required: true
         },
         date: {
-            type: Date,
+            type: String,
+            required: true
+        },
+        status: {
+            type: String,
             required: true
         },
         announcementId: {

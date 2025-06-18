@@ -95,7 +95,6 @@ export default {
             });
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
                 this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
             }
 

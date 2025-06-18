@@ -1,6 +1,9 @@
 <template>
    <section>
-      <base-card card-title="Dashboard">
+      <base-card 
+         card-title="Dashboard"
+         @refresh="refreshAll"
+      >
       <div class="d-flex flex-column ">
          <div class="row my-3 justify-content-center">
             <div class="col-md-10">
@@ -24,7 +27,9 @@
                         :title="announcement.title"
                         :date="announcement.createdDate"
                         :name="announcement.instructorName"
+                        :status="announcement.announcementStatus"
                         :announcement="announcement.announcement"
+                        @announcement-updated="refreshAnnouncements()"
                      ></dashboard-announcement>
                      <div v-if="getAnnouncements.length > 3" class="d-flex justify-content-center">
                         <div class="fs-bold fs-2">...</div>
@@ -73,6 +78,7 @@
                      </h3>
                      <dashboard-instructor v-for="instructor in getSubscribedInstructors"
                         :key="instructor.userGUID"
+                        :instructorGUID="instructor.userGUID"
                         :instructorName="instructor.name"
                         :email="instructor.email"
                         :portrait-path="'/alice.jpg'"></dashboard-instructor>
@@ -118,33 +124,47 @@ export default {
       if (!this.$store.getters['login/isLoggedIn']) {
          this.$router.push('/login');
       } else {
-        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-          method: 'GET',
-          credentials: 'include'
-        })
-
-        if (response.ok) {
-            const data = await response.json();
-            this.$store.dispatch('instructors/setInstructors', { instructors: data })
-        }
-      }
-
-      if (!this.$store.getters['announcements/getAnnouncements']) {
-         const subscribedInstructors = this.$store.getters['instructors/instructors'];
-         for (const instructor of subscribedInstructors) {
-            const instructorGUID = instructor.userGUID;
-
-            const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+         if (this.$store.getters['login/getRole'] === 'STUDENT') {
+            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
                method: 'GET',
                credentials: 'include'
-            });
+            })
+
             if (response.ok) {
                const data = await response.json();
-               console.log(data);
-               this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+               this.$store.dispatch('instructors/setInstructors', { instructors: data })
             }
 
-         }
+            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            var allAnnouncements = [];
+            for (const instructor of subscribedInstructors) {
+               const instructorGUID = instructor.userGUID;
+
+               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                  method: 'GET',
+                  credentials: 'include'
+               });
+               if (response.ok) {
+                  const data = await response.json();
+                  if (data.length > 0)  {
+                     allAnnouncements.push(...data);
+                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
+                  }
+               }
+            }
+         } else {
+               const instructorGUID = this.$store.getters['login/getUserId'];
+
+                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+                }
+
+         } 
       }
    },
    computed: {
@@ -168,6 +188,53 @@ export default {
       getAnnouncementsUrl(instructorGUID) {
          return "http://localhost:8081/announcement/" + instructorGUID;
       },
+      async refreshAnnouncements() {
+         if (this.$store.getters['login/getRole'] === 'STUDENT') {
+            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+               method: 'GET',
+               credentials: 'include'
+            })
+
+            if (response.ok) {
+               const data = await response.json();
+               this.$store.dispatch('instructors/setInstructors', { instructors: data })
+            }
+
+            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            var allAnnouncements = [];
+            for (const instructor of subscribedInstructors) {
+               const instructorGUID = instructor.userGUID;
+
+               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                  method: 'GET',
+                  credentials: 'include'
+               });
+               if (response.ok) {
+                  const data = await response.json();
+                  if (data.length > 0)  {
+                     allAnnouncements.push(...data);
+                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
+
+                  }
+               }
+            }
+         } else {
+            const instructorGUID = this.$store.getters['login/getUserId'];
+
+               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                  method: 'GET',
+                  credentials: 'include'
+               });
+               if (response.ok) {
+                  const data = await response.json();
+                  this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+               }
+            } 
+
+      },
+      async refreshAll() {
+         await this.refreshAnnouncements();
+      }
    }
    
 }
