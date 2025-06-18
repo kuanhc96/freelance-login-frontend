@@ -7,8 +7,11 @@
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title d-flex justify-content-between">
-                        <div class="">
+                        <div v-if="getRole==='STUDENT'" class="">
                            Announcements
+                        </div>
+                        <div v-else class="">
+                           My Past Announcements
                         </div>
                         <div v-if="getRole==='INSTRUCTOR'" class="d-flex gap-2">
                            <router-link to="/announcements/create" class="btn btn-primary btn-sm">Add New</router-link>
