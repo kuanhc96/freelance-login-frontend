@@ -190,7 +190,7 @@ export default {
         },
         getArchivedAnnouncements() {
             const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'Archived');
+            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'ARCHIVED');
         },
         getFilteredAnnouncements() {
             const announcements = this.$store.getters['announcements/getAnnouncements'];

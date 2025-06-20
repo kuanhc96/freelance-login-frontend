@@ -80,7 +80,7 @@
                                                     >
                                                         <option value="ACTIVE">Active</option>
                                                         <option value="DRAFT">Draft</option>
-                                                        <option value="ARCHIVE">Archive</option>
+                                                        <option value="ARCHIVED">Archive</option>
                                                     </select>
                                                 </div>
                                             </div>
