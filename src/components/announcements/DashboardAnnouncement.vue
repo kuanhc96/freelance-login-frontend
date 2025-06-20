@@ -22,14 +22,13 @@
                         <!-- modal for editing announcement -->
                         <button 
                             v-if="getRole==='INSTRUCTOR'" 
-                            class="badge btn btn-secondary" 
+                            class="badge btn btn-primary me-2" 
                             data-bs-toggle="modal" 
                             :data-bs-target="'#modalEdit' + announcementId"
                         >Edit Announcement >></button>
                         <!-- modal for See Details button -->
                         <button 
-                            v-else
-                            class="badge btn btn-secondary stretched-link text-white"
+                            class="badge btn btn-secondary"
                             data-bs-toggle="modal"
                             :data-bs-target="'#modal' + announcementId"
                         >See Details >></button>
@@ -47,6 +46,8 @@
                                    <div class="modal-footer d-flex justify-content-between">
                                        <span class="fw-bold">
                                            Published On {{ getHumanReadableDate }}
+                                       </span>
+                                       <span v-if="getRole==='STUDENT'">
                                            by {{ name }}
                                        </span>
                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -63,7 +64,7 @@
                                             <div class="w-100 d-flex justify-content-between align-items-center">
                                                 <label for="editedTitle" class="form-label m-0">Title</label>
                                                 <input type="text" class="form-control mx-3" id="editedTitle" v-model="editedTitle"/>
-                                                <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
                                             </div>
                                         </div>
                                         <div class="modal-body">
@@ -87,7 +88,7 @@
                                         </div>
                                         <div class="modal-footer d-flex justify-content-between">
                                             <button class="btn btn-primary" data-bs-dismiss="modal" @click="submitEditedAnnouncement">Save</button>
-                                            <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         </div>
                                     </form>
                                </div>

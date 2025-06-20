@@ -9,8 +9,9 @@
                     :data-bs-target="'#' + announcementId"
                 >
                     <div class="w-100 me-2 d-flex justify-content-between align-items-center">
-                        <span><span v-if="isNew" class="badge bg-secondary">New!</span> {{ title }} </span>
-                        <span>by {{ name }} </span>
+                        <span><span v-if="isNew && getRole==='STUDENT'" class="badge bg-secondary">New!</span> {{ title }} </span>
+                        <span v-if="getRole==='STUDENT'">by {{ name }} </span>
+                        <span v-else>Published On {{ getHumanReadableDate }} </span>
                     </div>
                 </button>
             </h2>
@@ -31,6 +32,15 @@
                         {{ announcement }}
                     </div>
                     <div class="d-flex justify-content-end">
+                        <!-- modal for editing announcement -->
+                        <button 
+                            v-if="getRole==='INSTRUCTOR'" 
+                            class="badge btn btn-primary me-2" 
+                            data-bs-toggle="modal" 
+                            :data-bs-target="'#modalEdit' + announcementId"
+                        >
+                            Edit Announcement >>
+                        </button>
                         <!-- modal button -->
                         <button 
                             class="badge btn btn-secondary" 
@@ -62,6 +72,45 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- modal edit announcement -->
+                        <div class="modal fade" :id="'modalEdit' + announcementId">
+                           <div class="modal-dialog">
+                               <div class="modal-content">
+                                    <form @submit.prevent="submitEditedAnnouncement()" action="">
+                                        <div class="modal-header">
+                                            <div class="w-100 d-flex justify-content-between align-items-center">
+                                                <label for="editedTitle" class="form-label m-0">Title</label>
+                                                <input type="text" class="form-control mx-3" id="editedTitle" v-model="editedTitle"/>
+                                                <button type="button" class="btn btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="w-100 d-flex justify-content-between align-items-center mb-2">
+                                                <label for="editedAnnouncement" class="form-label m-0">Edit Announcement</label>
+                                                <div class="d-flex align-items-center">
+                                                    <label for="announcementsStatusDropdown" class="form-label w-100 mx-2 mb-0">Save As... </label>
+                                                    <select 
+                                                        name="" 
+                                                        id="announcementStatusDropdown" 
+                                                        v-model="editedStatus" 
+                                                        class="form-select w-100 text-bg-light"
+                                                    >
+                                                        <option value="ACTIVE">Active</option>
+                                                        <option value="DRAFT">Draft</option>
+                                                        <option value="ARCHIVE">Archive</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <textarea name="" id="editedAnnouncement" class="form-control" rows="6" v-model="editedAnnouncement"></textarea>
+                                        </div>
+                                        <div class="modal-footer d-flex justify-content-between">
+                                            <button class="btn btn-primary" data-bs-dismiss="modal" @click="submitEditedAnnouncement">Save</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                               </div>
+                           </div>
+                        </div>
 
                     </div>
                 </div>
@@ -71,7 +120,18 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 export default {
+    emits: [
+        'announcementUpdated'
+    ],
+    data() {
+        return {
+            editedTitle: this.title,
+            editedAnnouncement: this.announcement,
+            editedStatus: this.status
+        }
+    },
     props: {
         title: {
             type: String,
@@ -87,10 +147,14 @@ export default {
             required: true
         },
         date: {
-            type: Date,
+            type: String,
             required: true,
         },
         announcementId: {
+            type: String,
+            required: true
+        },
+        status: {
             type: String,
             required: true
         }
@@ -113,6 +177,33 @@ export default {
             };
 
             return date.toLocaleDateString('en-US', options);
+        },
+        getRole() {
+            return this.$store.getters['login/getRole'];
+        }
+    },
+    methods: {
+        async submitEditedAnnouncement() {
+            console.log('Edited Title: ' + this.editedTitle);
+            const csrfToken = Cookies.get('XSRF-TOKEN');
+            const response = await fetch('http://localhost:8081/announcement/update', {
+                method: 'PUT',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    'announcementGUID': this.announcementId,
+                    'title': this.editedTitle,
+                    'announcement': this.editedAnnouncement,
+                    'announcementStatus': this.editedStatus
+                })
+            });
+
+            if (response.ok) {
+                this.$emit('announcementUpdated');
+            }
         }
     }
 }

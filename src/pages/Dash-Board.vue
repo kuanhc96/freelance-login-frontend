@@ -14,14 +14,14 @@
                            Announcements
                         </div>
                         <div v-else class="">
-                           My Past Announcements
+                           My Active Announcements
                         </div>
                         <div v-if="getRole==='INSTRUCTOR'" class="d-flex gap-2">
                            <router-link to="/announcements/create" class="btn btn-primary btn-sm">Add New</router-link>
                         </div>
                      </h2>
                      <dashboard-announcement 
-                        v-for="announcement in getMostRecentAnnouncements"
+                        v-for="announcement in getMostRecentActiveAnnouncements"
                         :key="announcement.announcementGUID"
                         :announcement-id="announcement.announcementGUID"
                         :title="announcement.title"
@@ -31,11 +31,14 @@
                         :announcement="announcement.announcement"
                         @announcement-updated="refreshAnnouncements()"
                      ></dashboard-announcement>
-                     <div v-if="getAnnouncements.length > 3" class="d-flex justify-content-center">
+                     <div v-if="getRole === 'STUDENT' && getAnnouncements.length > 3" class="d-flex justify-content-center">
                         <div class="fs-bold fs-2">...</div>
                      </div>
-                     <div v-if="getAnnouncements.length > 3" class="d-flex justify-content-center">
+                     <div v-if="getRole === 'STUDENT' && getAnnouncements.length > 3" class="d-flex justify-content-center">
                         <router-link to="/announcements" class="btn btn-primary btn-sm stretched-link">View All</router-link>
+                     </div>
+                     <div v-if="getRole === 'INSTRUCTOR'" class="d-flex justify-content-center">
+                        <router-link to="/announcements" class="btn btn-primary btn-sm ">View All</router-link>
                      </div>
                   </div>
                </div>
@@ -177,8 +180,10 @@ export default {
       getAnnouncements() {
          return this.$store.getters['announcements/getAnnouncements'];
       },
-      getMostRecentAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'].slice(0, 3);
+      getMostRecentActiveAnnouncements() {
+         const allAnnouncements = this.getAnnouncements;
+         const activeAnnouncements = allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
+         return activeAnnouncements.slice(0, 3);
       },
       getRole() {
          return this.$store.getters['login/getRole'];
