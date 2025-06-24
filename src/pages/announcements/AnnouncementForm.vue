@@ -20,46 +20,42 @@
     </section>
 
 </template>
-<script>
+<script setup lang="ts">
 import BaseCard from '@/components/ui/BaseCard.vue';
-export default {
-    components: {
-        BaseCard,
-    },
-    data() {
-        return {
-            subject: '',
-            announcement: ''
-        }
-    },
-    methods: {
-        async submit() {
-            if (this.subject !== '' && this.announcement !== '') {
-                console.log('valid input')
-                const response = await fetch(
-                    'http://localhost:8081/announcement/createAnnouncement', {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }, 
-                        body: JSON.stringify({
-                            instructorGUID: 'aa02e645-55ea-4aa3-953e-3ea543c8290f',
-                            title: this.subject,
-                            announcement: this.announcement
-                        })
-                    }
-                );
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                }
-            } else {
-                console.log('invalid input')
+import { CreateAnnouncementResponse } from '@/dto/response/createAnnouncementResponse';
+import { RootState } from '@/store/types';
+import { Ref, ref } from 'vue';
+import { useStore } from 'vuex';
 
+const store = useStore<RootState>();
+
+const subject: Ref<string> = ref('');
+const announcement: Ref<string> = ref('');
+
+async function submit() {
+    if (subject.value !== '' && announcement.value !== '') {
+        const response: Response = await fetch(
+            store.getters['login/backendService'] + 'announcement/createAnnouncement', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    instructorGUID: 'aa02e645-55ea-4aa3-953e-3ea543c8290f',
+                    title: subject.value,
+                    announcement: announcement.value
+                })
             }
-        }
-    }
+        );
 
+        if (response.ok) {
+            const data: CreateAnnouncementResponse = await response.json();
+            console.log(data);
+        }
+    } else {
+        console.log('invalid input')
+
+    }
 }
 </script>

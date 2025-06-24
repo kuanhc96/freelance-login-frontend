@@ -6,23 +6,16 @@
         >
             <div class="d-flex align-items-center flex-column">
                 <div class="col-md-10 col-10">
-                    <div class="input-group mt-3">
-                        <label for="search-instructors" class="border rounded-start input-group-text">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </label>
-                        <input 
-                            id="search-instructors" 
-                            type="text" 
-                            placeholder="Search Instructors" 
-                            class="form-control fs-6 rounded-end col-md-10"
-                            v-model="keyword"
-                        >
-                    </div>
+                    <the-search-bar
+                        :id="'search-instructors'" 
+                        :placeholder="'Search Instructors'"
+                        v-model="keyword"
+                    ></the-search-bar>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in unsubscribedInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -35,7 +28,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in filteredInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -50,65 +43,55 @@
     </section>
 </template>
 
-<script>
+<script setup lang="ts">
+import { RootState } from '@/store/types'
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
-export default {
-    components: {
-        InstructorSummary,
-        BaseCard
-    },
-    data() {
-        return {
-            keyword: ''
-        }
-    },
-    async created() {
-        if (!this.$store.getters['instructors/hasUnsubscribedInstructors']) {
-            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+import TheSearchBar from '../../components/layout/TheSearchBar.vue'
+import { Ref, ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { GetUserResponse } from '@/dto/response/getUserResponse'
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
-            }
-        }
-    },
-    methods: {
-        async refresh() {
-            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
-            console.log(response)
+const store = useStore<RootState>();
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
-                console.log(this.unsubscribedInstructors)
-            }
-        }
-    },
-    computed: {
-        isKeywordBlank() {
-            return this.keyword === '';
-        },
-        getUnsubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserId'];
-        },
-        filteredInstructors() {
-            const filtered = this.$store.getters['instructors/unsubscribedInstructors'].filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
-            return filtered
-        },
-        unsubscribedInstructors() {
-            return this.$store.getters['instructors/unsubscribedInstructors']
-        },
-        hasAllInstructors() {
-            return this.$store.getters['instructors/hasUnsubscribedInstructors']
-        }
+const keyword: Ref<string> = ref('');
+
+const isKeywordBlank = computed<boolean>(() =>
+    keyword.value === ''
+)
+
+const unsubscribedInstructorsEndpoint = computed<string>(() => 
+    store.getters['login/backendService'] + 'subscription/unsubscribed/' + store.getters['login/getUserGUID']
+)
+
+const filteredInstructors = computed<Array<GetUserResponse>>(() => {
+    const unsubscribedInstructors: Array<GetUserResponse> = store.getters['instructors/getUnsubscribedInstructors'];
+    return unsubscribedInstructors.filter(instructor => instructor.name.toLowerCase().includes(keyword.value.toLowerCase()))
+})
+
+const unsubscribedInstructors = computed<Array<GetUserResponse>>(() => 
+    store.getters['instructors/getUnsubscribedInstructors']
+)
+
+// const hasAllInstructors = computed<boolean>(() =>
+//     store.getters['instructors/hasUnsubscribedInstructors']
+// )
+
+async function refresh(): Promise<void> {
+    const response: Response = await fetch(unsubscribedInstructorsEndpoint.value, {
+        method: 'GET',
+        credentials: 'include'
+    })
+    console.log(response)
+
+    if (response.ok) {
+        const data: Array<GetUserResponse> = await response.json();
+        store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
+        console.log(unsubscribedInstructors)
     }
-    
 }
+
+onBeforeMount(
+    async() => refresh()
+)
 </script>

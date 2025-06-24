@@ -1,11 +1,12 @@
 import { createStore } from 'vuex';
+import { RootState } from './types';
 import createPersistedState from 'vuex-persistedstate';
-import instructors from './instructors';
-import subjects from './subjects';
-import login from './login';
-import announcements from './announcements'
+import { instructors } from './instructors';
+import { subjects } from './subjects';
+import { login } from './login';
+import { announcements } from './announcements'
 
-const store = createStore({
+const store = createStore<RootState>({
     modules: {
         instructors,
         subjects,

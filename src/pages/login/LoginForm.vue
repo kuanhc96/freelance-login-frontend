@@ -46,26 +46,35 @@
   </section>
 </template>
 
-<script>
+<script setup lang="ts">
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { ref, Ref, onBeforeMount } from 'vue';
+import type { RootState } from '@/store/types'
+import { LoginResponse } from '@/dto/response/loginResponse';
+
 import BaseCard from '../../components/ui/BaseCard.vue';
-export default {
-  components: {
-    BaseCard
-  },
-  data() {
-    return {
-      email: '',
-      password: '',
-      selectedRole: 'STUDENT'
-    }
-  },
-  async created() {
+
+const router = useRouter();
+const store = useStore<RootState>();
+
+const email: Ref<String> = ref('');
+const password: Ref<String> = ref('');
+const selectedRole: Ref<String> = ref('STUDENT');
+
+function refresh(): void {
+    email.value = '';
+    password.value = '';
+    router.push("/login");
+}
+
+onBeforeMount(async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const isLogout = urlParams.get('logout') === 'true';
     if (isLogout) {
       try {
-        this.$store.dispatch('login/logout'); 
-        await fetch('http://localhost:8081/apiLogout', {
+        store.dispatch('login/logout'); 
+        await fetch(store.getters['login/backendService'] + 'apiLogout', {
           method: 'POST',
           credentials: 'include'
         })
@@ -74,8 +83,8 @@ export default {
       }
     } else {
       try {
-        const response = await fetch(
-          'http://localhost:8081/checkLogin', {
+        const response: Response = await fetch(
+          store.getters['login/backendService'] + 'checkLogin', {
             method: 'POST',
             credentials: 'include'
           }
@@ -85,39 +94,35 @@ export default {
           throw new Error('Not authenticated')
         }
 
-        const data = await response.json();
-        this.$store.dispatch('login/login', {
+        const data: LoginResponse = await response.json();
+        store.dispatch('login/login', {
           status: data.success,
-          userId: data.userId,
+          userGUID: data.userGUID,
           role: data.role,
           email: data.email
         }); 
 
-        this.$router.push('/');
+        router.push('/');
       } catch (err) {
         console.warn('Authentication failed with loginToken');
-        this.$router.push('/login');
+        router.push('/login');
       }
     }
-  },
-  methods: {
-    refresh() {
-      this.email = '';
-      this.password = '';
-      this.$router.push("/login");
-    },
-    submitForm() {
-      console.log(this.selectedRole)
-      fetch("http://localhost:8081/apiLogin", {
+
+  }
+)
+
+function submitForm(): void {
+    fetch(store.getters['login/backendService'] + "apiLogin", {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          'email': this.email,
-          'password': this.password,
-          'role': this.selectedRole
+          'email': email,
+          'password': password,
+          'role': selectedRole
         }),
       })
       .then(response => {
@@ -129,23 +134,18 @@ export default {
       })
       .then(data => {
           if (data) {
-            this.$store.dispatch('login/login', {
+            store.dispatch('login/login', {
               status: data.success,
-              userId: data.userId,
+              userGUID: data.userGUID,
               role: data.role,
               email: data.email
             }); 
-            this.$router.push('/')
+            router.push('/');
           }
         }
 
       )
 
-    }
-  }
 }
+
 </script>
-
-
-<style lang="scss" scoped>
-</style>

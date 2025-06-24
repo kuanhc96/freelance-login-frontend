@@ -54,15 +54,12 @@
 </header>
 </template>
 
-<script>
-export default {
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters['login/isLoggedIn'];
-    },
-  }
-}
-</script>
+<script setup lang="ts">
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { RootState } from '@/store/types';
 
-<style scoped>
-</style>
+const store = useStore<RootState>();
+
+const isLoggedIn = computed<boolean>(() => store.getters['login/isLoggedIn']);
+</script>

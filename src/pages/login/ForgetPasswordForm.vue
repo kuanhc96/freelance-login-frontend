@@ -17,15 +17,6 @@
   </section>
 </template>
 
-<script>
+<script setup lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
-export default {
-  components: {
-    BaseCard
-  }
-  
-}
 </script>
-
-<style scoped>
-</style>

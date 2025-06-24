@@ -12,7 +12,7 @@
                         v-model="keyword"
                     ></the-search-bar>
 
-                    <div class="" id="instructor-view" v-if="getRole==='INSTRUCTOR'">
+                    <div class="" id="instructor-view" v-if="role==='INSTRUCTOR'">
                         <!-- nav bar tab for active/draft/archived announcements -->
                         <nav 
                             class="nav nav-tabs mt-3" 
@@ -50,7 +50,7 @@
                         </nav>
                         <ul class="d-flex align-items-center list-group my-3 p-1" v-else>
                             <announcement-summary 
-                                v-for="announcement in getFilteredAnnouncements"
+                                v-for="announcement in filteredAnnouncements"
                                 :key="announcement.announcementGUID"
                                 :announcement-id="announcement.announcementGUID"
                                 :title="announcement.title" 
@@ -58,21 +58,21 @@
                                 :name="announcement.instructorName"
                                 :announcement="announcement.announcement"
                                 :status="announcement.announcementStatus"
-                                @announcement-updated="refreshAnnouncements()"
+                                @announcement-updated="refresh()"
                             ></announcement-summary>
                         </ul> 
                         
                         <div class="tab-content" id="nav-tabContent" v-if="isKeywordBlank">
                             <!-- List of active announcements -->
                             <div 
-                                :class="[ tab-pane, fade ]" 
+                                class="tab-pane fade" 
                                 id="nav-active"
                                 role="tabpanel"
                                 v-show="activeTab === 'active'"
                             >
                                 <ul class="d-flex align-items-center list-group my-3 p-1" id="activeAnnouncementList">
                                     <announcement-summary 
-                                        v-for="announcement in getActiveAnnouncements"
+                                        v-for="announcement in activeAnnouncements"
                                         :key="announcement.announcementGUID"
                                         :announcement-id="announcement.announcementGUID"
                                         :title="announcement.title" 
@@ -80,7 +80,7 @@
                                         :name="announcement.instructorName"
                                         :announcement="announcement.announcement"
                                         :status="announcement.announcementStatus"
-                                        @announcement-updated="refreshAnnouncements()"
+                                        @announcement-updated="refresh()"
                                     ></announcement-summary>
                                 </ul> 
                             </div>
@@ -94,7 +94,7 @@
                             >
                                 <ul class="d-flex align-items-center list-group my-3 p-1">
                                     <announcement-summary 
-                                        v-for="announcement in getDraftAnnouncements"
+                                        v-for="announcement in draftAnnouncements"
                                         :key="announcement.announcementGUID"
                                         :announcement-id="announcement.announcementGUID"
                                         :title="announcement.title" 
@@ -102,7 +102,7 @@
                                         :name="announcement.instructorName"
                                         :status="announcement.announcementStatus"
                                         :announcement="announcement.announcement"
-                                        @announcement-updated="refreshAnnouncements()"
+                                        @announcement-updated="refresh()"
                                     ></announcement-summary>
                                 </ul> 
                             </div>
@@ -116,7 +116,7 @@
                             >
                                 <ul class="d-flex align-items-center list-group my-3 p-1">
                                     <announcement-summary 
-                                        v-for="announcement in getArchivedAnnouncements"
+                                        v-for="announcement in archivedAnnouncements"
                                         :key="announcement.announcementGUID"
                                         :announcement-id="announcement.announcementGUID"
                                         :title="announcement.title" 
@@ -124,7 +124,7 @@
                                         :name="announcement.instructorName"
                                         :announcement="announcement.announcement"
                                         :status="announcement.announcementStatus"
-                                        @announcement-updated="refreshAnnouncements()"
+                                        @announcement-updated="refresh()"
                                     ></announcement-summary>
                                 </ul> 
                             </div>
@@ -133,7 +133,7 @@
                     <div class="" id="student-view" v-else>
                         <ul class="d-flex align-items-center list-group my-3 p-1">
                             <announcement-summary 
-                                v-for="announcement in getFilteredActiveAnnouncements"
+                                v-for="announcement in filteredActiveAnnouncements"
                                 :key="announcement.announcementGUID"
                                 :announcement-id="announcement.announcementGUID"
                                 :title="announcement.title" 
@@ -141,7 +141,7 @@
                                 :name="announcement.instructorName"
                                 :announcement="announcement.announcement"
                                 :status="announcement.announcementStatus"
-                                @announcement-updated="refreshAnnouncements()"
+                                @announcement-updated="refresh()"
                             ></announcement-summary>
                         </ul> 
 
@@ -154,128 +154,89 @@
     </section>
 </template>
 
-<script>
+<script setup lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '@/components/layout/TheSearchBar.vue';
 import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.vue';
-export default {
-    data() {
-        return {
-            keyword: '',
-            activeTab: 'active'
-        }
-    },
-    components: {
-        BaseCard,
-        TheSearchBar,
-        AnnouncementSummary
-    },
-    computed: {
-        isKeywordBlank() {
-            return this.keyword === '';
-        },
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
-        },
-        getAnnouncements() {
-            return this.$store.getters['announcements/getAnnouncements'];
-        },
-        getActiveAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
-        },
-        getDraftAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'DRAFT');
-        },
-        getArchivedAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'ARCHIVED');
-        },
-        getFilteredAnnouncements() {
-            const announcements = this.$store.getters['announcements/getAnnouncements'];
+import { ref, Ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { RootState } from '@/store/types';
+import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
 
-            return announcements.filter(announcement => announcement.title.toLowerCase().includes(this.keyword.toLowerCase()))
-        },
-        getFilteredActiveAnnouncements() {
-            const allAnnouncements = this.$store.getters['announcements/getAnnouncements'];
-            const activeAnnouncements = allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
+const store = useStore<RootState>();
 
-            return activeAnnouncements.filter(announcement => announcement.title.toLowerCase().includes(this.keyword.toLowerCase()))
-        },
-        getRole() {
-            return this.$store.getters['login/getRole'];
-        }
-    },
-    async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+const keyword: Ref<string> = ref('');
+const activeTab: Ref<string> = ref('active');
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
+const isKeywordBlank = computed<boolean> (() =>
+    keyword.value === ''
+)
 
-        } 
+const subscribedInstructorsEndpoint = computed<string> (() =>
+    store.getters['login/backendService'] + 'subscription/' + store.getters['login/getUserGUID']
+)
 
-        const subscribedInstructors = this.$store.getters['instructors/instructors'];
-        for (const instructor of subscribedInstructors) {
-            const instructorGUID = instructor.userGUID;
+const announcements = computed<Array<GetAnnouncementResponse>> (() => 
+    store.getters['announcements/getAnnouncements']
+)
 
-            const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                method: 'GET',
-                credentials: 'include'
-            });
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
-            }
+const activeAnnouncements = computed<Array<GetAnnouncementResponse>> (() =>
+    announcements.value.filter(announcement => announcement.announcementStatus === 'ACTIVE')
+)
 
-        }
+const draftAnnouncements = computed<Array<GetAnnouncementResponse>> (() =>
+    announcements.value.filter(announcement => announcement.announcementStatus === 'DRAFT')
+)
 
-    },
-    methods: {
-        async refresh() {
-            if (!this.$store.getters['instructors/hasInstructors']) {
-                const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
+const archivedAnnouncements = computed<Array<GetAnnouncementResponse>> (() =>
+    announcements.value.filter(announcement => announcement.announcementStatus === 'ARCHIVED')
+)
 
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('instructors/setInstructors', { instructors: data })
-                }
+const filteredAnnouncements = computed<Array<GetAnnouncementResponse>> (() =>
+    announcements.value.filter(announcement => announcement.title.toLowerCase().includes(keyword.value.toLowerCase()))
+)
 
-            } 
+const filteredActiveAnnouncements = computed<Array<GetAnnouncementResponse>> (() =>
+    activeAnnouncements.value.filter(announcement => announcement.title.toLowerCase().includes(keyword.value.toLowerCase()))
+)
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
-            for (const instructor of subscribedInstructors) {
-                const instructorGUID = instructor.userGUID;
+const role = computed<string> (() =>
+    store.getters['login/getRole']
+)
 
-                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log(data);
-                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
-                }
+function getAnnouncementsUrl(instructorGUID: string): string {
+    return store.getters['login/backendService'] + "announcement/" + instructorGUID;
+}
 
-            }
+async function refresh(): Promise<void> {
+    const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
+        method: 'GET',
+        credentials: 'include'
+    })
 
-        },
-        getAnnouncementsUrl(instructorGUID) {
-            return "http://localhost:8081/announcement/" + instructorGUID;
-        },
-        refreshAnnouncements() {
+    if (response.ok) {
+        const data: Array<GetAnnouncementResponse> = await response.json();
+        store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
+    }
 
+
+    const subscribedInstructors = store.getters['instructors/getSubscribedInstructors'];
+    for (const instructor of subscribedInstructors) {
+        const instructorGUID = instructor.userGUID;
+
+        const response: Response = await fetch(getAnnouncementsUrl(instructorGUID), {
+            method: 'GET',
+            credentials: 'include'
+        });
+        if (response.ok) {
+            const data: Array<GetAnnouncementResponse> = await response.json();
+            console.log(data);
+            store.dispatch('announcements/setAnnouncements', { announcements: data });
         }
     }
-    
 }
+
+onBeforeMount(
+    async () => refresh()
+)
 </script>

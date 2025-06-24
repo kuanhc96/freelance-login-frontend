@@ -5,7 +5,7 @@
             @refresh="refresh"
         >
             <subject-summary
-                v-for="instructor in getSubscribedInstructors" 
+                v-for="instructor in subscribedInstructors" 
                 :key="instructor.userGUID"
                 :instructorGUID="instructor.userGUID"
                 :instructorName="instructor.name"
@@ -16,71 +16,49 @@
     </section>
 </template>
 
-<script>
+<script setup lang="ts">
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
-export default {
-    components: {
-        SubjectSummary
-    },
-    async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            });
+import { computed, onBeforeMount } from 'vue';
+import { useStore } from 'vuex';
+import type { RootState } from '@/store/types'
+import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data });
-            }
+const store = useStore<RootState>();
+
+// const subscribedInstructorsEndpoint = computed<URL>(() =>
+//     new URL(store.getters['login/backendService'] + 'subscription/' + store.getters['login/getUserId'])
+// )
+
+const subscribedInstructors = computed<Array<GetUserResponse>>(() =>
+    store.getters['instructors/getSubscribedInstructors']
+)
+
+function getSubjectsByInstructorEndpoint(instructorGUID: string): URL {
+    return new URL(store.getters['login/backendService'] + 'subject/' + instructorGUID)
+}
+
+function getSubjectsByInstructorGUID(instructorGUID: string): Array<GetSubjectResponse> {
+    return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+
+}
+
+async function refresh(): Promise<void> {
+    for (const instructor of store.getters['instructors/instructors']) {
+        const response: Response = await fetch(getSubjectsByInstructorEndpoint(instructor.userGUID), {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data: Array<GetSubjectResponse> = await response.json();
+            store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
         }
-
-        for (const instructor of this.$store.getters['instructors/instructors']) {
-            const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
-            }
-
-        }
-
-    },
-    methods: {
-        async refresh() {
-            for (const instructor of this.$store.getters['instructors/instructors']) {
-                const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
-                }
-
-            }
-
-
-        },
-        getSubjectsByInstructorEndpoint(instructorGUID) {
-            return 'http://localhost:8081/subject/' + instructorGUID;
-        },
-        getSubjectsByInstructorGUID(instructorGUID) {
-            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
-        }
-    },
-    computed: {
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
-        },
-        getSubscribedInstructors() {
-            return this.$store.getters['instructors/instructors'];
-        },
-        
     }
 }
+
+onBeforeMount(
+    async () => await refresh()
+)
+
 </script>

@@ -15,7 +15,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in subscribedInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -28,7 +28,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in filteredInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -41,67 +41,54 @@
     </section>
 </template>
 
-<script>
+<script setup lang="ts">
+import { RootState } from '@/store/types'
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '../../components/layout/TheSearchBar.vue'
-export default {
-    data() {
-        return {
-            keyword: ''
-        }
-    },
-    components: {
-        InstructorSummary,
-        BaseCard,
-        TheSearchBar
-    },
-    computed: {
-        isKeywordBlank() {
-            return this.keyword === '';
-        },
-        subscribedInstructors() {
-            return this.$store.getters['instructors/instructors'];
-        },
-        hasSubscribedInstructors() {
-            return this.$store.getters['instructors/hasInstructors']
-        },
-        filteredInstructors() {
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
-            const filtered = subscribedInstructors.filter(instructor => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
-            return filtered
-        },
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
-        }
-    },
-    async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+import { Ref, ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { GetUserResponse } from '@/dto/response/getUserResponse'
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
-        }
+const store = useStore<RootState>();
 
-    },
-    methods: {
-        async refresh() {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+const keyword: Ref<string> = ref('');
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
-        }
+const isKeywordBlank = computed<boolean>(() =>
+    keyword.value === ''
+)
+
+const subscribedInstructors = computed<Array<GetUserResponse>>(() =>
+    store.getters['instructors/getSubscribedInstructors']
+)
+
+// const hasSubscribedInstructors = computed<boolean>(() =>
+//     store.getters['instructors/hasSubscribedInstructors']
+// )
+
+const filteredInstructors = computed<Array<GetUserResponse>>(() => {
+    return subscribedInstructors.value.filter(instructor => instructor.name.toLowerCase().includes(keyword.value.toLowerCase())) 
+})
+
+const subscribedInstructorsEndpoint = computed<string>(() => 
+    store.getters['login/backendService'] + 'subscription/' + store.getters['login/getUserGUID']
+)
+
+async function refresh(): Promise<void> {
+    const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
+        method: 'GET',
+        credentials: 'include'
+    })
+    console.log(response)
+
+    if (response.ok) {
+        const data: Array<GetUserResponse> = await response.json();
+        store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+        console.log(subscribedInstructors)
     }
-    
 }
+
+onBeforeMount(
+    async() => refresh()
+)
 </script>

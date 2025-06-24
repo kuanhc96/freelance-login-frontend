@@ -27,7 +27,7 @@
     </div>
 </template>
 
-<script>
+<script >
 import Cookies from 'js-cookie';
 
 export default {
@@ -53,8 +53,6 @@ export default {
             default: true
         }
 
-    },
-    components: {
     },
     computed: {
         contactLink() {

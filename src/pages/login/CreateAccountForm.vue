@@ -72,7 +72,13 @@
         </div>
         <div class="mb-3">
             <label class="form-label" for="description">Description</label>
-            <textarea class="form-control" placeholder="Short Bio" id="description" rows="6" v-model="description"></textarea>
+            <textarea 
+              class="form-control" 
+              placeholder="Short Bio" 
+              id="description" 
+              rows="6" 
+              v-model="description"
+            ></textarea>
         </div>
         <div class="mb-3">
           <button class="btn btn-secondary" type="submit">Create Account</button>
@@ -88,53 +94,53 @@
 <style scoped>
 </style>
 
-<script>
+<script setup lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
-export default {
-  components: {
-    BaseCard,
-  },
-  data() {
-    return {
-      email: '',
-      name:'',
-      password: '',
-      dateInput: '',
-      retypePassword:'',
-      selectedRole: '', // Will hold the value "student" or "instructor" depending on which radio is checked
-      selectedGender: '', // Will hold the value "male" or "female" depending on which radio is checked
-      description: '',
-      apiEndpoint: ''
-    };
-  },
-  methods: {
-    submitForm() {
-      if (this.password === this.retypePassword) {
-        
-        const response = fetch('http://localhost:8081/user/createUser', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name: this.name,
-                role: this.selectedRole,
-                email: this.email,
-                password: this.password,
-                birthday: this.dateInput,
-                gender: this.selectedGender,
-                description: this.description
-            }),
-        });
-        if (response.ok) {
-          this.$router.push('/login');
-        } else {
-          alert('an error occurred when creating an account')
-        }
+import type { RootState } from '@/store/types';
+import {ref, Ref} from 'vue';
+import {useStore} from 'vuex';
+import {useRouter} from 'vue-router';
+
+const store = useStore<RootState>();
+const router = useRouter();
+
+const email: Ref<string> =  ref('');
+const name: Ref<string> =  ref('');
+const password: Ref<string> =  ref('');
+const dateInput: Ref<string> =  ref('');
+const retypePassword: Ref<string> =  ref('');
+const selectedRole: Ref<string> =  ref('');
+const selectedGender: Ref<string> =  ref('');
+const description: Ref<string> =  ref('');
+
+async function submitForm(): Promise<void> {
+    if (password.value === retypePassword.value) {
+      
+      const response: Response = await fetch(store.getters['login/backendService'] + 'user/createUser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              name: name.value,
+              role: selectedRole.value,
+              email: email.value,
+              password: password.value,
+              birthday: dateInput.value,
+              gender: selectedGender.value,
+              description: description.value
+          }),
+      });
+
+      if (response.ok) {
+        router.push('/login');
       } else {
-        alert('password and retype password must match');
+        alert('an error occurred when creating an account')
       }
+    } else {
+      alert('password and retype password must match');
     }
-  }
-};
+
+}
+
 </script>

@@ -1,6 +1,6 @@
 <template>
    <section>
-      <base-card 
+      <BaseCard
          card-title="Dashboard"
          @refresh="refreshAll"
       >
@@ -10,18 +10,18 @@
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title d-flex justify-content-between">
-                        <div v-if="getRole==='STUDENT'" class="">
+                        <div v-if="role==='STUDENT'" class="">
                            Announcements
                         </div>
                         <div v-else class="">
                            My Active Announcements
                         </div>
-                        <div v-if="getRole==='INSTRUCTOR'" class="d-flex gap-2">
+                        <div v-if="role==='INSTRUCTOR'" class="d-flex gap-2">
                            <router-link to="/announcements/create" class="btn btn-primary btn-sm">Add New</router-link>
                         </div>
                      </h2>
-                     <dashboard-announcement 
-                        v-for="announcement in getMostRecentActiveAnnouncements"
+                     <DashboardAnnouncement
+                        v-for="announcement in mostRecentActiveAnnouncements"
                         :key="announcement.announcementGUID"
                         :announcement-id="announcement.announcementGUID"
                         :title="announcement.title"
@@ -30,14 +30,14 @@
                         :status="announcement.announcementStatus"
                         :announcement="announcement.announcement"
                         @announcement-updated="refreshAnnouncements()"
-                     ></dashboard-announcement>
-                     <div v-if="getRole === 'STUDENT' && getAnnouncements.length > 3" class="d-flex justify-content-center">
+                     ></DashboardAnnouncement>
+                     <div v-if="role === 'STUDENT' && announcements.length > 3" class="d-flex justify-content-center">
                         <div class="fs-bold fs-2">...</div>
                      </div>
-                     <div v-if="getRole === 'STUDENT' && getAnnouncements.length > 3" class="d-flex justify-content-center">
+                     <div v-if="role === 'STUDENT' && announcements.length > 3" class="d-flex justify-content-center">
                         <router-link to="/announcements" class="btn btn-primary btn-sm stretched-link">View All</router-link>
                      </div>
-                     <div v-if="getRole === 'INSTRUCTOR'" class="d-flex justify-content-center">
+                     <div v-if="role === 'INSTRUCTOR'" class="d-flex justify-content-center">
                         <router-link to="/announcements" class="btn btn-primary btn-sm ">View All</router-link>
                      </div>
                   </div>
@@ -49,7 +49,7 @@
                <div class="card w-100 h-100 shadow">
                   <div class="card-body">
                      <h2 class="card-title">Upcoming Lessons</h2>
-                     <dashboard-course></dashboard-course>
+                     <dashboard-lesson></dashboard-lesson>
                      <p class="card-text">
                         Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque rerum minus rem saepe consequuntur at culpa molestiae.
                      </p>
@@ -75,20 +75,21 @@
                         <div class="">
                            Subscribed Instructors
                         </div>
-                        <div v-if="getRole==='STUDENT'" class="d-flex gap-2">
+                        <div v-if="role==='STUDENT'" class="d-flex gap-2">
                            <router-link to="/instructors/search" class="btn btn-primary btn-sm">Search</router-link>
                         </div>
                      </h3>
-                     <dashboard-instructor v-for="instructor in getSubscribedInstructors"
+                     <DashboardInstructor v-for="instructor in subscribedInstructors"
                         :key="instructor.userGUID"
                         :instructorGUID="instructor.userGUID"
                         :instructorName="instructor.name"
                         :email="instructor.email"
-                        :portrait-path="'/alice.jpg'"></dashboard-instructor>
-                     <div v-if="getSubscribedInstructors.length > 3" class="d-flex justify-content-center">
+                        :portrait-path="'/alice.jpg'">
+                     </DashboardInstructor>
+                     <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
                         <div class="fs-bold fs-2">...</div>
                      </div>
-                     <div v-if="getSubscribedInstructors.length > 3" class="d-flex justify-content-center">
+                     <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
                         <router-link to="/instructors" class="btn btn-primary btn-sm stretched-link">View All</router-link>
                      </div>
                   </div>
@@ -107,140 +108,100 @@
          </div>
 
       </div>
-      </base-card>
+   </BaseCard>
    </section>
 </template>
 
-<script>
-import BaseCard from '../components/ui/BaseCard.vue';
+<script setup lang="ts">
+import BaseCard from '../components/ui/BaseCard.vue'
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
-import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
-import DashboardCourse from '../components/lessons/DashboardLesson.vue'
-export default {
-    components: {
-        BaseCard,
-        DashboardAnnouncement,
-        DashboardInstructor,
-        DashboardCourse
-    },
-   async created() {
-      if (!this.$store.getters['login/isLoggedIn']) {
-         this.$router.push('/login');
-      } else {
-         if (this.$store.getters['login/getRole'] === 'STUDENT') {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-               method: 'GET',
-               credentials: 'include'
-            })
+import DashboardInstructor from '../components/instructors/DashboardInstructor.vue';
+import DashboardLesson from '../components/lessons/DashboardLesson.vue';
 
-            if (response.ok) {
-               const data = await response.json();
-               this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
+import { useStore } from 'vuex';
+import { computed, onBeforeMount } from 'vue';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+import type { RootState } from '@/store/types'
+import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
+const store = useStore<RootState>();
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
-            var allAnnouncements = [];
-            for (const instructor of subscribedInstructors) {
-               const instructorGUID = instructor.userGUID;
+const subscribedInstructorsEndpoint = computed<string>(() =>
+   store.getters['login/backendService'] + 'subscription/' + store.getters['login/getUserGUID']
+)
 
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                  method: 'GET',
-                  credentials: 'include'
-               });
-               if (response.ok) {
-                  const data = await response.json();
-                  if (data.length > 0)  {
-                     allAnnouncements.push(...data);
-                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
-                  }
-               }
-            }
-         } else {
-               const instructorGUID = this.$store.getters['login/getUserId'];
+const subscribedInstructors = computed<Array<GetUserResponse>>(() => 
+   store.getters['instructors/getSubscribedInstructors']
+)
 
-                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
-                }
+const announcements = computed<Array<GetAnnouncementResponse>>(() =>
+   store.getters['announcements/getAnnouncements']
+)
 
-         } 
-      }
-   },
-   computed: {
-      getSubscribedInstructorsEndpoint() {
-         return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
-      },
-      getSubscribedInstructors() {
-         return this.$store.getters['instructors/instructors'];
-      },
-      getAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'];
-      },
-      getMostRecentActiveAnnouncements() {
-         const allAnnouncements = this.getAnnouncements;
-         const activeAnnouncements = allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
-         return activeAnnouncements.slice(0, 3);
-      },
-      getRole() {
-         return this.$store.getters['login/getRole'];
-      }
-   },
-   methods: {
-      getAnnouncementsUrl(instructorGUID) {
-         return "http://localhost:8081/announcement/" + instructorGUID;
-      },
-      async refreshAnnouncements() {
-         if (this.$store.getters['login/getRole'] === 'STUDENT') {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-               method: 'GET',
-               credentials: 'include'
-            })
+const mostRecentActiveAnnouncements = computed<Array<GetAnnouncementResponse>>(() => {
+   const activeAnnouncements = announcements.value.filter(
+      announcement => announcement.announcementStatus === 'ACTIVE'
+   );
+   return activeAnnouncements.slice(0, 3);
+})
 
-            if (response.ok) {
-               const data = await response.json();
-               this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
+const role = computed<String>(() => 
+   store.getters['login/getRole']
+)
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
-            var allAnnouncements = [];
-            for (const instructor of subscribedInstructors) {
-               const instructorGUID = instructor.userGUID;
-
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                  method: 'GET',
-                  credentials: 'include'
-               });
-               if (response.ok) {
-                  const data = await response.json();
-                  if (data.length > 0)  {
-                     allAnnouncements.push(...data);
-                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
-
-                  }
-               }
-            }
-         } else {
-            const instructorGUID = this.$store.getters['login/getUserId'];
-
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                  method: 'GET',
-                  credentials: 'include'
-               });
-               if (response.ok) {
-                  const data = await response.json();
-                  this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
-               }
-            } 
-
-      },
-      async refreshAll() {
-         await this.refreshAnnouncements();
-      }
-   }
-   
+function getAnnouncementsUrl(instructorGUID: string): string {
+   return store.getters['login/backendService'] + 'announcement/' + instructorGUID
 }
+
+async function refreshAnnouncements(): Promise<void> {
+   if (store.getters['login/getRole'] === 'STUDENT') {
+      const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
+         method: 'GET',
+         credentials: 'include'
+      })
+
+      if (response.ok) {
+         const data: Array<GetUserResponse> = await response.json();
+         store.dispatch('instructors/setInstructors', { instructors: data })
+      }
+
+      const subscribedInstructors: Array<GetUserResponse> = store.getters['instructors/instructors'];
+      var allAnnouncements = [];
+      for (const instructor of subscribedInstructors) {
+         const instructorGUID: string = instructor.userGUID;
+
+         const response: Response = await fetch(getAnnouncementsUrl(instructorGUID), {
+            method: 'GET',
+            credentials: 'include'
+         });
+
+         if (response.ok) {
+            const data: Array<GetAnnouncementResponse> = await response.json();
+            if (data.length > 0)  {
+               allAnnouncements.push(...data);
+               store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
+            }
+         }
+      }
+   } else {
+      const instructorGUID: string = store.getters['login/getUserId'];
+
+      const response: Response = await fetch(getAnnouncementsUrl(instructorGUID), {
+         method: 'GET',
+         credentials: 'include'
+      });
+      if (response.ok) {
+         const data: Array<GetAnnouncementResponse> = await response.json();
+         store.dispatch('announcements/setAnnouncements', { announcements: data });
+      }
+   } 
+
+}
+
+async function refreshAll(): Promise<void> {
+   await refreshAnnouncements();
+}
+
+onBeforeMount(
+   async () => await refreshAnnouncements()
+)
 </script>

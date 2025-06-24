@@ -102,7 +102,7 @@
     </div>
 </template>
 
-<script>
+<script >
 import Cookies from 'js-cookie';
 
 export default {
