@@ -30,10 +30,10 @@ export default {
 
         if (response.ok) {
             const data = await response.json();
-            this.$store.dispatch('instructors/setInstructors', { instructors: data });
+            this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data });
         }
 
-        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
+        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors) {
             const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                 method: 'GET',
                 credentials: 'include'
@@ -76,7 +76,7 @@ export default {
             return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
         },
         getSubscribedInstructors() {
-            return this.$store.getters['instructors/getSubscribedInstructors'];
+            return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
         },
         
     }

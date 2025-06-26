@@ -15,7 +15,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in subscribedInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -28,7 +28,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in filteredInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -61,7 +61,7 @@ export default {
             return this.keyword === '';
         },
         subscribedInstructors() {
-            return this.$store.getters['instructors/getSubscribedInstructors'];
+            return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
         },
         hasSubscribedInstructors() {
             return this.$store.getters['instructors/hasSubscribedInstructors']
@@ -83,7 +83,9 @@ export default {
 
         if (response.ok) {
             const data = await response.json();
-            this.$store.dispatch('instructors/setInstructors', { instructors: data })
+            console.log(data);
+            this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+            console.log((this.subscribedInstructors));
         }
 
     },
@@ -96,7 +98,7 @@ export default {
 
             if (response.ok) {
                 const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
+                this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
             }
         }
     }

@@ -102,11 +102,11 @@ export default {
                     }
                 );
                 
-                if (!this.displaySubscribe) {
-                    this.$store.dispatch('instructors/unsubscribeFromInstructor', { instructorGUID: this.instructorGUID });
-                } else {
-                    this.$store.dispatch('instructors/subscribeToInstructor', { instructorGUID: this.instructorGUID });
-                }
+                // if (!this.displaySubscribe) {
+                //     this.$store.dispatch('instructors/unsubscribeFromInstructor', { instructorGUID: this.instructorGUID });
+                // } else {
+                //     this.$store.dispatch('instructors/subscribeToInstructor', { instructorGUID: this.instructorGUID });
+                // }
                 
                 console.log('success?')
                 if (response.ok) {

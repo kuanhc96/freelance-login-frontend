@@ -215,7 +215,7 @@ export default {
 
         if (response.ok) {
             const data = await response.json();
-            this.$store.dispatch('instructors/setInstructors', { instructors: data })
+            this.$store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
         }
 
 
@@ -244,7 +244,7 @@ export default {
 
             if (response.ok) {
                 const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
+                this.$store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
             }
 
 

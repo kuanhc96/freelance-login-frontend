@@ -96,12 +96,12 @@ export default {
         getUnsubscribedInstructorsEndpoint() {
             return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserGUID'];
         },
-        filteredInstructors() {
-            const filtered = this.$store.getters['instructors/getUnsubscribedInstructors'].filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
-            return filtered
-        },
         unsubscribedInstructors() {
-            return this.$store.getters['instructors/getUnsubscribedInstructors']
+            return this.$store.getters['instructors/getUnsubscribedInstructors'].unsubscribedInstructors;
+        },
+        filteredInstructors() {
+            const filtered = this.getUnsubscribedInstructors.filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+            return filtered
         },
     }
     

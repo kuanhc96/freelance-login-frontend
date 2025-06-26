@@ -135,10 +135,12 @@ export default {
 
             if (response.ok) {
                const data = await response.json();
-               this.$store.dispatch('instructors/setInstructors', { instructors: data })
+               console.log(data)
+               this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
             }
 
-            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
+            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
+            console.log(subscribedInstructors)
             var allAnnouncements = [];
             for (const instructor of subscribedInstructors) {
                const instructorGUID = instructor.userGUID;
@@ -175,14 +177,13 @@ export default {
          return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
       },
       getSubscribedInstructors() {
-         return this.$store.getters['instructors/getSubscribedInstructors'];
+         return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
       },
       getAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'];
+         return this.$store.getters['announcements/getAnnouncements'].announcements;
       },
       getMostRecentActiveAnnouncements() {
-         const allAnnouncements = this.getAnnouncements;
-         const activeAnnouncements = allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
+         const activeAnnouncements = this.getAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
          return activeAnnouncements.slice(0, 3);
       },
       getRole() {
@@ -202,7 +203,7 @@ export default {
 
             if (response.ok) {
                const data = await response.json();
-               this.$store.dispatch('instructors/setInstructors', { instructors: data })
+               this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
             }
 
             const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];

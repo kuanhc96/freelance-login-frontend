@@ -3,22 +3,22 @@ import { ActionTree, MutationTree, GetterTree, Module } from 'vuex';
 import { RootState } from '@/store/types';
 
 export interface SubjectsState {
-    instructorGUIDToSubjectsMap: Map<string, Array<GetSubjectResponse>>
+    instructorGUIDToSubjectsMap: Record<string, GetSubjectResponse[]>
 }
 
 export interface AddSubjectPayload {
     instructorGUID: string
-    subjects: Array<GetSubjectResponse>
+    subjects: GetSubjectResponse[]
 }
 
 const state: SubjectsState = {
-    instructorGUIDToSubjectsMap: new Map()
+    instructorGUIDToSubjectsMap: {}
 }
 
 const mutations: MutationTree<SubjectsState> = {
     ADD_SUBJECTS(state, payload: AddSubjectPayload) {
         const { instructorGUID, subjects } = payload
-        state.instructorGUIDToSubjectsMap.set(instructorGUID, subjects);
+        state.instructorGUIDToSubjectsMap[instructorGUID] = subjects;
     }
 }
 
@@ -29,9 +29,9 @@ const actions: ActionTree<SubjectsState, RootState> = {
 }
 
 const getters: GetterTree<SubjectsState, RootState> = {
-    getSubjectsByInstructorGUID: (state) => (instructorGUID: string) => state.instructorGUIDToSubjectsMap.get(instructorGUID),
+    getSubjectsByInstructorGUID: (state) => (instructorGUID: string) => { return state.instructorGUIDToSubjectsMap[instructorGUID] },
     hasSubjectsByInstructorGUID: (state) => (instructorGUID: string) => {
-        const list = state.instructorGUIDToSubjectsMap.get(instructorGUID);
+        const list = state.instructorGUIDToSubjectsMap[instructorGUID];
         return !((Array.isArray(list)) && list.length > 0);
     }
 }
