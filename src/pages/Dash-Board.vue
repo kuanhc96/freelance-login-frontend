@@ -138,7 +138,7 @@ export default {
                this.$store.dispatch('instructors/setInstructors', { instructors: data })
             }
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
             var allAnnouncements = [];
             for (const instructor of subscribedInstructors) {
                const instructorGUID = instructor.userGUID;
@@ -156,7 +156,7 @@ export default {
                }
             }
          } else {
-               const instructorGUID = this.$store.getters['login/getUserId'];
+               const instructorGUID = this.$store.getters['login/getUserGUID'];
 
                 const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
                     method: 'GET',
@@ -172,10 +172,10 @@ export default {
    },
    computed: {
       getSubscribedInstructorsEndpoint() {
-         return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
+         return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
       },
       getSubscribedInstructors() {
-         return this.$store.getters['instructors/instructors'];
+         return this.$store.getters['instructors/getSubscribedInstructors'];
       },
       getAnnouncements() {
          return this.$store.getters['announcements/getAnnouncements'];
@@ -205,7 +205,7 @@ export default {
                this.$store.dispatch('instructors/setInstructors', { instructors: data })
             }
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
             var allAnnouncements = [];
             for (const instructor of subscribedInstructors) {
                const instructorGUID = instructor.userGUID;
@@ -224,7 +224,7 @@ export default {
                }
             }
          } else {
-            const instructorGUID = this.$store.getters['login/getUserId'];
+            const instructorGUID = this.$store.getters['login/getUserGUID'];
 
                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
                   method: 'GET',

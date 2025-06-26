@@ -87,8 +87,8 @@ export default {
 
         const data = await response.json();
         this.$store.dispatch('login/login', {
-          status: data.success,
-          userId: data.userId,
+          success: data.success,
+          userGUID: data.userGUID,
           role: data.role,
           email: data.email
         }); 

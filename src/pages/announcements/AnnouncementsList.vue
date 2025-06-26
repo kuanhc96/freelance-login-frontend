@@ -175,7 +175,7 @@ export default {
             return this.keyword === '';
         },
         getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
+            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
         },
         getAnnouncements() {
             return this.$store.getters['announcements/getAnnouncements'];
@@ -208,20 +208,18 @@ export default {
         }
     },
     async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            method: 'GET',
+            credentials: 'include'
+        })
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
+        if (response.ok) {
+            const data = await response.json();
+            this.$store.dispatch('instructors/setInstructors', { instructors: data })
+        }
 
-        } 
 
-        const subscribedInstructors = this.$store.getters['instructors/instructors'];
+        const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
         for (const instructor of subscribedInstructors) {
             const instructorGUID = instructor.userGUID;
 
@@ -239,20 +237,18 @@ export default {
     },
     methods: {
         async refresh() {
-            if (!this.$store.getters['instructors/hasInstructors']) {
-                const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
+            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+                method: 'GET',
+                credentials: 'include'
+            })
 
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('instructors/setInstructors', { instructors: data })
-                }
+            if (response.ok) {
+                const data = await response.json();
+                this.$store.dispatch('instructors/setInstructors', { instructors: data })
+            }
 
-            } 
 
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
             for (const instructor of subscribedInstructors) {
                 const instructorGUID = instructor.userGUID;
 

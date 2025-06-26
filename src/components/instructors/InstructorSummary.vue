@@ -64,10 +64,10 @@ export default {
             return this.$route.path + '/' + this.instructorGUID;
         },
         filteredSubjects() {
-            return this.$store.getters['subjects/subjects'];
+            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](this.instructorGUID);
         },
         hasSubjects() {
-            return this.$store.getters['subjects/hasSubjects']
+            return this.$store.getters['subjects/hasSubjectsByInstructorGUID'](this.instructorGUID);
         },
         resolvedPortrait() {
             return new URL(this.portraitPath, import.meta.url).href;
@@ -96,7 +96,7 @@ export default {
                             'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
-                            'studentGUID': this.$store.getters['login/getUserId'],
+                            'studentGUID': this.$store.getters['login/getUserGUID'],
                             'instructorGUID': this.instructorGUID
                         })
                     }

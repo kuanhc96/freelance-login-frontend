@@ -64,16 +64,14 @@ export default {
         }
     },
     async created() {
-        if (!this.$store.getters['instructors/hasUnsubscribedInstructors']) {
-            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+        const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
+            method: 'GET',
+            credentials: 'include'
+        })
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
-            }
+        if (response.ok) {
+            const data = await response.json();
+            this.$store.dispatch('instructors/setUnsubscribedInstructors', { unsubscribedInstructors: data })
         }
     },
     methods: {
@@ -96,18 +94,15 @@ export default {
             return this.keyword === '';
         },
         getUnsubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserId'];
+            return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserGUID'];
         },
         filteredInstructors() {
-            const filtered = this.$store.getters['instructors/unsubscribedInstructors'].filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+            const filtered = this.$store.getters['instructors/getUnsubscribedInstructors'].filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
             return filtered
         },
         unsubscribedInstructors() {
-            return this.$store.getters['instructors/unsubscribedInstructors']
+            return this.$store.getters['instructors/getUnsubscribedInstructors']
         },
-        hasAllInstructors() {
-            return this.$store.getters['instructors/hasUnsubscribedInstructors']
-        }
     }
     
 }

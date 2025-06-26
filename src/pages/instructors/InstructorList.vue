@@ -61,31 +61,29 @@ export default {
             return this.keyword === '';
         },
         subscribedInstructors() {
-            return this.$store.getters['instructors/instructors'];
+            return this.$store.getters['instructors/getSubscribedInstructors'];
         },
         hasSubscribedInstructors() {
-            return this.$store.getters['instructors/hasInstructors']
+            return this.$store.getters['instructors/hasSubscribedInstructors']
         },
         filteredInstructors() {
-            const subscribedInstructors = this.$store.getters['instructors/instructors'];
+            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
             const filtered = subscribedInstructors.filter(instructor => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
             return filtered
         },
         getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
+            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
         }
     },
     async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
+        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            method: 'GET',
+            credentials: 'include'
+        })
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data })
-            }
+        if (response.ok) {
+            const data = await response.json();
+            this.$store.dispatch('instructors/setInstructors', { instructors: data })
         }
 
     },

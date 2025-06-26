@@ -37,11 +37,11 @@ export default {
     },
     computed: {
         filteredSubjects() {
-            return this.$store.getters['subjects/subjects'];
+            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](this.id);
         }
     },
     created() {
-        this.selectedInstructor = this.$store.getters['instructors/instructors'].find(
+        this.selectedInstructor = this.$store.getters['instructors/getSubscribedInstructors'].find(
             (instructor) => instructor.id === this.id
         );
         this.instructorName = this.selectedInstructor.instructorName;

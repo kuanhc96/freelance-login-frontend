@@ -23,19 +23,17 @@ export default {
         SubjectSummary
     },
     async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            });
+        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            method: 'GET',
+            credentials: 'include'
+        });
 
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data });
-            }
+        if (response.ok) {
+            const data = await response.json();
+            this.$store.dispatch('instructors/setInstructors', { instructors: data });
         }
 
-        for (const instructor of this.$store.getters['instructors/instructors']) {
+        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
             const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                 method: 'GET',
                 credentials: 'include'
@@ -51,7 +49,7 @@ export default {
     },
     methods: {
         async refresh() {
-            for (const instructor of this.$store.getters['instructors/instructors']) {
+            for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
                 const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                     method: 'GET',
                     credentials: 'include'
@@ -75,10 +73,10 @@ export default {
     },
     computed: {
         getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
+            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
         },
         getSubscribedInstructors() {
-            return this.$store.getters['instructors/instructors'];
+            return this.$store.getters['instructors/getSubscribedInstructors'];
         },
         
     }
