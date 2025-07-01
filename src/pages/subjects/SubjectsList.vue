@@ -16,71 +16,72 @@
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
 import { mapGetters } from 'vuex';
+import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+import type { RootState } from '@/store/types';
+import { useStore } from 'vuex';
+
+const store = useStore<RootState>();
+
 export default {
     components: {
         SubjectSummary
     },
-    async created() {
-        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+    async created(): Promise<void> {
+        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
             method: 'GET',
             credentials: 'include'
         });
 
         if (response.ok) {
-            const data = await response.json();
-            this.$store.dispatch('instructors/setSubscribedInstructors', data);
+            const data: GetUserResponse[] = await response.json();
+            store.dispatch('instructors/setSubscribedInstructors', data);
         }
 
-        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
-            const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
+        for (const instructor of this.getSubscribedInstructors) {
+            const response: Response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                 method: 'GET',
                 credentials: 'include'
             });
 
             if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+                const data: GetSubjectResponse[] = await response.json();
+                store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
             }
 
         }
 
     },
     methods: {
-        async refresh() {
-            for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
-                const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
+        async refresh(): Promise<void> {
+            for (const instructor of this.getSubscribedInstructors) {
+                const response: Response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                     method: 'GET',
                     credentials: 'include'
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+                    const data: GetSubjectResponse[] = await response.json();
+                    store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
                 }
 
             }
-
-
         },
-        getSubjectsByInstructorEndpoint(instructorGUID) {
+        getSubjectsByInstructorEndpoint(instructorGUID: string): string {
             return 'http://localhost:8081/subject/' + instructorGUID;
         },
-        getSubjectsByInstructorGUID(instructorGUID) {
-            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+        getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
+            return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
         }
     },
     computed: {
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
+        getSubscribedInstructorsEndpoint(): string {
+            return 'http://localhost:8081/subscription/' + store.getters['login/getUserGUID'];
         },
-        // getSubscribedInstructors() {
-        //     return this.$store.getters['instructors/getSubscribedInstructors'];
-        // },
         ...mapGetters('instructors', ['getSubscribedInstructors'])
-        
     }
 }
 </script>
