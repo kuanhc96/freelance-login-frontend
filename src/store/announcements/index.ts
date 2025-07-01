@@ -3,7 +3,7 @@ import { ActionTree, MutationTree, GetterTree, Module } from 'vuex';
 import { RootState } from '@/store/types';
 
 export interface AnnouncementsState {
-    announcements: Array<GetAnnouncementResponse>
+    announcements: GetAnnouncementResponse[]
 }
 
 const state: AnnouncementsState = {
@@ -11,13 +11,13 @@ const state: AnnouncementsState = {
 }
 
 const mutations: MutationTree<AnnouncementsState> = {
-    SET_ANNOUNCEMENTS(state, announcements: Array<GetAnnouncementResponse>) {
+    SET_ANNOUNCEMENTS(state, announcements: GetAnnouncementResponse[]) {
         state.announcements = announcements;
     }
 }
 
 const actions: ActionTree<AnnouncementsState, RootState> = {
-    setAnnouncements({ commit }, announcements: Array<GetAnnouncementResponse>) {
+    setAnnouncements({ commit }, announcements: GetAnnouncementResponse[]) {
         commit('SET_ANNOUNCEMENTS', announcements);
     }
 }

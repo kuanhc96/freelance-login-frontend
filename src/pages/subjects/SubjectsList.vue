@@ -18,42 +18,26 @@
 
 <script lang="ts">
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, useStore } from 'vuex';
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import type { RootState } from '@/store/types';
-import { useStore } from 'vuex';
+import { defineComponent } from 'vue';
 
-const store = useStore<RootState>();
 
-export default {
+export default defineComponent({
+    name: 'SubjectsList',
     components: {
         SubjectSummary
     },
-    async created(): Promise<void> {
-        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
-            method: 'GET',
-            credentials: 'include'
-        });
-
-        if (response.ok) {
-            const data: GetUserResponse[] = await response.json();
-            store.dispatch('instructors/setSubscribedInstructors', data);
-        }
-
-        for (const instructor of this.getSubscribedInstructors) {
-            const response: Response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data: GetSubjectResponse[] = await response.json();
-                store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
-            }
-
-        }
-
+    computed: {
+        getStore() {
+            return useStore<RootState>()
+        },
+        getSubscribedInstructorsEndpoint(): string {
+            return 'http://localhost:8081/subscription/' + this.getStore.getters['login/getUserGUID'];
+        },
+        ...mapGetters('instructors', ['getSubscribedInstructors'])
     },
     methods: {
         async refresh(): Promise<void> {
@@ -65,7 +49,7 @@ export default {
 
                 if (response.ok) {
                     const data: GetSubjectResponse[] = await response.json();
-                    store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+                    this.getStore.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
                 }
 
             }
@@ -74,14 +58,33 @@ export default {
             return 'http://localhost:8081/subject/' + instructorGUID;
         },
         getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
-            return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+            return this.getStore.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
         }
     },
-    computed: {
-        getSubscribedInstructorsEndpoint(): string {
-            return 'http://localhost:8081/subscription/' + store.getters['login/getUserGUID'];
-        },
-        ...mapGetters('instructors', ['getSubscribedInstructors'])
-    }
-}
+    async created(): Promise<void> {
+        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data: GetUserResponse[] = await response.json();
+            this.getStore.dispatch('instructors/setSubscribedInstructors', data);
+        }
+
+        for (const instructor of this.getSubscribedInstructors) {
+            const response: Response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data: GetSubjectResponse[] = await response.json();
+                this.getStore.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+            }
+
+        }
+
+    },
+})
 </script>

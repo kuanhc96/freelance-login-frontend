@@ -136,13 +136,11 @@ export default {
             if (response.ok) {
                const data = await response.json();
                console.log(data)
-               this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+               this.$store.dispatch('instructors/setSubscribedInstructors', data)
             }
 
-            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
-            console.log(subscribedInstructors)
             var allAnnouncements = [];
-            for (const instructor of subscribedInstructors) {
+            for (const instructor of this.getSubscribedInstructors) {
                const instructorGUID = instructor.userGUID;
 
                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
@@ -153,7 +151,7 @@ export default {
                   const data = await response.json();
                   if (data.length > 0)  {
                      allAnnouncements.push(...data);
-                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
+                     this.$store.dispatch('announcements/setAnnouncements', allAnnouncements)
                   }
                }
             }
@@ -166,7 +164,7 @@ export default {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+                    this.$store.dispatch('announcements/setAnnouncements', data);
                 }
 
          } 
@@ -177,12 +175,13 @@ export default {
          return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
       },
       getSubscribedInstructors() {
-         return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
+         return this.$store.getters['instructors/getSubscribedInstructors'];
       },
       getAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'].announcements;
+         return this.$store.getters['announcements/getAnnouncements'];
       },
       getMostRecentActiveAnnouncements() {
+         console.log(this.getAnnouncements)
          const activeAnnouncements = this.getAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
          return activeAnnouncements.slice(0, 3);
       },
@@ -203,11 +202,11 @@ export default {
 
             if (response.ok) {
                const data = await response.json();
-               this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+               this.$store.dispatch('instructors/setSubscribedInstructors', data)
             }
 
             const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
-            var allAnnouncements = [];
+            // var allAnnouncements = [];
             for (const instructor of subscribedInstructors) {
                const instructorGUID = instructor.userGUID;
 
@@ -218,8 +217,7 @@ export default {
                if (response.ok) {
                   const data = await response.json();
                   if (data.length > 0)  {
-                     allAnnouncements.push(...data);
-                     this.$store.dispatch('announcements/setAnnouncements', {announcements: allAnnouncements})
+                     this.$store.dispatch('announcements/setAnnouncements', data)
 
                   }
                }
@@ -227,15 +225,15 @@ export default {
          } else {
             const instructorGUID = this.$store.getters['login/getUserGUID'];
 
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                  method: 'GET',
-                  credentials: 'include'
-               });
-               if (response.ok) {
-                  const data = await response.json();
-                  this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
-               }
-            } 
+            const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+               method: 'GET',
+               credentials: 'include'
+            });
+            if (response.ok) {
+               const data = await response.json();
+               this.$store.dispatch('announcements/setAnnouncements', data);
+            }
+         } 
 
       },
       async refreshAll() {
