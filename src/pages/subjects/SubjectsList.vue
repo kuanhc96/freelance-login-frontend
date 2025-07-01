@@ -18,6 +18,7 @@
 
 <script>
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
+import { mapGetters } from 'vuex';
 export default {
     components: {
         SubjectSummary
@@ -30,10 +31,10 @@ export default {
 
         if (response.ok) {
             const data = await response.json();
-            this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data });
+            this.$store.dispatch('instructors/setSubscribedInstructors', data);
         }
 
-        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors) {
+        for (const instructor of this.$store.getters['instructors/getSubscribedInstructors']) {
             const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
                 method: 'GET',
                 credentials: 'include'
@@ -75,9 +76,10 @@ export default {
         getSubscribedInstructorsEndpoint() {
             return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
         },
-        getSubscribedInstructors() {
-            return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
-        },
+        // getSubscribedInstructors() {
+        //     return this.$store.getters['instructors/getSubscribedInstructors'];
+        // },
+        ...mapGetters('instructors', ['getSubscribedInstructors'])
         
     }
 }

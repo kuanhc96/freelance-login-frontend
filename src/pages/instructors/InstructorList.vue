@@ -11,6 +11,7 @@
                         :placeholder="'Search Instructors'" 
                         v-model="keyword"
                     ></the-search-bar>
+                    <div v-if="hasSubscribedInstructors" class="">{{ typeof subscribedInstructors }}</div>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
@@ -61,10 +62,10 @@ export default {
             return this.keyword === '';
         },
         subscribedInstructors() {
-            return this.$store.getters['instructors/getSubscribedInstructors'].subscribedInstructors;
+            return this.$store.getters['instructors/getSubscribedInstructors'];
         },
         hasSubscribedInstructors() {
-            return this.$store.getters['instructors/hasSubscribedInstructors']
+            return this.$store.getters['instructors/hasSubscribedInstructors'];
         },
         filteredInstructors() {
             const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
@@ -84,21 +85,21 @@ export default {
         if (response.ok) {
             const data = await response.json();
             console.log(data);
-            this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+            this.$store.dispatch('instructors/setSubscribedInstructors', data)
             console.log((this.subscribedInstructors));
         }
 
     },
     methods: {
         async refresh() {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            const response = await fetch(this.subscribedInstructorsEndpoint, {
                 method: 'GET',
                 credentials: 'include'
             })
 
             if (response.ok) {
                 const data = await response.json();
-                this.$store.dispatch('instructors/setSubscribedInstructors', { subscribedInstructors: data })
+                this.$store.dispatch('instructors/setSubscribedInstructors',  data)
             }
         }
     }
