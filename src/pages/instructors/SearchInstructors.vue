@@ -57,6 +57,7 @@ import { defineComponent } from 'vue'
 import store from '@/store'
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
+    name: 'SearchInstructors',
     components: {
         InstructorSummary,
         BaseCard
