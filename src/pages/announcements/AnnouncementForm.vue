@@ -20,23 +20,28 @@
     </section>
 
 </template>
-<script>
+<script lang="ts">
 import BaseCard from '@/components/ui/BaseCard.vue';
-export default {
+import { CreateAnnouncementResponse } from '@/dto/response/createAnnouncementResponse';
+import { defineComponent } from 'vue'
+export default defineComponent({
+    name: 'AnnouncementForm',
     components: {
         BaseCard,
     },
-    data() {
+    data(): {
+        subject: string,
+        announcement: string
+    } {
         return {
             subject: '',
             announcement: ''
         }
     },
     methods: {
-        async submit() {
+        async submit(): Promise<void> {
             if (this.subject !== '' && this.announcement !== '') {
-                console.log('valid input')
-                const response = await fetch(
+                const response: Response = await fetch(
                     'http://localhost:8081/announcement/createAnnouncement', {
                         method: 'POST',
                         credentials: 'include',
@@ -51,7 +56,7 @@ export default {
                     }
                 );
                 if (response.ok) {
-                    const data = await response.json();
+                    const data: CreateAnnouncementResponse = await response.json();
                     console.log(data);
                 }
             } else {
@@ -61,5 +66,5 @@ export default {
         }
     }
 
-}
+})
 </script>
