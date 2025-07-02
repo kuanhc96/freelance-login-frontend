@@ -11,7 +11,7 @@
                     <div class="display-5">{{ instructorName }}</div>
                     <div class="my-3 d-flex flex-wrap flex-md-nowrap w-100 gap-2 justify-content-center">
                         <span class="badge text-bg-light fs-6" 
-                            v-for="subject in filteredSubjects" 
+                            v-for="subject in getSubjectsByInstructorGUID(instructorGUID)" 
                             :key="subject.subjectName"
                         >{{subject.subjectName}}</span>
                     </div>
@@ -27,52 +27,48 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Cookies from 'js-cookie';
+import { defineComponent, PropType } from 'vue'
+import { mapGetters } from 'vuex';
 
-export default {
+export default defineComponent({
     props: {
         instructorGUID: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         instructorName: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         email: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         portraitPath: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         displaySubscribe: {
-            type: Boolean,
+            type: Boolean as PropType<boolean>,
             default: true
         }
 
     },
-    components: {
-    },
     computed: {
-        contactLink() {
+        ...mapGetters('subjects', ['getSubjectsByInstructorGUID', 'hasSubjectsByInstructorGUID']),
+        ...mapGetters('login', ['getUserGUID']),
+        contactLink(): string {
             return this.$route.path + '/' + this.instructorGUID + '/contact';
         },
-        detailsLink() {
+        detailsLink(): string {
             return this.$route.path + '/' + this.instructorGUID;
         },
-        filteredSubjects() {
-            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](this.instructorGUID);
-        },
-        hasSubjects() {
-            return this.$store.getters['subjects/hasSubjectsByInstructorGUID'](this.instructorGUID);
-        },
-        resolvedPortrait() {
+        resolvedPortrait(): string {
             return new URL(this.portraitPath, import.meta.url).href;
         },
-        getSubscribeOrUnsubscribeText() {
+        getSubscribeOrUnsubscribeText(): string {
             if (this.displaySubscribe) {
                 return 'Subscribe'
             } else {
@@ -81,13 +77,13 @@ export default {
         }
     },
     methods: {
-        resolveImage(path) {
+        resolveImage(path: string): string {
             return new URL(path, import.meta.url).href;
         },
-        async subscribeOrUnsubscribe() {
+        async subscribeOrUnsubscribe(): Promise<void> {
             try {
                 const csrfToken = Cookies.get('XSRF-TOKEN');
-                const response = await fetch(
+                const response: Response = await fetch(
                     'http://localhost:8081/subscription', {
                         method: this.displaySubscribe? 'POST' : 'DELETE',
                         credentials: 'include',
@@ -96,7 +92,7 @@ export default {
                             'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
-                            'studentGUID': this.$store.getters['login/getUserGUID'],
+                            'studentGUID': this.getUserGUID,
                             'instructorGUID': this.instructorGUID
                         })
                     }
@@ -108,13 +104,12 @@ export default {
                 //     this.$store.dispatch('instructors/subscribeToInstructor', { instructorGUID: this.instructorGUID });
                 // }
                 
-                console.log('success?')
                 if (response.ok) {
-                    const result = await response.json()
-                    console.log(result)
+                    const result: boolean = await response.json();
+                    console.log(result);
                     // TODO: should have a pop-up that says success
                 } else {
-                    const result = await response.json()
+                    const result: boolean = await response.json();
                     console.log(result)
                     // TODO: should have a pop-up that says failed
 
@@ -127,5 +122,5 @@ export default {
 
     }
     
-}
+})
 </script>
