@@ -11,11 +11,10 @@
                         :placeholder="'Search Instructors'" 
                         v-model="keyword"
                     ></the-search-bar>
-                    <div v-if="hasSubscribedInstructors" class="">{{ typeof subscribedInstructors }}</div>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
-                            v-for="instructor in subscribedInstructors"
+                            v-for="instructor in getSubscribedInstructors"
                             :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
@@ -42,12 +41,19 @@
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '../../components/layout/TheSearchBar.vue'
-export default {
-    data() {
+import { defineComponent } from 'vue'
+import store from '@/store'
+import { mapGetters } from 'vuex'
+import { GetUserResponse } from '@/dto/response/getUserResponse'
+export default defineComponent({
+    name: 'InstructorList',
+    data(): {
+        keyword: string
+    } {
         return {
             keyword: ''
         }
@@ -58,51 +64,42 @@ export default {
         TheSearchBar
     },
     computed: {
-        isKeywordBlank() {
+        isKeywordBlank(): boolean {
             return this.keyword === '';
         },
-        subscribedInstructors() {
-            return this.$store.getters['instructors/getSubscribedInstructors'];
+        ...mapGetters('instructors', ['getSubscribedInstructors', 'hasSubscribedInstructors']),
+        ...mapGetters('login', ['getUserGUID']),
+        filteredInstructors(): GetUserResponse[] {
+            return this.getSubscribedInstructors.filter((instructor: { name: string }) => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
         },
-        hasSubscribedInstructors() {
-            return this.$store.getters['instructors/hasSubscribedInstructors'];
-        },
-        filteredInstructors() {
-            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
-            const filtered = subscribedInstructors.filter(instructor => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
-            return filtered
-        },
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
+        getSubscribedInstructorsEndpoint(): string {
+            return 'http://localhost:8081/subscription/' + this.getUserGUID;
         }
     },
-    async created() {
-        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+    async created(): Promise<void> {
+        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
             method: 'GET',
             credentials: 'include'
         })
 
         if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            this.$store.dispatch('instructors/setSubscribedInstructors', data)
-            console.log((this.subscribedInstructors));
+            const data: GetUserResponse[] = await response.json();
+            store.dispatch('instructors/setSubscribedInstructors', data)
         }
 
     },
     methods: {
-        async refresh() {
-            const response = await fetch(this.subscribedInstructorsEndpoint, {
+        async refresh(): Promise<void> {
+            const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
                 method: 'GET',
                 credentials: 'include'
             })
 
             if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setSubscribedInstructors',  data)
+                const data: GetUserResponse[] = await response.json();
+                store.dispatch('instructors/setSubscribedInstructors', data)
             }
         }
     }
-    
-}
+})
 </script>
