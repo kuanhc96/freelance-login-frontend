@@ -17,25 +17,26 @@
     </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, PropType } from 'vue'
+export default defineComponent({
     props: {
         instructorGUID: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         instructorName: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         email: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         portraitPath: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
     } 
-}
+})
 </script>
