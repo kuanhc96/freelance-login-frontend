@@ -119,13 +119,19 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Cookies from 'js-cookie';
-export default {
+import { defineComponent, PropType } from 'vue';
+import { mapGetters } from 'vuex';
+export default defineComponent({
     emits: [
         'announcementUpdated'
     ],
-    data() {
+    data(): {
+        editedTitle: string,
+        editedAnnouncement: string,
+        editedStatus: string
+    } {
         return {
             editedTitle: this.title,
             editedAnnouncement: this.announcement,
@@ -134,33 +140,34 @@ export default {
     },
     props: {
         title: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         announcement: {
-            type: String,
+            type: String as PropType<string>,
             required: true,
             default: ''
         },
         name: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         date: {
-            type: String,
+            type: String as PropType<string>,
             required: true,
         },
         announcementId: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         status: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         }
     },
     computed: {
-        isNew() {
+        ...mapGetters('login', ['getRole']),
+        isNew(): boolean {
             const inputDate = new Date(this.date);
             const now = new Date();
             const oneWeekAgo = new Date();
@@ -168,9 +175,9 @@ export default {
 
             return inputDate >= oneWeekAgo && inputDate <= now;
         },
-        getHumanReadableDate() {
+        getHumanReadableDate(): string {
             const date = new Date(this.date);
-            const options = {
+            const options: Intl.DateTimeFormatOptions = {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
@@ -178,15 +185,12 @@ export default {
 
             return date.toLocaleDateString('en-US', options);
         },
-        getRole() {
-            return this.$store.getters['login/getRole'];
-        }
     },
     methods: {
-        async submitEditedAnnouncement() {
+        async submitEditedAnnouncement(): Promise<void> {
             console.log('Edited Title: ' + this.editedTitle);
             const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response = await fetch('http://localhost:8081/announcement/update', {
+            const response: Response = await fetch('http://localhost:8081/announcement/update', {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
@@ -206,5 +210,5 @@ export default {
             }
         }
     }
-}
+})
 </script>
