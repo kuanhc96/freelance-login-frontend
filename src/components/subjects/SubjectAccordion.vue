@@ -35,6 +35,7 @@ import SubjectSummary from './SubjectSummary.vue'
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse'
 import { defineComponent, PropType } from 'vue'
 export default defineComponent({
+    name: 'SubjectAccordion',
     components: {
         SubjectSummary
     },

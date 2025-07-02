@@ -14,28 +14,32 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+export default defineComponent({
+    data(): {
+        input: string
+    } {
         return {
             input: ''
         }
     },
     props: {
         placeholder: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         id: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
-        modelValue: String
+        modelValue: String as PropType<string>
     },
     methods: {
-        onInput(event) {
-            this.$emit('update:modelValue', event.target.value)
+        onInput(event: Event): void {
+            const target = event.target as HTMLInputElement
+            this.$emit('update:modelValue', target.value)
         }
     }
-}
+})
 </script>
