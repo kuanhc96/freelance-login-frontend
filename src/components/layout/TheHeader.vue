@@ -54,15 +54,13 @@
 </header>
 </template>
 
-<script>
-export default {
-  computed: {
-    isLoggedIn() {
-      return this.$store.getters['login/isLoggedIn'];
-    },
-  }
-}
-</script>
+<script lang="ts">
+import { mapGetters } from 'vuex';
+import { defineComponent } from 'vue';
 
-<style scoped>
-</style>
+export default defineComponent({
+  computed: {
+    ...mapGetters('login', ['isLoggedIn']),
+  }
+})
+</script>
