@@ -48,27 +48,29 @@
     </div> 
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { PropType } from 'vue';
+import { defineComponent } from 'vue';
+export default defineComponent({
     props: {
         subjectName: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         price: {
-            type: Number,
+            type: Number as PropType<number>,
             required: false,
             default: 0
         },
         subjectGUID: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         subjectDescription: {
-            type: String,
+            type: String as PropType<string>,
             required: false,
             default: 'lorem ipson'
         }
     }
-}
+})
 </script>
