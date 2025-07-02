@@ -65,7 +65,7 @@
                         <div class="tab-content" id="nav-tabContent" v-if="isKeywordBlank">
                             <!-- List of active announcements -->
                             <div 
-                                :class="[ tab-pane, fade ]" 
+                                class="tab-pane fade" 
                                 id="nav-active"
                                 role="tabpanel"
                                 v-show="activeTab === 'active'"
@@ -154,12 +154,21 @@
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '@/components/layout/TheSearchBar.vue';
 import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.vue';
-export default {
-    data() {
+import { defineComponent } from 'vue'
+import { mapGetters } from 'vuex';
+import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
+import store from '@/store'
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+export default defineComponent({
+    name: 'AnnouncementsList',
+    data(): {
+        keyword: string,
+        activeTab: string
+    } {
         return {
             keyword: '',
             activeTab: 'active'
@@ -171,101 +180,97 @@ export default {
         AnnouncementSummary
     },
     computed: {
-        isKeywordBlank() {
+        ...mapGetters('login', ['getUserGUID', 'getRole']),
+        ...mapGetters('announcements', ['getAnnouncements']),
+        ...mapGetters('instructors', ['getSubscribedInstructors']),
+        isKeywordBlank(): boolean {
             return this.keyword === '';
         },
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
+        getSubscribedInstructorsEndpoint(): string {
+            return 'http://localhost:8081/subscription/' + this.getUserGUID;
         },
-        getAnnouncements() {
-            return this.$store.getters['announcements/getAnnouncements'];
+        getActiveAnnouncements(): GetAnnouncementResponse[] {
+            return this.getAnnouncements.filter(
+                (announcement: { announcementStatus: string; }) =>
+                    announcement.announcementStatus === 'ACTIVE'
+            );
         },
-        getActiveAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
+        getDraftAnnouncements(): GetAnnouncementResponse[] {
+            return this.getAnnouncements.filter(
+                (announcement: { announcementStatus: string; }) => 
+                    announcement.announcementStatus === 'DRAFT'
+            );
         },
-        getDraftAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'DRAFT');
+        getArchivedAnnouncements(): GetAnnouncementResponse[] {
+            return this.getAnnouncements.filter(
+                (announcement: { announcementStatus: string; }) => 
+                    announcement.announcementStatus === 'ARCHIVED'
+            );
         },
-        getArchivedAnnouncements() {
-            const allAnnouncements = this.getAnnouncements;
-            return allAnnouncements.filter(announcement => announcement.announcementStatus === 'ARCHIVED');
+        getFilteredAnnouncements(): GetAnnouncementResponse[] {
+            return this.getAnnouncements.filter(
+                (announcement: { title: string; }) => 
+                    announcement.title.toLowerCase().includes(this.keyword.toLowerCase())
+            );
         },
-        getFilteredAnnouncements() {
-            const announcements = this.$store.getters['announcements/getAnnouncements'];
-
-            return announcements.filter(announcement => announcement.title.toLowerCase().includes(this.keyword.toLowerCase()))
+        getFilteredActiveAnnouncements(): GetAnnouncementResponse[] {
+            const activeAnnouncements: GetAnnouncementResponse[] = this.getAnnouncements.filter((announcement: { announcementStatus: string; }) => announcement.announcementStatus === 'ACTIVE');
+            return activeAnnouncements.filter(
+                (announcement: { title: string; }) => 
+                    announcement.title.toLowerCase().includes(this.keyword.toLowerCase())
+            );
         },
-        getFilteredActiveAnnouncements() {
-            const allAnnouncements = this.$store.getters['announcements/getAnnouncements'];
-            const activeAnnouncements = allAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
-
-            return activeAnnouncements.filter(announcement => announcement.title.toLowerCase().includes(this.keyword.toLowerCase()))
-        },
-        getRole() {
-            return this.$store.getters['login/getRole'];
-        }
     },
-    async created() {
-        const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+    async created(): Promise<void> {
+        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
             method: 'GET',
             credentials: 'include'
         })
 
         if (response.ok) {
-            const data = await response.json();
-            this.$store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
+            const data: GetUserResponse[] = await response.json();
+            store.dispatch('instructors/setSubscribedInstructors', data)
         }
 
 
-        const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
-        for (const instructor of subscribedInstructors) {
-            const instructorGUID = instructor.userGUID;
-
-            const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+        for (const instructor of this.getSubscribedInstructors) {
+            const response = await fetch(this.getAnnouncementsUrl(instructor.userGUID), {
                 method: 'GET',
                 credentials: 'include'
             });
             if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+                const data: GetAnnouncementResponse[] = await response.json();
+                store.dispatch('announcements/setAnnouncements', data);
             }
-
         }
-
     },
     methods: {
         async refresh() {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+            const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
                 method: 'GET',
                 credentials: 'include'
             })
 
             if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
+                const data: GetUserResponse[] = await response.json();
+                store.dispatch('instructors/setSubscribedInstructors', { instructors: data })
             }
 
 
-            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
-            for (const instructor of subscribedInstructors) {
-                const instructorGUID = instructor.userGUID;
-
-                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+            for (const instructor of this.getSubscribedInstructors) {
+                const response = await fetch(this.getAnnouncementsUrl(instructor.userGUID), {
                     method: 'GET',
                     credentials: 'include'
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
-                    this.$store.dispatch('announcements/setAnnouncements', { announcements: data });
+                    store.dispatch('announcements/setAnnouncements', data);
                 }
 
             }
 
         },
-        getAnnouncementsUrl(instructorGUID) {
+        getAnnouncementsUrl(instructorGUID: string): string {
             return "http://localhost:8081/announcement/" + instructorGUID;
         },
         refreshAnnouncements() {
@@ -273,5 +278,5 @@ export default {
         }
     }
     
-}
+})
 </script>
