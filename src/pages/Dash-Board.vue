@@ -111,135 +111,124 @@
    </section>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from '../components/ui/BaseCard.vue';
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
 import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
 import DashboardCourse from '../components/lessons/DashboardLesson.vue'
-export default {
+import { defineComponent } from 'vue';
+import { mapGetters } from 'vuex';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
+import store from '@/store';
+
+export default defineComponent({
+    name: 'Dash-Board',
     components: {
         BaseCard,
         DashboardAnnouncement,
         DashboardInstructor,
         DashboardCourse
     },
-   async created() {
-      if (!this.$store.getters['login/isLoggedIn']) {
-         this.$router.push('/login');
-      } else {
-         if (this.$store.getters['login/getRole'] === 'STUDENT') {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
+   computed: {
+      getSubscribedInstructorsEndpoint(): string {
+         return 'http://localhost:8081/subscription/' + this.getUserGUID;
+      },
+      getMostRecentActiveAnnouncements(): GetAnnouncementResponse[] {
+         // const activeAnnouncements: GetAnnouncementResponse[] = this.getAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
+         return this.getAnnouncements.filter((announcement: { announcementStatus: string; }) => announcement.announcementStatus === 'ACTIVE').slice(0, 3);
+      },
+      ...mapGetters('login', ['getRole', 'getUserGUID', 'isLoggedIn']),
+      ...mapGetters('instructors', ['getSubscribedInstructors']),
+      ...mapGetters('announcements', ['getAnnouncements']),
+   },
+   methods: {
+      getAnnouncementsUrl(instructorGUID: string): string {
+         return "http://localhost:8081/announcement/" + instructorGUID;
+      },
+      async refreshAnnouncements(): Promise<void> {
+         if (this.getRole === 'STUDENT') {
+            const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
                method: 'GET',
                credentials: 'include'
             })
 
             if (response.ok) {
-               const data = await response.json();
-               console.log(data)
-               this.$store.dispatch('instructors/setSubscribedInstructors', data)
+               const data: GetUserResponse[] = await response.json();
+               store.dispatch('instructors/setSubscribedInstructors', data)
+            }
+
+            for (const instructor of this.getSubscribedInstructors) {
+               const instructorGUID: string = instructor.userGUID;
+
+               const response: Response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+                  method: 'GET',
+                  credentials: 'include'
+               });
+               if (response.ok) {
+                  const data: GetAnnouncementResponse[] = await response.json();
+                  if (data.length > 0)  {
+                     store.dispatch('announcements/setAnnouncements', data)
+                  }
+               }
+            }
+         } else {
+            // userGUID is the instructorGUID
+            const response: Response = await fetch(this.getAnnouncementsUrl(this.getUserGUID), {
+               method: 'GET',
+               credentials: 'include'
+            });
+            if (response.ok) {
+               const data: GetAnnouncementResponse[] = await response.json();
+               store.dispatch('announcements/setAnnouncements', data);
+            }
+         } 
+
+      },
+      async refreshAll(): Promise<void> {
+         await this.refreshAnnouncements();
+      }
+   },
+   async created(): Promise<void> {
+      if (!this.isLoggedIn) {
+         this.$router.push('/login');
+      } else {
+         if (this.getRole === 'STUDENT') {
+            const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
+               method: 'GET',
+               credentials: 'include'
+            })
+
+            if (response.ok) {
+               const data: GetUserResponse[] = await response.json();
+               store.dispatch('instructors/setSubscribedInstructors', data)
             }
 
             var allAnnouncements = [];
             for (const instructor of this.getSubscribedInstructors) {
-               const instructorGUID = instructor.userGUID;
-
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+               const response: Response = await fetch(this.getAnnouncementsUrl(instructor.userGUID), {
                   method: 'GET',
                   credentials: 'include'
                });
                if (response.ok) {
-                  const data = await response.json();
+                  const data: GetAnnouncementResponse[] = await response.json();
                   if (data.length > 0)  {
                      allAnnouncements.push(...data);
-                     this.$store.dispatch('announcements/setAnnouncements', allAnnouncements)
+                     store.dispatch('announcements/setAnnouncements', allAnnouncements)
                   }
                }
             }
          } else {
-               const instructorGUID = this.$store.getters['login/getUserGUID'];
-
-                const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('announcements/setAnnouncements', data);
-                }
-
-         } 
-      }
-   },
-   computed: {
-      getSubscribedInstructorsEndpoint() {
-         return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserGUID'];
-      },
-      getSubscribedInstructors() {
-         return this.$store.getters['instructors/getSubscribedInstructors'];
-      },
-      getAnnouncements() {
-         return this.$store.getters['announcements/getAnnouncements'];
-      },
-      getMostRecentActiveAnnouncements() {
-         console.log(this.getAnnouncements)
-         const activeAnnouncements = this.getAnnouncements.filter(announcement => announcement.announcementStatus === 'ACTIVE');
-         return activeAnnouncements.slice(0, 3);
-      },
-      getRole() {
-         return this.$store.getters['login/getRole'];
-      }
-   },
-   methods: {
-      getAnnouncementsUrl(instructorGUID) {
-         return "http://localhost:8081/announcement/" + instructorGUID;
-      },
-      async refreshAnnouncements() {
-         if (this.$store.getters['login/getRole'] === 'STUDENT') {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-               method: 'GET',
-               credentials: 'include'
-            })
-
-            if (response.ok) {
-               const data = await response.json();
-               this.$store.dispatch('instructors/setSubscribedInstructors', data)
-            }
-
-            const subscribedInstructors = this.$store.getters['instructors/getSubscribedInstructors'];
-            // var allAnnouncements = [];
-            for (const instructor of subscribedInstructors) {
-               const instructorGUID = instructor.userGUID;
-
-               const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
-                  method: 'GET',
-                  credentials: 'include'
-               });
-               if (response.ok) {
-                  const data = await response.json();
-                  if (data.length > 0)  {
-                     this.$store.dispatch('announcements/setAnnouncements', data)
-
-                  }
-               }
-            }
-         } else {
-            const instructorGUID = this.$store.getters['login/getUserGUID'];
-
-            const response = await fetch(this.getAnnouncementsUrl(instructorGUID), {
+            const response = await fetch(this.getAnnouncementsUrl(this.getUserGUID), {
                method: 'GET',
                credentials: 'include'
             });
             if (response.ok) {
                const data = await response.json();
-               this.$store.dispatch('announcements/setAnnouncements', data);
+               store.dispatch('announcements/setAnnouncements', data);
             }
          } 
-
-      },
-      async refreshAll() {
-         await this.refreshAnnouncements();
       }
-   }
-   
-}
+   },
+})
 </script>
