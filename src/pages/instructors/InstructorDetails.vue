@@ -18,17 +18,31 @@
         <base-card>
             <header>
                 <h2> Interested? Reach out now! </h2> 
-                <button link :to="contactLink">Contact</button>
+                <button link :to="'#'">Contact</button>
             </header>
             <router-view/>
         </base-card>
     </section>
 </template>
 
-<script>
-export default {
-    props: ['id'],
-    data() {
+<script lang="ts">
+import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+import { PropType, defineComponent } from 'vue';
+import { mapGetters } from 'vuex';
+export default defineComponent({
+    name: 'InstructorDetails',
+    props: {
+        id: {
+            type: String as PropType<string>,
+            required: true
+        }
+    },
+    data(): {
+        selectedInstructor: GetUserResponse | null,
+        instructorName: string,
+        description: string
+    } {
         return {
             selectedInstructor: null,
             instructorName: '',
@@ -36,15 +50,17 @@ export default {
         };
     },
     computed: {
-        filteredSubjects() {
-            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](this.id);
-        }
+        filteredSubjects(): GetSubjectResponse[] {
+            return this.getSubjectsByInstructorGUID(this.id);
+        },
+        ...mapGetters('instructors', ['getSubscribedInstructors']),
+        ...mapGetters('subjects', ['getSubjectsByInstructorGUID'])
     },
-    created() {
-        this.selectedInstructor = this.$store.getters['instructors/getSubscribedInstructors'].find(
-            (instructor) => instructor.id === this.id
+    created(): void {
+        this.selectedInstructor = this.getSubscribedInstructors.find(
+            (instructor: { id: string; }) => instructor.id === this.id
         );
-        this.instructorName = this.selectedInstructor.instructorName;
+        this.instructorName = this.selectedInstructor? this.selectedInstructor.name : '';
     }
-};
+});
 </script>
