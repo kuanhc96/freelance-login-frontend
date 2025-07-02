@@ -14,19 +14,19 @@
     </div>
 </template>
 
-<script>
-export default {
-  props: [
-    'cardTitle',
-  ],
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+export default defineComponent({
+  props: {
+    cardTitle: {
+      type: String as PropType<string>,
+        required: true,
+    }
+  },
   methods: {
-    refresh() {
+    refresh(): void {
       this.$emit('refresh');
     }
   }
-}
+})
 </script>
-
-
-<style lang="scss" scoped>
-</style>
