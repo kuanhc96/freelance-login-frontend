@@ -22,7 +22,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in getUnsubscribedInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -35,7 +35,7 @@
                         <instructor-summary
                             class="mb-3"
                             v-for="instructor in filteredInstructors"
-                            :key="instructor.id"
+                            :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
                             :email="instructor.email"
@@ -46,67 +46,65 @@
                 </div>
             </div>
         </base-card>
-
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import { mapGetters } from 'vuex'
-export default {
+import { defineComponent } from 'vue'
+import store from '@/store'
+import { GetUserResponse } from '@/dto/response/getUserResponse'
+export default defineComponent({
     components: {
         InstructorSummary,
         BaseCard
     },
-    data() {
+    data(): {
+        keyword: string
+    } {
         return {
             keyword: ''
         }
     },
+    computed: {
+        ...mapGetters('instructors', ['getUnsubscribedInstructors', 'hasUnsubscribedInstructors']),
+        ...mapGetters('login', ['getUserGUID']),
+        isKeywordBlank(): boolean {
+            return this.keyword === '';
+        },
+        getUnsubscribedInstructorsEndpoint(): string {
+            return 'http://localhost:8081/subscription/unsubscribed/' + this.getUserGUID;
+        },
+        filteredInstructors(): GetUserResponse[] {
+            return this.getUnsubscribedInstructors
+                .filter((instructor: { instructorName: string }) => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
+        },
+    },
+    methods: {
+        async refresh(): Promise<void> {
+            const response: Response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
+                method: 'GET',
+                credentials: 'include'
+            })
+            if (response.ok) {
+                const data: GetUserResponse[] = await response.json();
+                store.dispatch('instructors/setUnsubscribedInstructors', data)
+            }
+        }
+    },
     async created() {
-        const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
+        const response: Response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
             method: 'GET',
             credentials: 'include'
         })
 
         if (response.ok) {
-            const data = await response.json();
-            this.$store.dispatch('instructors/setUnsubscribedInstructors', data)
+            const data: GetUserResponse[] = await response.json();
+            store.dispatch('instructors/setUnsubscribedInstructors', data)
         }
     },
-    methods: {
-        async refresh() {
-            const response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            })
-            console.log(response)
-
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setUnsubscribedInstructors', data)
-                console.log(this.unsubscribedInstructors)
-            }
-        }
-    },
-    computed: {
-        ...mapGetters('instructors', ['getUnsubscribedInstructors', 'hasUnsubscribedInstructors']),
-        isKeywordBlank() {
-            return this.keyword === '';
-        },
-        getUnsubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/unsubscribed/' + this.$store.getters['login/getUserGUID'];
-        },
-        // unsubscribedInstructors() {
-        //     return this.$store.getters['instructors/getUnsubscribedInstructors'].unsubscribedInstructors;
-        // },
-        filteredInstructors() {
-            const filtered = this.getUnsubscribedInstructors
-                .filter(instructor => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
-            return filtered
-        },
-    }
     
-}
+})
 </script>
