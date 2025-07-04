@@ -1,6 +1,6 @@
 <template>
     <section>
-        <base-card 
+        <base-card
             card-title="Search For Instructors"
             @refresh="refresh"
         >
@@ -10,10 +10,10 @@
                         <label for="search-instructors" class="border rounded-start input-group-text">
                             <i class="fa-solid fa-magnifying-glass"></i>
                         </label>
-                        <input 
-                            id="search-instructors" 
-                            type="text" 
-                            placeholder="Search Instructors" 
+                        <input
+                            id="search-instructors"
+                            type="text"
+                            placeholder="Search Instructors"
                             class="form-control fs-6 rounded-end col-md-10"
                             v-model="keyword"
                         >
@@ -21,7 +21,7 @@
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
-                            v-for="instructor in getUnsubscribedInstructors"
+                            v-for="instructor in unsubscribedInstructors"
                             :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
@@ -29,8 +29,8 @@
                             :portraitPath="'/alice.jpg'"
                             :display-subscribe="true"
                         ></instructor-summary>
-                    
-                    </ul> 
+
+                    </ul>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-else>
                         <instructor-summary
                             class="mb-3"
@@ -40,9 +40,9 @@
                             :instructorName="instructor.name"
                             :email="instructor.email"
                             :portraitPath="'/alice.jpg'"
-                            
+
                         ></instructor-summary>
-                    </ul> 
+                    </ul>
                 </div>
             </div>
         </base-card>
@@ -52,8 +52,7 @@
 <script lang="ts">
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
-import { mapGetters } from 'vuex'
-import { defineComponent } from 'vue'
+import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
 import store from '@/store'
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
@@ -62,30 +61,29 @@ export default defineComponent({
         InstructorSummary,
         BaseCard
     },
-    data(): {
-        keyword: string
-    } {
-        return {
-            keyword: ''
-        }
-    },
-    computed: {
-        ...mapGetters('instructors', ['getUnsubscribedInstructors', 'hasUnsubscribedInstructors']),
-        ...mapGetters('login', ['getUserGUID']),
-        isKeywordBlank(): boolean {
-            return this.keyword === '';
-        },
-        getUnsubscribedInstructorsEndpoint(): string {
-            return 'http://localhost:8081/subscription/unsubscribed/' + this.getUserGUID;
-        },
-        filteredInstructors(): GetUserResponse[] {
-            return this.getUnsubscribedInstructors
-                .filter((instructor: { instructorName: string }) => instructor.instructorName.toLowerCase().includes(this.keyword.toLowerCase()));
-        },
-    },
-    methods: {
-        async refresh(): Promise<void> {
-            const response: Response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
+    setup() {
+        const keyword: Ref<string> = ref('');
+        const unsubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return store.getters['instructors/getUnsubscribedInstructors'];
+        });
+        const hasUnsubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return store.getters['instructors/hasUnsubscribedInstructors'];
+        });
+        const userGUID: Ref<string> = computed(function() {
+            return store.getters['login/getUserGUID'];
+        });
+        const isKeywordBlank: Ref<boolean> = computed(function() {
+            return keyword.value === '';
+        });
+        const unsubscribedInstructorsEndpoint: Ref<string> = computed(function() {
+            return 'http://localhost:8081/subscription/unsubscribed/' + userGUID.value;
+        });
+        const filteredInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return unsubscribedInstructors.value
+                .filter((instructor: GetUserResponse) => instructor.name.toLowerCase().includes(keyword.value.toLowerCase()));
+        });
+        async function refresh(): Promise<void> {
+            const response: Response = await fetch(unsubscribedInstructorsEndpoint.value, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -94,18 +92,21 @@ export default defineComponent({
                 store.dispatch('instructors/setUnsubscribedInstructors', data)
             }
         }
-    },
-    async created() {
-        const response: Response = await fetch(this.getUnsubscribedInstructorsEndpoint, {
-            method: 'GET',
-            credentials: 'include'
+
+        onBeforeMount(async () => {
+            await refresh();
         })
 
-        if (response.ok) {
-            const data: GetUserResponse[] = await response.json();
-            store.dispatch('instructors/setUnsubscribedInstructors', data)
+        return {
+            keyword,
+            unsubscribedInstructors,
+            hasUnsubscribedInstructors,
+            userGUID,
+            isKeywordBlank,
+            unsubscribedInstructorsEndpoint,
+            filteredInstructors,
+            refresh
         }
     },
-    
 })
 </script>
