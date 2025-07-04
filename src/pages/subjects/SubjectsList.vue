@@ -20,7 +20,7 @@
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
-import {defineComponent, computed, Ref} from 'vue';
+import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import store from '@/store'
 
 
@@ -56,6 +56,10 @@ export default defineComponent({
                 }
             }
         }
+
+        onBeforeMount(async(): Promise<void> => {
+            await refresh();
+        })
 
         return {
             subscribedInstructors,
