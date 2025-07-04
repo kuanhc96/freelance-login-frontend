@@ -21,7 +21,7 @@
 <script lang="ts">
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
-import {PropType, defineComponent, ref, Ref, computed} from 'vue';
+import {PropType, defineComponent, ref, Ref, computed, onBeforeMount} from 'vue';
 import store from "@/store";
 export default defineComponent({
     name: 'InstructorDetails',
@@ -43,6 +43,13 @@ export default defineComponent({
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return store.getters["instructors/getSubscribedInstructors"]
         })
+
+        onBeforeMount(function(): void {
+            selectedInstructor.value = subscribedInstructors.value.find(
+                (instructor: GetUserResponse) => instructor.userGUID === props.id
+            )!;
+            instructorName.value = selectedInstructor.value? selectedInstructor.value.name : '';
+        })
         return {
             selectedInstructor,
             instructorName,
@@ -50,12 +57,6 @@ export default defineComponent({
             filteredSubjects,
             subscribedInstructors
         }
-    },
-    created(): void {
-        this.selectedInstructor = this.subscribedInstructors.find(
-            (instructor: GetUserResponse) => instructor.userGUID === this.id
-        )!;
-        this.instructorName = this.selectedInstructor? this.selectedInstructor.name : '';
     }
 });
 </script>
