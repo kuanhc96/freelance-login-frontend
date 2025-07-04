@@ -33,6 +33,7 @@
                             :instructorName="instructor.name"
                             :email="instructor.email"
                             :portraitPath="'/alice.jpg'"
+                            :display-subscribe="false"
                         ></instructor-summary>
                     </ul>
                 </div>
