@@ -128,10 +128,11 @@ import BaseCard from '../components/ui/BaseCard.vue';
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
 import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
 import DashboardCourse from '../components/lessons/DashboardLesson.vue'
-import {defineComponent, computed, Ref} from 'vue';
+import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import store from '@/store';
+import router from '@/router/router';
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -211,7 +212,13 @@ export default defineComponent({
             await refreshAnnouncements();
         }
 
-
+        onBeforeMount(async() => {
+            if (!isLoggedIn.value) {
+                router.push('/login');
+            } else {
+                await refreshAll();
+            }
+        })
         return {
             userGUID,
             role,
@@ -220,49 +227,7 @@ export default defineComponent({
             subscribedInstructors,
             announcements,
             mostRecentActiveAnnouncements,
-            announcementsUrl,
             refreshAll
-        }
-    },
-    async created(): Promise<void> {
-        if (!this.isLoggedIn) {
-            this.$router.push('/login');
-        } else {
-            if (this.role === 'STUDENT') {
-                const response: Response = await fetch(this.subscribedInstructorsEndpoint, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-
-                if (response.ok) {
-                    const data: GetUserResponse[] = await response.json();
-                    store.dispatch('instructors/setSubscribedInstructors', data)
-                }
-
-                var allAnnouncements = [];
-                for (const instructor of this.subscribedInstructors) {
-                    const response: Response = await fetch(this.announcementsUrl(instructor.userGUID), {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-                    if (response.ok) {
-                        const data: GetAnnouncementResponse[] = await response.json();
-                        if (data.length > 0) {
-                            allAnnouncements.push(...data);
-                            store.dispatch('announcements/setAnnouncements', allAnnouncements)
-                        }
-                    }
-                }
-            } else {
-                const response = await fetch(this.announcementsUrl(this.userGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    store.dispatch('announcements/setAnnouncements', data);
-                }
-            }
         }
     },
 })
