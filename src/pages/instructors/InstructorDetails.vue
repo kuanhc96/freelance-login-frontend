@@ -1,21 +1,14 @@
 <template>
     <h1>InstructorDetails</h1>
     <section>
-        <base-card>
+        <base-card
+            card-title="Instructor Details">
             <h2>{{instructorName}} </h2>
             <p>{{ description }}</p>
-        </base-card>
-    </section>
-    <section>
-        <base-card>
             <h2>Available Subjects</h2>
             <span v-for="subject in filteredSubjects"
-                :key="subject.subjectName"
+                  :key="subject.subjectGUID"
             >{{subject.subjectName}}</span>
-        </base-card>
-    </section>
-    <section>
-        <base-card>
             <header>
                 <h2> Interested? Reach out now! </h2>
                 <button link :to="'#'">Contact</button>
@@ -50,7 +43,6 @@ export default defineComponent({
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return store.getters["instructors/getSubscribedInstructors"]
         })
-
         return {
             selectedInstructor,
             instructorName,

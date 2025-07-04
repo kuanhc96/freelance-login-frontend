@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/instructors/search', component: SearchInstructors },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
-  ]},
+  ], props: true},
   { path: '/lessons', component: LessonsList },
   { path: '/transactions', component: TransactionsList },
   { path: '/transactions/:id', component: TransactionDetails },
