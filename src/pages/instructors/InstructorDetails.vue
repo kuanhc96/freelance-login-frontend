@@ -22,7 +22,7 @@
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {PropType, defineComponent, ref, Ref, computed, onBeforeMount} from 'vue';
-import store from "@/store";
+import { useStore } from 'vuex';
 export default defineComponent({
     name: 'InstructorDetails',
     props: {
@@ -32,6 +32,7 @@ export default defineComponent({
         }
     },
     setup(props) {
+        const store = useStore();
         const selectedInstructor: Ref<GetUserResponse | null> = ref(null);
         const instructorName: Ref<string> = ref('');
         const description: Ref<string> = ref('The best golf coach ever!');

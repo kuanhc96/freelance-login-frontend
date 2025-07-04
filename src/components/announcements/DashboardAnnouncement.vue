@@ -104,7 +104,7 @@
 <script lang="ts">
 import Cookies from 'js-cookie';
 import { defineComponent, PropType, Ref, ref, computed } from 'vue';
-import store from "@/store";
+import { useStore } from 'vuex';
 
 export default defineComponent({
     emits: [
@@ -138,6 +138,7 @@ export default defineComponent({
         }
     },
     setup(props, context) {
+        const store = useStore();
         const editedTitle: Ref<string> = ref('');
         const editedAnnouncement: Ref<string> = ref('');
         const editedStatus: Ref<string> = ref('');

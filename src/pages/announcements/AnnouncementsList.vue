@@ -157,7 +157,7 @@ import TheSearchBar from '@/components/layout/TheSearchBar.vue';
 import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.vue';
 import { defineComponent, Ref, ref, computed, onBeforeMount } from 'vue'
 import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
-import store from '@/store';
+import { useStore } from 'vuex';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 export default defineComponent({
     name: 'AnnouncementsList',
@@ -167,6 +167,7 @@ export default defineComponent({
         AnnouncementSummary
     },
     setup() {
+        const store = useStore();
         const keyword: Ref<string> = ref('');
         const activeTab: Ref<string> = ref('active');
         const userGUID: Ref<string> = computed(function() {

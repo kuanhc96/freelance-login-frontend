@@ -47,7 +47,7 @@ import InstructorSummary from '../../components/instructors/InstructorSummary.vu
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '../../components/layout/TheSearchBar.vue'
 import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
-import store from '@/store'
+import { useStore } from 'vuex'
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
     name: 'InstructorList',
@@ -57,6 +57,7 @@ export default defineComponent({
         TheSearchBar
     },
     setup() {
+        const store = useStore();
         const keyword: Ref<string> = ref('');
         const isKeywordBlank: Ref<boolean> = computed(function() {
             return keyword.value === '';

@@ -31,8 +31,8 @@
 import Cookies from 'js-cookie';
 import { defineComponent, PropType, Ref, computed } from 'vue'
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
-import store from "@/store";
-import router from "@/router/router";
+import { useStore } from 'vuex';
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
     props: {
@@ -58,17 +58,19 @@ export default defineComponent({
         }
     },
     setup(props) {
+        const store = useStore();
+        const route = useRoute();
         const userGUID: Ref<string> = computed(function() {
             return store.getters['login/getUserGUID'];
         });
         const detailsLink: Ref<string> = computed(function() {
-            return router.currentRoute.value.path + '/' + userGUID.value;
+            return route.path + '/' + userGUID.value;
         });
         const resolvedPortrait: Ref<string> = computed(function() {
             return new URL(props.portraitPath, import.meta.url).href;
         });
         const contactLink: Ref<string> = computed(function() {
-            return router.currentRoute.value.path + '/' + userGUID.value + '/contact';
+            return route.path + '/' + userGUID.value + '/contact';
         });
         const subscribeOrUnsubscribeText: Ref<string> = computed(function() {
             if (props.displaySubscribe) {

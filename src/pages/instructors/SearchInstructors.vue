@@ -53,7 +53,7 @@
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
-import store from '@/store'
+import { useStore } from 'vuex'
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
     name: 'SearchInstructors',
@@ -62,6 +62,7 @@ export default defineComponent({
         BaseCard
     },
     setup() {
+        const store = useStore();
         const keyword: Ref<string> = ref('');
         const unsubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return store.getters['instructors/getUnsubscribedInstructors'];

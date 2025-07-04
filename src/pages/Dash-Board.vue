@@ -131,8 +131,8 @@ import DashboardCourse from '../components/lessons/DashboardLesson.vue'
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
-import store from '@/store';
-import router from '@/router/router';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -143,6 +143,8 @@ export default defineComponent({
         DashboardCourse
     },
     setup() {
+        const store = useStore();
+        const router = useRouter();
         const userGUID: Ref<string> = computed(function() {
             return store.getters['login/getUserGUID'];
         })
