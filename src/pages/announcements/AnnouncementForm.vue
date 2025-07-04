@@ -1,6 +1,9 @@
 <template>
     <section>
-        <base-card :cardTitle="'Make Announcement'">
+        <base-card
+            :cardTitle="'Make Announcement'"
+            @refresh="refresh"
+        >
             <div class="row">
                 <div class="col-12">
                     <form action="">
@@ -25,25 +28,22 @@
 <script lang="ts">
 import BaseCard from '@/components/ui/BaseCard.vue';
 import {CreateAnnouncementResponse} from '@/dto/response/createAnnouncementResponse';
-import {defineComponent} from 'vue'
+import {defineComponent, Ref, ref} from 'vue'
 
 export default defineComponent({
     name: 'AnnouncementForm',
     components: {
         BaseCard,
     },
-    data(): {
-        subject: string,
-        announcement: string
-    } {
-        return {
-            subject: '',
-            announcement: ''
+    setup() {
+        const subject: Ref<string> = ref('');
+        const announcement: Ref<string> = ref('');
+        function refresh(): void {
+            subject.value = ''
+            announcement.value = ''
         }
-    },
-    methods: {
-        async submit(): Promise<void> {
-            if (this.subject !== '' && this.announcement !== '') {
+        async function submit(): Promise<void> {
+            if (subject.value !== '' && announcement.value !== '') {
                 const response: Response = await fetch(
                     'http://localhost:8081/announcement/createAnnouncement', {
                         method: 'POST',
@@ -53,8 +53,8 @@ export default defineComponent({
                         },
                         body: JSON.stringify({
                             instructorGUID: 'aa02e645-55ea-4aa3-953e-3ea543c8290f',
-                            title: this.subject,
-                            announcement: this.announcement
+                            title: subject.value,
+                            announcement: announcement.value
                         })
                     }
                 );
@@ -64,10 +64,15 @@ export default defineComponent({
                 }
             } else {
                 console.log('invalid input')
-
             }
         }
-    }
 
+        return {
+            subject,
+            announcement,
+            submit,
+            refresh
+        }
+    }
 })
 </script>
