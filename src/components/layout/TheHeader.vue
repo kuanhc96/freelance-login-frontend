@@ -55,13 +55,18 @@
 </template>
 
 <script lang="ts">
-import { mapGetters } from 'vuex';
-import { defineComponent } from 'vue';
+import { defineComponent, Ref, computed } from 'vue';
+import store from "@/store";
 
 export default defineComponent({
+    setup() {
+        const isLoggedIn: Ref<boolean> = computed(function() {
+            return store.getters['login/isLoggedIn'];
+        })
 
-    computed: {
-        ...mapGetters('login', ['isLoggedIn']),
+        return {
+            isLoggedIn
+        }
     }
 })
 </script>
