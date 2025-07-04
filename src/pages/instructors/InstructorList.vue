@@ -1,20 +1,20 @@
 <template>
     <section>
-        <base-card 
+        <base-card
             card-title="Subscribed Instructors"
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
                 <div class="col-md-10 col-10">
                     <the-search-bar
-                        :id="'search-instructors'" 
-                        :placeholder="'Search Instructors'" 
+                        :id="'search-instructors'"
+                        :placeholder="'Search Instructors'"
                         v-model="keyword"
                     ></the-search-bar>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
                         <instructor-summary
                             class="mb-3"
-                            v-for="instructor in getSubscribedInstructors"
+                            v-for="instructor in subscribedInstructors"
                             :key="instructor.userGUID"
                             :instructorGUID="instructor.userGUID"
                             :instructorName="instructor.name"
@@ -22,8 +22,8 @@
                             :portraitPath="'/alice.jpg'"
                             :display-subscribe="false"
                         ></instructor-summary>
-                    
-                    </ul> 
+
+                    </ul>
                     <ul class="d-flex align-items-center list-group my-3 p-1" v-else>
                         <instructor-summary
                             class="mb-3"
@@ -34,7 +34,7 @@
                             :email="instructor.email"
                             :portraitPath="'/alice.jpg'"
                         ></instructor-summary>
-                    </ul> 
+                    </ul>
                 </div>
             </div>
         </base-card>
@@ -45,52 +45,41 @@
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '../../components/layout/TheSearchBar.vue'
-import { defineComponent } from 'vue'
+import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
 import store from '@/store'
-import { mapGetters } from 'vuex'
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
     name: 'InstructorList',
-    data(): {
-        keyword: string
-    } {
-        return {
-            keyword: ''
-        }
-    },
     components: {
         InstructorSummary,
         BaseCard,
         TheSearchBar
     },
-    computed: {
-        isKeywordBlank(): boolean {
-            return this.keyword === '';
-        },
-        ...mapGetters('instructors', ['getSubscribedInstructors', 'hasSubscribedInstructors']),
-        ...mapGetters('login', ['getUserGUID']),
-        filteredInstructors(): GetUserResponse[] {
-            return this.getSubscribedInstructors.filter((instructor: { name: string }) => instructor.name.toLowerCase().includes(this.keyword.toLowerCase()));
-        },
-        getSubscribedInstructorsEndpoint(): string {
-            return 'http://localhost:8081/subscription/' + this.getUserGUID;
-        }
-    },
-    async created(): Promise<void> {
-        const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
-            method: 'GET',
-            credentials: 'include'
-        })
+    setup() {
+        const keyword: Ref<string> = ref('');
+        const isKeywordBlank: Ref<boolean> = computed(function() {
+            return keyword.value === '';
+        });
+        const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return store.getters['instructors/getSubscribedInstructors'];
+        });
+        const hasSubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return store.getters['instructors/hasSubscribedInstructors'];
+        });
+        const userGUID: Ref<string> = computed(function() {
+            return store.getters['login/getUserGUID'];
+        });
+        const filteredInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return subscribedInstructors.value.filter(
+                (instructor: GetUserResponse) => instructor.name.toLowerCase().includes(keyword.value.toLowerCase())
+            );
+        });
+        const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
+            return 'http://localhost:8081/subscription/' + userGUID.value;
+        });
 
-        if (response.ok) {
-            const data: GetUserResponse[] = await response.json();
-            store.dispatch('instructors/setSubscribedInstructors', data)
-        }
-
-    },
-    methods: {
-        async refresh(): Promise<void> {
-            const response: Response = await fetch(this.getSubscribedInstructorsEndpoint, {
+        async function refresh(): Promise<void> {
+            const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
                 method: 'GET',
                 credentials: 'include'
             })
@@ -99,6 +88,21 @@ export default defineComponent({
                 const data: GetUserResponse[] = await response.json();
                 store.dispatch('instructors/setSubscribedInstructors', data)
             }
+        }
+
+        onBeforeMount(async () => {
+            await refresh();
+        });
+
+        return {
+            keyword,
+            isKeywordBlank,
+            subscribedInstructors,
+            hasSubscribedInstructors,
+            userGUID,
+            filteredInstructors,
+            subscribedInstructorsEndpoint,
+            refresh
         }
     }
 })
