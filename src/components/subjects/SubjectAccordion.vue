@@ -30,25 +30,28 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import SubjectSummary from './SubjectSummary.vue'
-export default {
+import { GetSubjectResponse } from '@/dto/response/getSubjectResponse'
+import { defineComponent, PropType } from 'vue'
+export default defineComponent({
+    name: 'SubjectAccordion',
     components: {
         SubjectSummary
     },
     props: {
         instructorGUID: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         instructorName: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         subjects: {
-            type: Array,
+            type: Array as PropType<GetSubjectResponse[]>,
             required: true
         },
     } 
-}
+})
 </script>

@@ -3,39 +3,42 @@
         <label :for="id" class="border rounded-start input-group-text">
             <i class="fa-solid fa-magnifying-glass"></i>
         </label>
-        <input 
+        <input
             class="form-control fs-6 rounded-end col-md-10"
-            type="text" 
-            :id="id" 
-            :placeholder="placeholder" 
+            type="text"
+            :id="id"
+            :placeholder="placeholder"
             :value="modelValue"
             @input="onInput"
         >
     </div>
 </template>
 
-<script>
-export default {
-    data() {
+<script lang="ts">
+import { defineComponent, PropType, Ref, ref } from 'vue';
+export default defineComponent({
+    setup(_, context) {
+        const input: Ref<string> = ref('');
+        function onInput(event: Event): void {
+            const target = event.target as HTMLInputElement
+            context.emit('update:modelValue', target.value)
+        }
+
         return {
-            input: ''
+            input,
+            onInput
         }
     },
     props: {
         placeholder: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
         id: {
-            type: String,
+            type: String as PropType<string>,
             required: true
         },
-        modelValue: String
+        modelValue: String as PropType<string>
     },
-    methods: {
-        onInput(event) {
-            this.$emit('update:modelValue', event.target.value)
-        }
-    }
-}
+})
 </script>

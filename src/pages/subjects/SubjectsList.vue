@@ -1,86 +1,74 @@
 <template>
     <section>
-        <base-card 
+        <base-card
             :card-title="'Courses'"
             @refresh="refresh"
         >
             <subject-summary
-                v-for="instructor in getSubscribedInstructors" 
+                v-for="instructor in subscribedInstructors"
                 :key="instructor.userGUID"
                 :instructorGUID="instructor.userGUID"
                 :instructorName="instructor.name"
                 :subjects="getSubjectsByInstructorGUID(instructor.userGUID)"
             ></subject-summary>
-        
+
         </base-card>
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
-export default {
+import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
+import { GetUserResponse } from '@/dto/response/getUserResponse';
+import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
+import { useStore } from 'vuex'
+
+
+export default defineComponent({
+    name: 'SubjectsList',
     components: {
         SubjectSummary
     },
-    async created() {
-        if (!this.$store.getters['instructors/hasInstructors']) {
-            const response = await fetch(this.getSubscribedInstructorsEndpoint, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('instructors/setInstructors', { instructors: data });
-            }
+    setup() {
+        const store = useStore();
+        const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
+            return 'http://localhost:8081/subscription/' + store.getters['login/getUserGUID'];
+        })
+        const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
+            return store.getters['instructors/getSubscribedInstructors'];
+        })
+        function getSubjectsByInstructorEndpoint(instructorGUID: string): string {
+            return 'http://localhost:8081/subject/' + instructorGUID;
+        }
+        function getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
+            return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
         }
 
-        for (const instructor of this.$store.getters['instructors/instructors']) {
-            const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
-            }
-
-        }
-
-    },
-    methods: {
-        async refresh() {
-            for (const instructor of this.$store.getters['instructors/instructors']) {
-                const response = await fetch(this.getSubjectsByInstructorEndpoint(instructor.userGUID), {
+        async function refresh(): Promise<void> {
+            for (const instructor of subscribedInstructors.value) {
+                const response: Response = await fetch(getSubjectsByInstructorEndpoint(instructor.userGUID), {
                     method: 'GET',
                     credentials: 'include'
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    this.$store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+                    const data: GetSubjectResponse[] = await response.json();
+                    store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
                 }
-
             }
+        }
 
+        onBeforeMount(async(): Promise<void> => {
+            await refresh();
+        })
 
-        },
-        getSubjectsByInstructorEndpoint(instructorGUID) {
-            return 'http://localhost:8081/subject/' + instructorGUID;
-        },
-        getSubjectsByInstructorGUID(instructorGUID) {
-            return this.$store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+        return {
+            subscribedInstructors,
+            subscribedInstructorsEndpoint,
+            refresh,
+            getSubjectsByInstructorGUID,
+            getSubjectsByInstructorEndpoint
         }
     },
-    computed: {
-        getSubscribedInstructorsEndpoint() {
-            return 'http://localhost:8081/subscription/' + this.$store.getters['login/getUserId'];
-        },
-        getSubscribedInstructors() {
-            return this.$store.getters['instructors/instructors'];
-        },
-        
-    }
-}
+})
 </script>
