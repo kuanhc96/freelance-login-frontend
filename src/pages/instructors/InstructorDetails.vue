@@ -28,7 +28,7 @@
 <script lang="ts">
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
-import {PropType, defineComponent, reactive, ref, Ref, computed} from 'vue';
+import {PropType, defineComponent, ref, Ref, computed} from 'vue';
 import store from "@/store";
 export default defineComponent({
     name: 'InstructorDetails',
