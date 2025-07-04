@@ -3,15 +3,15 @@
     <div class="accordion w-100 h-100" id="myAccordion">
         <div class="accordion-item">
             <h2 class="accordion-header">
-                <button 
-                    class="accordion-button" 
-                    data-bs-toggle="collapse" 
+                <button
+                    class="accordion-button"
+                    data-bs-toggle="collapse"
                     :data-bs-target="'#' + announcementId"
                 >
                     <div class="w-100 me-2 d-flex justify-content-between align-items-center">
-                        <span><span v-if="isNew && getRole==='STUDENT'" class="badge bg-secondary">New!</span> {{ title }} </span>
-                        <span v-if="getRole==='STUDENT'">by {{ name }} </span>
-                        <span v-else>Published On {{ getHumanReadableDate }} </span>
+                        <span><span v-if="isNew && role==='STUDENT'" class="badge bg-secondary">New!</span> {{ title }} </span>
+                        <span v-if="role==='STUDENT'">by {{ name }} </span>
+                        <span v-else>Published On {{ humanReadableDate }} </span>
                     </div>
                 </button>
             </h2>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="">
                         <span class="fw-bold">
-                            Published on {{ getHumanReadableDate }}
+                            Published on {{ humanReadableDate }}
                             by {{ name }}
                         </span>
                     </div>
@@ -33,18 +33,18 @@
                     </div>
                     <div class="d-flex justify-content-end">
                         <!-- modal for editing announcement -->
-                        <button 
-                            v-if="getRole==='INSTRUCTOR'" 
-                            class="badge btn btn-primary me-2" 
-                            data-bs-toggle="modal" 
+                        <button
+                            v-if="role==='INSTRUCTOR'"
+                            class="badge btn btn-primary me-2"
+                            data-bs-toggle="modal"
                             :data-bs-target="'#modalEdit' + announcementId"
                         >
                             Edit Announcement >>
                         </button>
                         <!-- modal button -->
-                        <button 
-                            class="badge btn btn-secondary" 
-                            data-bs-toggle="modal" 
+                        <button
+                            class="badge btn btn-secondary"
+                            data-bs-toggle="modal"
                             :data-bs-target="'#modal' + announcementId"
                         >
                             See Details >>
@@ -64,7 +64,7 @@
                                     </div>
                                     <div class="modal-footer d-flex justify-content-between">
                                         <span class="fw-bold">
-                                            Published on {{ getHumanReadableDate }}
+                                            Published on {{ humanReadableDate }}
                                             by {{ name }}
                                         </span>
                                         <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -89,10 +89,10 @@
                                                 <label for="editedAnnouncement" class="form-label m-0">Edit Announcement</label>
                                                 <div class="d-flex align-items-center">
                                                     <label for="announcementsStatusDropdown" class="form-label w-100 mx-2 mb-0">Save As... </label>
-                                                    <select 
-                                                        name="" 
-                                                        id="announcementStatusDropdown" 
-                                                        v-model="editedStatus" 
+                                                    <select
+                                                        name=""
+                                                        id="announcementStatusDropdown"
+                                                        v-model="editedStatus"
                                                         class="form-select w-100 text-bg-light"
                                                     >
                                                         <option value="ACTIVE">Active</option>
@@ -121,23 +121,12 @@
 
 <script lang="ts">
 import Cookies from 'js-cookie';
-import { defineComponent, PropType } from 'vue';
-import { mapGetters } from 'vuex';
+import { defineComponent, PropType, computed, ref, Ref } from 'vue';
+import { useStore } from 'vuex';
 export default defineComponent({
     emits: [
         'announcementUpdated'
     ],
-    data(): {
-        editedTitle: string,
-        editedAnnouncement: string,
-        editedStatus: string
-    } {
-        return {
-            editedTitle: this.title,
-            editedAnnouncement: this.announcement,
-            editedStatus: this.status
-        }
-    },
     props: {
         title: {
             type: String as PropType<string>,
@@ -165,18 +154,24 @@ export default defineComponent({
             required: true
         }
     },
-    computed: {
-        ...mapGetters('login', ['getRole']),
-        isNew(): boolean {
-            const inputDate = new Date(this.date);
+    setup(props, context) {
+        const store = useStore();
+        const editedTitle: Ref<string> = ref('');
+        const editedAnnouncement: Ref<string> = ref('');
+        const editedStatus: Ref<string> = ref('');
+        const role: Ref<string> = computed(function() {
+            return store.getters['login/getRole'];
+        });
+        const isNew: Ref<boolean> = computed(function() {
+            const inputDate = new Date(props.date);
             const now = new Date();
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(now.getDate() - 7);
 
             return inputDate >= oneWeekAgo && inputDate <= now;
-        },
-        getHumanReadableDate(): string {
-            const date = new Date(this.date);
+        });
+        const humanReadableDate: Ref<string> = computed(function() {
+            const date = new Date(props.date);
             const options: Intl.DateTimeFormatOptions = {
                 year: 'numeric',
                 month: 'long',
@@ -184,11 +179,9 @@ export default defineComponent({
             };
 
             return date.toLocaleDateString('en-US', options);
-        },
-    },
-    methods: {
-        async submitEditedAnnouncement(): Promise<void> {
-            console.log('Edited Title: ' + this.editedTitle);
+        });
+        async function submitEditedAnnouncement(): Promise<void> {
+            console.log('Edited Title: ' + editedTitle.value);
             const csrfToken = Cookies.get('XSRF-TOKEN');
             const response: Response = await fetch('http://localhost:8081/announcement/update', {
                 method: 'PUT',
@@ -198,17 +191,19 @@ export default defineComponent({
                     'X-XSRF-TOKEN': csrfToken
                 },
                 body: JSON.stringify({
-                    'announcementGUID': this.announcementId,
-                    'title': this.editedTitle,
-                    'announcement': this.editedAnnouncement,
-                    'announcementStatus': this.editedStatus
+                    'announcementGUID': props.announcementId,
+                    'title': editedTitle.value,
+                    'announcement': editedAnnouncement.value,
+                    'announcementStatus': editedStatus.value
                 })
             });
 
             if (response.ok) {
-                this.$emit('announcementUpdated');
+                context.emit('announcementUpdated');
             }
         }
-    }
+
+        return {role, isNew, humanReadableDate, submitEditedAnnouncement, editedTitle, editedAnnouncement, editedStatus};
+    },
 })
 </script>

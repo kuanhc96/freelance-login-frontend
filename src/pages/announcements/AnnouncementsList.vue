@@ -12,7 +12,7 @@
                         v-model="keyword"
                     ></the-search-bar>
 
-                    <div class="" id="instructor-view" v-if="getRole==='INSTRUCTOR'">
+                    <div class="" id="instructor-view" v-if="role==='INSTRUCTOR'">
                         <!-- nav bar tab for active/draft/archived announcements -->
                         <nav
                             class="nav nav-tabs mt-3"
@@ -256,7 +256,8 @@ export default defineComponent({
             activeAnnouncements,
             draftAnnouncements,
             archivedAnnouncements,
-            filteredAnnouncements
+            filteredAnnouncements,
+            refresh
         }
     },
 })
