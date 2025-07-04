@@ -86,9 +86,6 @@
     </section>
 </template>
 
-<style scoped>
-</style>
-
 <script>
 import BaseCard from '../../components/ui/BaseCard.vue';
 
