@@ -56,13 +56,13 @@
 
 <script lang="ts">
 import { defineComponent, Ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { useLoginStore } from "@/store/login";
 
 export default defineComponent({
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
         const isLoggedIn: Ref<boolean> = computed(function() {
-            return store.getters['login/isLoggedIn'];
+            return loginStore.isLoggedIn;
         })
 
         return {

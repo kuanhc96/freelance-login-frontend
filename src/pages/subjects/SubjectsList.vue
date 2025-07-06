@@ -21,7 +21,9 @@ import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
-import { useStore } from 'vuex'
+import { useLoginStore} from "@/store/login";
+import { useInstructorsStore} from "@/store/instructors";
+import { useSubjectsStore} from "@/store/subjects";
 
 
 export default defineComponent({
@@ -30,18 +32,21 @@ export default defineComponent({
         SubjectSummary
     },
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const instructorsStore = useInstructorsStore();
+        const subjectsStore = useSubjectsStore();
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/' + store.getters['login/getUserGUID'];
+            return 'http://localhost:8081/subscription/' + loginStore.getUserGUID;
         })
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/getSubscribedInstructors'];
+            return instructorsStore.getSubscribedInstructors;
         })
         function getSubjectsByInstructorEndpoint(instructorGUID: string): string {
             return 'http://localhost:8081/subject/' + instructorGUID;
         }
         function getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
-            return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+            console.log(subjectsStore.getSubjectsByInstructorGUID(instructorGUID));
+            return subjectsStore.getSubjectsByInstructorGUID(instructorGUID);
         }
 
         async function refresh(): Promise<void> {
@@ -53,7 +58,7 @@ export default defineComponent({
 
                 if (response.ok) {
                     const data: GetSubjectResponse[] = await response.json();
-                    store.dispatch('subjects/addSubjects', {instructorGUID: instructor.userGUID, subjects: data})
+                    subjectsStore.addSubjects({instructorGUID: instructor.userGUID, subjects: data})
                 }
             }
         }

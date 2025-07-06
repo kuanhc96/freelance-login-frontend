@@ -157,7 +157,9 @@ import TheSearchBar from '@/components/layout/TheSearchBar.vue';
 import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.vue';
 import { defineComponent, Ref, ref, computed, onBeforeMount } from 'vue'
 import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
-import { useStore } from 'vuex';
+import { useLoginStore } from "@/store/login";
+import { useInstructorsStore } from "@/store/instructors";
+import { useAnnouncementsStore } from "@/store/announcements";
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 export default defineComponent({
     name: 'AnnouncementsList',
@@ -167,20 +169,22 @@ export default defineComponent({
         AnnouncementSummary
     },
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const instructorsStore = useInstructorsStore();
+        const announcementsStore = useAnnouncementsStore();
         const keyword: Ref<string> = ref('');
         const activeTab: Ref<string> = ref('active');
         const userGUID: Ref<string> = computed(function() {
-            return store.getters["login/getUserGUID"];
+            return loginStore.getUserGUID;
         });
         const role: Ref<string> = computed(function() {
-            return store.getters["login/getRole"];
+            return loginStore.getRole;
         });
         const announcements: Ref<GetAnnouncementResponse[]> = computed(function() {
-            return store.getters['announcements/getAnnouncements'];
+            return announcementsStore.getAnnouncements;
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/getSubscribedInstructors'];
+            return instructorsStore.getSubscribedInstructors;
         });
         const isKeywordBlank: Ref<boolean> = computed(function() {
             return keyword.value === '';
@@ -221,7 +225,7 @@ export default defineComponent({
 
             if (response.ok) {
                 const data: GetUserResponse[] = await response.json();
-                store.dispatch('instructors/setSubscribedInstructors', data)
+                instructorsStore.setSubscribedInstructors(data)
             }
 
 
@@ -232,7 +236,7 @@ export default defineComponent({
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    store.dispatch('announcements/setAnnouncements', data);
+                    announcementsStore.setAnnouncements(data);
                 }
             }
         }

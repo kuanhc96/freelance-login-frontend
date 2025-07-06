@@ -22,7 +22,9 @@
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {PropType, defineComponent, ref, Ref, computed, onBeforeMount} from 'vue';
-import { useStore } from 'vuex';
+import { useInstructorsStore} from "@/store/instructors";
+import { useSubjectsStore} from "@/store/subjects";
+
 export default defineComponent({
     name: 'InstructorDetails',
     props: {
@@ -32,17 +34,18 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const store = useStore();
+        const instructorsStore = useInstructorsStore();
+        const subjectsStore = useSubjectsStore();
         const selectedInstructor: Ref<GetUserResponse | null> = ref(null);
         const instructorName: Ref<string> = ref('');
         const description: Ref<string> = ref('The best golf coach ever!');
 
         const filteredSubjects: Ref<GetSubjectResponse[]> = computed(function() {
-            return store.getters['subjects/getSubjectsByInstructorGUID'](props.id)
+            return subjectsStore.getSubjectsByInstructorGUID(props.id);
         })
 
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters["instructors/getSubscribedInstructors"]
+            return instructorsStore.getSubscribedInstructors;
         })
 
         onBeforeMount(function(): void {

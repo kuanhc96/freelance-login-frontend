@@ -104,7 +104,7 @@
 <script lang="ts">
 import Cookies from 'js-cookie';
 import { defineComponent, PropType, Ref, ref, computed } from 'vue';
-import { useStore } from 'vuex';
+import { useLoginStore } from "@/store/login";
 
 export default defineComponent({
     emits: [
@@ -138,12 +138,12 @@ export default defineComponent({
         }
     },
     setup(props, context) {
-        const store = useStore();
+        const loginStore = useLoginStore();
         const editedTitle: Ref<string> = ref('');
         const editedAnnouncement: Ref<string> = ref('');
         const editedStatus: Ref<string> = ref('');
         const role: Ref<string> = computed(function() {
-            return store.getters['login/getRole'];
+            return loginStore.getRole;
         });
         const isNew: Ref<boolean> = computed(function() {
             const inputDate = new Date(props.date);
