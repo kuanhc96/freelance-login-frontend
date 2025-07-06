@@ -31,7 +31,8 @@
 import Cookies from 'js-cookie';
 import { defineComponent, PropType, Ref, computed } from 'vue'
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
-import { useStore } from 'vuex';
+import { useLoginStore } from "@/store/login";
+import {useSubjectsStore} from "@/store/subjects";
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
@@ -58,10 +59,11 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const subjectsStore = useSubjectsStore();
         const route = useRoute();
         const userGUID: Ref<string> = computed(function() {
-            return store.getters['login/getUserGUID'];
+            return loginStore.getUserGUID;
         });
         const detailsLink: Ref<string> = computed(function() {
             return route.path + '/' + userGUID.value;
@@ -80,10 +82,10 @@ export default defineComponent({
             }
         });
         function subjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
-            return store.getters['subjects/getSubjectsByInstructorGUID'](instructorGUID);
+            return subjectsStore.getSubjectsByInstructorGUID(instructorGUID);
         }
         function hasSubjectsByInstructorGUID(instructorGUID: string): boolean {
-            return store.getters['subjects/hasSubjectsByInstructorGUID'](instructorGUID);
+            return subjectsStore.hasSubjectsByInstructorGUID(instructorGUID);
         }
         function resolveImage(path: string): string {
             return new URL(path, import.meta.url).href;

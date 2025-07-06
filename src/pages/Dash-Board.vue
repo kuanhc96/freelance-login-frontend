@@ -131,7 +131,10 @@ import DashboardCourse from '../components/lessons/DashboardLesson.vue'
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
-import { useStore } from 'vuex';
+// import { useStore } from 'vuex';
+import { useLoginStore } from '@/store/login';
+import { useInstructorsStore } from '@/store/instructors';
+import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
@@ -143,25 +146,27 @@ export default defineComponent({
         DashboardCourse
     },
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const instructorsStore = useInstructorsStore();
+        const announcementsStore = useAnnouncementsStore();
         const router = useRouter();
         const userGUID: Ref<string> = computed(function() {
-            return store.getters['login/getUserGUID'];
+            return loginStore.getUserGUID;
         })
         const role: Ref<string> = computed(function() {
-            return store.getters['login/getRole'];
+            return loginStore.getRole;
         })
         const isLoggedIn: Ref<boolean> = computed(function() {
-            return store.getters['login/isLoggedIn'];
+            return loginStore.isLoggedIn;
         })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/' + userGUID.value;
         })
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/getSubscribedInstructors'];
+            return instructorsStore.getSubscribedInstructors;
         })
         const announcements: Ref<GetAnnouncementResponse[]> = computed(function() {
-            return store.getters['announcements/getAnnouncements'];
+            return announcementsStore.getAnnouncements;
         })
         const mostRecentActiveAnnouncements: Ref<GetAnnouncementResponse[]> = computed(function() {
             return announcements.value.filter((announcement: {
@@ -181,7 +186,7 @@ export default defineComponent({
 
                 if (response.ok) {
                     const data: GetUserResponse[] = await response.json();
-                    store.dispatch('instructors/setSubscribedInstructors', data)
+                    instructorsStore.setSubscribedInstructors(data)
                 }
 
                 for (const instructor of subscribedInstructors.value) {
@@ -194,7 +199,7 @@ export default defineComponent({
                     if (response.ok) {
                         const data: GetAnnouncementResponse[] = await response.json();
                         if (data.length > 0) {
-                            store.dispatch('announcements/setAnnouncements', data)
+                            announcementsStore.setAnnouncements(data);
                         }
                     }
                 }
@@ -206,7 +211,7 @@ export default defineComponent({
                 });
                 if (response.ok) {
                     const data: GetAnnouncementResponse[] = await response.json();
-                    store.dispatch('announcements/setAnnouncements', data);
+                    announcementsStore.setAnnouncements(data);
                 }
             }
         }

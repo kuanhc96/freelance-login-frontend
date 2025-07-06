@@ -53,7 +53,8 @@
 import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
 import BaseCard from '../../components/ui/BaseCard.vue'
 import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
-import { useStore } from 'vuex'
+import { useLoginStore } from '@/store/login';
+import { useInstructorsStore } from "@/store/instructors";
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
     name: 'SearchInstructors',
@@ -62,16 +63,17 @@ export default defineComponent({
         BaseCard
     },
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const instructorsStore = useInstructorsStore();
         const keyword: Ref<string> = ref('');
         const unsubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/getUnsubscribedInstructors'];
+            return instructorsStore.getUnsubscribedInstructors;
         });
-        const hasUnsubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/hasUnsubscribedInstructors'];
+        const hasUnsubscribedInstructors: Ref<boolean> = computed(function() {
+            return instructorsStore.hasUnsubscribedInstructors;
         });
         const userGUID: Ref<string> = computed(function() {
-            return store.getters['login/getUserGUID'];
+            return loginStore.getUserGUID;
         });
         const isKeywordBlank: Ref<boolean> = computed(function() {
             return keyword.value === '';
@@ -90,7 +92,7 @@ export default defineComponent({
             })
             if (response.ok) {
                 const data: GetUserResponse[] = await response.json();
-                store.dispatch('instructors/setUnsubscribedInstructors', data)
+                instructorsStore.setUnsubscribedInstructors(data);
             }
         }
 

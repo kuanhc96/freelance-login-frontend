@@ -86,54 +86,66 @@
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
+import { Ref, ref } from 'vue';
+import { useRouter} from "vue-router";
 
 export default {
     components: {
         BaseCard,
     },
-    data() {
-        return {
-            email: '',
-            name: '',
-            password: '',
-            dateInput: '',
-            retypePassword: '',
-            selectedRole: '', // Will hold the value "student" or "instructor" depending on which radio is checked
-            selectedGender: '', // Will hold the value "male" or "female" depending on which radio is checked
-            description: '',
-            apiEndpoint: ''
-        };
-    },
-    methods: {
-        submitForm() {
-            if (this.password === this.retypePassword) {
+    setup() {
+        const router = useRouter();
+        const email: Ref<string> = ref('');
+        const name: Ref<string> = ref('');
+        const password: Ref<string> = ref('');
+        const dateInput: Ref<string> = ref('');
+        const retypePassword: Ref<string> = ref('');
+        const selectedRole: Ref<string> = ref('');
+        const selectedGender: Ref<string> = ref('');
+        const description: Ref<string> = ref('');
 
-                const response = fetch('http://localhost:8081/user/createUser', {
+        async function submitForm() {
+            if (password.value === retypePassword.value) {
+
+                const response: Response = await fetch('http://localhost:8081/user/createUser', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        name: this.name,
-                        role: this.selectedRole,
-                        email: this.email,
-                        password: this.password,
-                        birthday: this.dateInput,
-                        gender: this.selectedGender,
-                        description: this.description
+                        name: name.value,
+                        role: selectedRole.value,
+                        email: email.value,
+                        password: password.value,
+                        birthday: dateInput.value,
+                        gender: selectedGender.value,
+                        description: description.value
                     }),
                 });
                 if (response.ok) {
-                    this.$router.push('/login');
+                    router.push('/login');
                 } else {
                     alert('an error occurred when creating an account')
                 }
             } else {
                 alert('password and retype password must match');
             }
+
         }
-    }
+
+        return {
+            email,
+            name,
+            password,
+            dateInput,
+            retypePassword,
+            selectedRole,
+            selectedGender,
+            description,
+            submitForm
+        }
+    },
 };
 </script>

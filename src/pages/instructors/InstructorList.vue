@@ -47,7 +47,8 @@ import InstructorSummary from '../../components/instructors/InstructorSummary.vu
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '../../components/layout/TheSearchBar.vue'
 import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
-import { useStore } from 'vuex'
+import { useLoginStore } from "@/store/login";
+import { useInstructorsStore } from "@/store/instructors";
 import { GetUserResponse } from '@/dto/response/getUserResponse'
 export default defineComponent({
     name: 'InstructorList',
@@ -57,19 +58,20 @@ export default defineComponent({
         TheSearchBar
     },
     setup() {
-        const store = useStore();
+        const loginStore = useLoginStore();
+        const instructorsStore = useInstructorsStore();
         const keyword: Ref<string> = ref('');
         const isKeywordBlank: Ref<boolean> = computed(function() {
             return keyword.value === '';
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/getSubscribedInstructors'];
+            return instructorsStore.getSubscribedInstructors;
         });
-        const hasSubscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return store.getters['instructors/hasSubscribedInstructors'];
+        const hasSubscribedInstructors: Ref<boolean> = computed(function() {
+            return instructorsStore.hasSubscribedInstructors;
         });
         const userGUID: Ref<string> = computed(function() {
-            return store.getters['login/getUserGUID'];
+            return loginStore.getUserGUID;
         });
         const filteredInstructors: Ref<GetUserResponse[]> = computed(function() {
             return subscribedInstructors.value.filter(
@@ -88,7 +90,7 @@ export default defineComponent({
 
             if (response.ok) {
                 const data: GetUserResponse[] = await response.json();
-                store.dispatch('instructors/setSubscribedInstructors', data)
+                instructorsStore.setSubscribedInstructors(data);
             }
         }
 

@@ -46,69 +46,30 @@
     </section>
 </template>
 
-<script>
+<script lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
+import {useLoginStore} from "@/store/login";
+import {onBeforeMount, Ref, ref} from "vue";
+import {useRouter} from 'vue-router';
 
 export default {
     components: {
         BaseCard
     },
-    data() {
-        return {
-            email: '',
-            password: '',
-            selectedRole: 'STUDENT'
+    setup() {
+        const loginStore = useLoginStore();
+        const router = useRouter();
+        const email: Ref<string> = ref('');
+        const password: Ref<string> = ref('');
+        const selectedRole: Ref<string> = ref('STUDENT');
+
+        function refresh() {
+            email.value = '';
+            password.value = '';
+            router.push("/login");
         }
-    },
-    async created() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const isLogout = urlParams.get('logout') === 'true';
-        if (isLogout) {
-            try {
-                this.$store.dispatch('login/logout');
-                await fetch('http://localhost:8081/apiLogout', {
-                    method: 'POST',
-                    credentials: 'include'
-                })
-            } catch (err) {
-                console.warn('Failed to logout on backend')
-            }
-        } else {
-            try {
-                const response = await fetch(
-                    'http://localhost:8081/checkLogin', {
-                        method: 'POST',
-                        credentials: 'include'
-                    }
-                );
 
-                if (!response.ok) {
-                    throw new Error('Not authenticated')
-                }
-
-                const data = await response.json();
-                this.$store.dispatch('login/login', {
-                    success: data.success,
-                    userGUID: data.userGUID,
-                    role: data.role,
-                    email: data.email
-                });
-
-                this.$router.push('/');
-            } catch (err) {
-                console.warn('Authentication failed with loginToken');
-                this.$router.push('/login');
-            }
-        }
-    },
-    methods: {
-        refresh() {
-            this.email = '';
-            this.password = '';
-            this.$router.push("/login");
-        },
-        submitForm() {
-            console.log(this.selectedRole)
+        function submitForm() {
             fetch("http://localhost:8081/apiLogin", {
                 method: 'POST',
                 credentials: 'include',
@@ -116,9 +77,9 @@ export default {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    'email': this.email,
-                    'password': this.password,
-                    'role': this.selectedRole
+                    'email': email.value,
+                    'password': password.value,
+                    'role': selectedRole.value
                 }),
             })
                 .then(response => {
@@ -130,22 +91,68 @@ export default {
                 })
                 .then(data => {
                         if (data) {
-                            this.$store.dispatch('login/login', {
+                            loginStore.login({
                                 success: data.success,
                                 userGUID: data.userGUID,
                                 role: data.role,
                                 email: data.email
                             });
-                            this.$router.push('/')
+                            router.push('/')
                         }
                     }
                 )
+        }
 
+        onBeforeMount(async() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isLogout = urlParams.get('logout') === 'true';
+            if (isLogout) {
+                try {
+                    loginStore.logout();
+                    await fetch('http://localhost:8081/apiLogout', {
+                        method: 'POST',
+                        credentials: 'include'
+                    })
+                } catch (err) {
+                    console.warn('Failed to logout on backend')
+                }
+            } else {
+                try {
+                    const response = await fetch(
+                        'http://localhost:8081/checkLogin', {
+                            method: 'POST',
+                            credentials: 'include'
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error('Not authenticated')
+                    }
+
+                    const data = await response.json();
+                    loginStore.login({
+                        success: data.success,
+                        userGUID: data.userGUID,
+                        role: data.role,
+                        email: data.email
+                    });
+                    console.log(loginStore);
+                    console.log(loginStore.getUserGUID);
+                    // router.push('/');
+                } catch (err) {
+                    console.warn('Authentication failed with loginToken');
+                    router.push('/login');
+                }
+            }
+        })
+
+        return {
+            email,
+            password,
+            selectedRole,
+            refresh,
+            submitForm
         }
     }
 }
 </script>
-
-
-<style lang="scss" scoped>
-</style>

@@ -1,24 +1,27 @@
-import { createStore } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
-import { RootState } from './types';
-import { instructors } from './instructors';
-import { subjects } from './subjects';
-import { login } from './login';
-import { announcements } from './announcements'
+import { createPinia } from 'pinia';
+import router from '@/router/router';
+// import createPersistedState from 'vuex-persistedstate';
+// import { RootState } from './types';
+import {markRaw} from "vue";
 
-const store = createStore<RootState>({
-    modules: {
-        instructors,
-        subjects,
-        login,
-        announcements,
-    },
-    plugins: [
-        createPersistedState({
-            key: 'freelance-app',
-            paths: ['login', 'instructors', 'announcements', 'subjects']
-        })
-    ]
+const pinia = createPinia();
+pinia.use(({ store }) => {
+    store.router = markRaw(router)
 })
 
-export default store;
+// const store = createStore<RootState>({
+//     modules: {
+//         instructors,
+//         subjects,
+//         login,
+//         announcements,
+//     },
+//     plugins: [
+//         createPersistedState({
+//             key: 'freelance-app',
+//             paths: ['login', 'instructors', 'announcements', 'subjects']
+//         })
+//     ]
+// })
+
+export default pinia;
