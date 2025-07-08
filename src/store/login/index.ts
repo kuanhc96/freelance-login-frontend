@@ -36,5 +36,6 @@ export const useLoginStore = defineStore('login', {
             this.loginResponse.role = '';
             this.loginResponse.email = '';
         }
-    }
+    },
+    persist: true,
 })

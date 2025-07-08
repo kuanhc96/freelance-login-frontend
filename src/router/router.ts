@@ -12,6 +12,7 @@ import InstructorDetails from '../pages/instructors/InstructorDetails.vue'
 import InstructorContact from '../pages/instructors/InstructorContact.vue'
 import SearchInstructors from '../pages/instructors/SearchInstructors.vue'
 import LessonsList from '../pages/lessons/LessonsList.vue'
+import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
 import TransactionDetails from '../pages/transactions/TransactionDetails.vue'
 import SubjectsList from '../pages/subjects/SubjectsList.vue'
@@ -36,6 +37,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
   ], props: true},
   { path: '/lessons', component: LessonsList },
+  { path: '/lessons/schedule', component: ScheduleLessonForm },
   { path: '/transactions', component: TransactionsList },
   { path: '/transactions/:id', component: TransactionDetails },
   { path: '/subjects', component: SubjectsList },

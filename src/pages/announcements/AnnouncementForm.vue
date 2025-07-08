@@ -29,6 +29,7 @@
 import BaseCard from '@/components/ui/BaseCard.vue';
 import {CreateAnnouncementResponse} from '@/dto/response/createAnnouncementResponse';
 import {defineComponent, Ref, ref} from 'vue'
+import Cookies from "js-cookie";
 
 export default defineComponent({
     name: 'AnnouncementForm',
@@ -43,13 +44,15 @@ export default defineComponent({
             announcement.value = ''
         }
         async function submit(): Promise<void> {
+            const csrfToken = Cookies.get('XSRF-TOKEN');
             if (subject.value !== '' && announcement.value !== '') {
                 const response: Response = await fetch(
                     'http://localhost:8081/announcement/createAnnouncement', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken
                         },
                         body: JSON.stringify({
                             instructorGUID: 'aa02e645-55ea-4aa3-953e-3ea543c8290f',

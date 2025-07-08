@@ -16,6 +16,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         setAnnouncements(announcements: GetAnnouncementResponse[]) {
             this.announcements = announcements;
         }
-    }
+    },
+    persist: true,
 
 })

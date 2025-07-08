@@ -34,6 +34,6 @@ export const useInstructorsStore = defineStore('instructors', {
         setAllInstructors(allInstructors: GetUserResponse[]) {
             this.allInstructors = allInstructors;
         }
-
-    }
+    },
+    persist: true,
 })
