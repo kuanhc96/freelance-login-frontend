@@ -143,7 +143,7 @@ import { useLoginStore } from "@/store/login";
 import { useInstructorsStore } from '@/store/instructors';
 import { useRouter } from 'vue-router';
 import {GetUserResponse} from "@/dto/response/getUserResponse";
-import {CreateLessonRequest} from '@/dto/request/createLessonRequest'
+import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'
 import Cookies from "js-cookie";
 
 export default defineComponent({
@@ -179,13 +179,7 @@ export default defineComponent({
 
         async function submitSchedule(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
-            console.log(selectedInstructorGUID.value)
-            console.log(selectedSubjectName.value)
-            console.log(inputDateTime.value)
-            console.log(frequency.value)
-            console.log(repeat.value)
-            console.log(selectedLocation.value)
-            const createLessonRequest: CreateLessonRequest = {
+            const createLessonsRequest: CreateLessonsRequest = {
                 studentGUID: userGUID.value,
                 instructorGUID: selectedInstructorGUID.value,
                 startDate: inputDateTime.value,
@@ -203,10 +197,9 @@ export default defineComponent({
                         'Content-Type': 'application/json',
                         'X-XSRF-TOKEN': csrfToken
                     },
-                    body: JSON.stringify(createLessonRequest)
+                    body: JSON.stringify(createLessonsRequest)
                 }
             );
-            console.log(response);
             if (response.ok) {
                 router.push('/lessons')
             }

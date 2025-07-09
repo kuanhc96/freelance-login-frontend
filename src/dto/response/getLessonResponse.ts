@@ -1,7 +1,9 @@
-export interface GetLessonsResponse {
+export interface GetLessonResponse {
     lessonGUID: string
     studentGUID: string
+    studentName: string
     instructorGUID: string
+    instructorName: string
     startDate: string
     location: string
     topic: string
