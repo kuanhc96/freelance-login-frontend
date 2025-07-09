@@ -1,7 +1,92 @@
 <template>
     <section>
-        <base-card :card-title="'Lessons'">
-
+        <base-card
+            :card-title="'Lessons'"
+            @refresh="refresh"
+        >
+            <ul class="d-flex align-items-center list-group my-3 p-1">
+                <lesson-summary
+                    v-for="lesson in lessons"
+                    :key="lesson.lessonGUID"
+                    :lesson-g-u-i-d="lesson.lessonGUID"
+                    :subject="lesson.subject"
+                    :student-or-instructor="getInstructorOrStudentName(lesson)"
+                    :date-time="lesson.startDate"
+                    :location="lesson.location"
+                    :status="lesson.lessonStatus"
+                ></lesson-summary>
+            </ul>
         </base-card>
     </section>
 </template>
+
+<script lang="ts">
+import {computed, defineComponent, onBeforeMount, Ref} from 'vue';
+import LessonSummary from '@/components/lessons/LessonSummary.vue';
+import { useLoginStore } from "@/store/login";
+import {AddLessonsPayload, useLessonsStore} from "@/store/lessons";
+import { GetLessonResponse } from '@/dto/response/getLessonResponse';
+export default defineComponent({
+    name: 'LessonsList',
+    components: {
+        LessonSummary
+    },
+    setup() {
+        const loginStore = useLoginStore();
+        const lessonsStore = useLessonsStore();
+        const userGUID: Ref<string> = computed(function() {
+            return loginStore.getUserGUID;
+        });
+        const role: Ref<string> = computed(function() {
+            return loginStore.getRole;
+        });
+        const getLessonsEndpoint: Ref<string> = computed(function() {
+            let endpoint = 'http://localhost:8081/lessons?';
+            if (role.value === 'INSTRUCTOR')  {
+                endpoint = endpoint + 'instructorGUID=';
+            } else {
+                endpoint = endpoint + 'studentGUID=';
+            }
+            endpoint = endpoint + userGUID.value;
+            return endpoint
+        });
+        function getInstructorOrStudentName(lesson: GetLessonResponse) {
+            if (role.value === 'INSTRUCTOR')  {
+                return lesson.studentName;
+            } else {
+                return lesson.instructorName;
+            }
+        }
+        const lessons: Ref<GetLessonResponse[]> = computed(function() {
+            return role.value === 'INSTRUCTOR'? lessonsStore.getLessonsByInstructorGUID(userGUID.value):
+                lessonsStore.getLessonsByStudentGUID(userGUID.value);
+        })
+        async function refresh(): Promise<void> {
+            const response: Response = await fetch(getLessonsEndpoint.value, {
+                method: 'GET',
+                credentials: 'include',
+            })
+
+            if (response.ok) {
+                const data: GetLessonResponse[] = await response.json()
+                const addLessonsPayload: AddLessonsPayload = {
+                    userGUID: userGUID.value,
+                    lessons: data
+                }
+                lessonsStore.addLessonsByStudentGUID(addLessonsPayload);
+            }
+
+        }
+
+        onBeforeMount(async () => {
+            await refresh();
+        });
+
+        return {
+            lessons,
+            getInstructorOrStudentName,
+            refresh
+        }
+    }
+})
+</script>
