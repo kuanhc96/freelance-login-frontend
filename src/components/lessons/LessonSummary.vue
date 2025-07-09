@@ -1,12 +1,31 @@
 <template>
-    <h4>12/1</h4>
+    <div class="card w-100 h-100 bg-white m-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="card-title">{{ subject }}  with {{ studentOrInstructor }}</h2>
+                <span class="badge bg-secondary">{{ status }}</span>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="card-text">
+                    <h3 class="row ">On {{ humanReadableDate }} At {{ humanReadableTime }} At {{ location }}</h3>
+                    <div class="row">
+                        <button class="btn btn-primary">Lesson Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, PropType} from 'vue'
+import {computed, defineComponent, PropType, Ref} from 'vue'
 export default defineComponent({
     props: {
         subject: {
+            type: String as PropType<string>,
+            required: true
+        },
+        studentOrInstructor: {
             type: String as PropType<string>,
             required: true
         },
@@ -18,9 +37,40 @@ export default defineComponent({
             type: String as PropType<string>,
             required: true
         },
-        date: {
+        dateTime: {
             type: String as PropType<string>,
             required: true
+        },
+        location: {
+            type: String as PropType<string>,
+            required: true
+        },
+    },
+    setup(props) {
+        const humanReadableDate: Ref<string> = computed(function() {
+            const date = new Date(props.dateTime);
+            const options: Intl.DateTimeFormatOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            return date.toLocaleDateString('en-US', options);
+        })
+
+        const humanReadableTime: Ref<string> = computed(function() {
+            const time = new Date(props.dateTime);
+            const options: Intl.DateTimeFormatOptions = {
+                hour: 'numeric',
+                minute: 'numeric',
+            };
+
+            return time.toLocaleDateString('en-US', options);
+        })
+
+        return {
+            humanReadableDate,
+            humanReadableTime
         }
     }
 })
