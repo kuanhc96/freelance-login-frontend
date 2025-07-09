@@ -5,6 +5,7 @@
             @refresh="refresh"
         >
             <ul class="d-flex align-items-center list-group my-3 p-1">
+                <router-link to="/lessons/schedule" class="btn btn-secondary my-2">+ Schedule New Lesson</router-link>
                 <lesson-summary
                     v-for="lesson in lessons"
                     :key="lesson.lessonGUID"
