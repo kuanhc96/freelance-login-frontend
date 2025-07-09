@@ -79,7 +79,7 @@ export default defineComponent({
             );
         });
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/' + userGUID.value;
+            return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
         });
 
         async function refresh(): Promise<void> {
