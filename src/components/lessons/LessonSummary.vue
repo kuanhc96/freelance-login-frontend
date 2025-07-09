@@ -1,15 +1,16 @@
 <template>
     <div class="card w-100 h-100 bg-white m-3">
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-center align-items-center position-relative">
                 <h2 class="card-title">{{ subject }}  with {{ studentOrInstructor }}</h2>
-                <span class="badge bg-secondary">{{ status }}</span>
+                <span class="badge bg-secondary position-absolute end-0">{{ status }}</span>
             </div>
             <div class="d-flex justify-content-center">
                 <div class="card-text">
                     <h3 class="row ">On {{ humanReadableDate }} At {{ humanReadableTime }} At {{ location }}</h3>
-                    <div class="row">
-                        <button class="btn btn-primary">Lesson Details</button>
+                    <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary">View Lesson Details</button>
+                            <button class="btn btn-secondary">Update Lesson Details</button>
                     </div>
                 </div>
             </div>
