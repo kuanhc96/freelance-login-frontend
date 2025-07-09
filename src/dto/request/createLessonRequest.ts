@@ -6,5 +6,5 @@ export interface CreateLessonRequest {
     subject: string,
     topic: string,
     repeat: number,
-    frequency: string
+    lessonFrequency: string
 }

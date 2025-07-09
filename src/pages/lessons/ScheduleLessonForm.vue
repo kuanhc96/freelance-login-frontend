@@ -32,13 +32,13 @@
                             <select
                                 class="w-100 form-select"
                                 id="subjectDropdown"
-                                v-model="selectedSubjectGUID"
+                                v-model="selectedSubjectName"
                             >
                                 <option selected="">Select Subject</option>
                                 <option
                                     v-for="subject in subjects"
                                     :key="subject.subjectGUID"
-                                    :value="subject.subjectGUID"
+                                    :value="subject.subjectName"
                                 >{{ subject.subjectName }}</option>
                             </select>
                         </div>
@@ -93,10 +93,10 @@
                                 v-model="frequency"
                             >
                                 <option selected="">Frequency</option>
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                                <option value="monthly">Monthly</option>
-                                <option value="none">Decide Later</option>
+                                <option value="DAILY">Daily</option>
+                                <option value="WEEKLY">Weekly</option>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="NONE">Decide Later</option>
                             </select>
                         </div>
                     </div>
@@ -141,6 +141,7 @@ import { GetSubjectResponse } from "@/dto/response/getSubjectResponse";
 import { useSubjectsStore } from "@/store/subjects";
 import { useLoginStore } from "@/store/login";
 import { useInstructorsStore } from '@/store/instructors';
+import { useRouter } from 'vue-router';
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateLessonRequest} from '@/dto/request/createLessonRequest'
 import Cookies from "js-cookie";
@@ -151,8 +152,10 @@ export default defineComponent({
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
         const instructorsStore = useInstructorsStore();
+        const router = useRouter();
+
         const selectedInstructorGUID: Ref<string> = ref('');
-        const selectedSubjectGUID: Ref<string> = ref('');
+        const selectedSubjectName: Ref<string> = ref('');
         const inputDateTime: Ref<string> = ref('');
         const repeat: Ref<number> = ref(0);
         const frequency: Ref<string> = ref('');
@@ -177,7 +180,7 @@ export default defineComponent({
         async function submitSchedule(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
             console.log(selectedInstructorGUID.value)
-            console.log(selectedSubjectGUID.value)
+            console.log(selectedSubjectName.value)
             console.log(inputDateTime.value)
             console.log(frequency.value)
             console.log(repeat.value)
@@ -187,13 +190,13 @@ export default defineComponent({
                 instructorGUID: selectedInstructorGUID.value,
                 startDate: inputDateTime.value,
                 location: selectedLocation.value,
-                subject: selectedSubjectGUID.value,
+                subject: selectedSubjectName.value,
                 topic: 'testTopic',
                 repeat: repeat.value,
-                frequency: frequency.value
+                lessonFrequency: frequency.value
             };
             const response: Response = await fetch(
-                'http://localhost:8081/lessons/createLesson', {
+                'http://localhost:8081/lessons/createLessons', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -204,11 +207,14 @@ export default defineComponent({
                 }
             );
             console.log(response);
+            if (response.ok) {
+                router.push('/lessons')
+            }
         }
 
         return {
             selectedInstructorGUID,
-            selectedSubjectGUID,
+            selectedSubjectName,
             inputDateTime,
             repeat,
             frequency,
