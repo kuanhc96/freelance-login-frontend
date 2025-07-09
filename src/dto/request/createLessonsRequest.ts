@@ -1,4 +1,4 @@
-export interface CreateLessonRequest {
+export interface CreateLessonsRequest {
     studentGUID: string,
     instructorGUID: string,
     startDate: string,
