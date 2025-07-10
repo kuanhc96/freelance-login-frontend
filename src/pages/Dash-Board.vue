@@ -84,7 +84,7 @@
                                         Subscribed Instructors
                                     </div>
                                     <div v-if="role==='STUDENT'" class="d-flex gap-2">
-                                        <router-link to="/instructors/search" class="btn btn-primary btn-sm">Search
+                                        <router-link to="/instructors" class="btn btn-primary btn-sm">Search
                                         </router-link>
                                     </div>
                                 </h3>
