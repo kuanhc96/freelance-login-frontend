@@ -55,11 +55,24 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h2 class="card-title">Upcoming Lessons</h2>
-                                <dashboard-course></dashboard-course>
-                                <p class="card-text">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque
-                                    rerum minus rem saepe consequuntur at culpa molestiae.
-                                </p>
+                                <dashboard-lesson
+                                    v-for="lesson in upcomingLessons"
+                                    :key="lesson.lessonGUID"
+                                    :lesson-g-u-i-d="lesson.lessonGUID"
+                                    :student-or-instructor-name="getInstructorOrStudentName(lesson)"
+                                    :date-time="lesson.startDate"
+                                    :location="lesson.location"
+                                    :subject="lesson.subject"
+                                ></dashboard-lesson>
+                                <div v-if="lessons.length > 3" class="d-flex justify-content-center">
+                                    <div class="fs-bold fs-2">...</div>
+                                </div>
+                                <div v-if="lessons.length > 3"
+                                     class="d-flex justify-content-center">
+                                    <router-link to="/lessons" class="btn btn-primary btn-sm stretched-link">View
+                                        All
+                                    </router-link>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,7 +140,7 @@
 import BaseCard from '../components/ui/BaseCard.vue';
 import DashboardAnnouncement from '../components/announcements/DashboardAnnouncement.vue';
 import DashboardInstructor from '../components/instructors/DashboardInstructor.vue'
-import DashboardCourse from '../components/lessons/DashboardLesson.vue'
+import DashboardLesson from '../components/lessons/DashboardLesson.vue'
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
@@ -136,6 +149,8 @@ import { useLoginStore } from '@/store/login';
 import { useInstructorsStore } from '@/store/instructors';
 import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
+import {GetLessonResponse} from "@/dto/response/getLessonResponse";
+import {AddLessonsPayload, useLessonsStore} from "@/store/lessons";
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -143,10 +158,11 @@ export default defineComponent({
         BaseCard,
         DashboardAnnouncement,
         DashboardInstructor,
-        DashboardCourse
+        DashboardLesson
     },
     setup() {
         const loginStore = useLoginStore();
+        const lessonsStore = useLessonsStore();
         const instructorsStore = useInstructorsStore();
         const announcementsStore = useAnnouncementsStore();
         const router = useRouter();
@@ -162,20 +178,55 @@ export default defineComponent({
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/' + userGUID.value;
         })
+        const getLessonsEndpoint: Ref<string> = computed(function() {
+            let endpoint = 'http://localhost:8081/lessons?';
+            if (role.value === 'INSTRUCTOR')  {
+                endpoint = endpoint + 'instructorGUID=';
+            } else {
+                endpoint = endpoint + 'studentGUID=';
+            }
+            endpoint = endpoint + userGUID.value;
+            return endpoint
+        });
+        const lessons: Ref<GetLessonResponse[]> = computed(function() {
+            if (role.value === 'STUDENT') {
+                return lessonsStore.getLessonsByStudentGUID(userGUID.value);
+            } else {
+                return lessonsStore.getLessonsByInstructorGUID(userGUID.value);
+            }
+        });
+        const upcomingLessons: Ref<GetLessonResponse[]> = computed(function() {
+            return lessons.value.slice(0, 3);
+        });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return instructorsStore.getSubscribedInstructors;
-        })
+        });
         const announcements: Ref<GetAnnouncementResponse[]> = computed(function() {
             return announcementsStore.getAnnouncements;
-        })
+        });
         const mostRecentActiveAnnouncements: Ref<GetAnnouncementResponse[]> = computed(function() {
             return announcements.value.filter((announcement: {
                 announcementStatus: string;
             }) => announcement.announcementStatus === 'ACTIVE').slice(0, 3);
 
-        })
+        });
         function announcementsUrl(instructorGUID: string): string {
             return "http://localhost:8081/announcement/" + instructorGUID;
+        }
+        async function refreshInstructorsOrStudents(): Promise<void> {
+            if (role.value === 'STUDENT') {
+                const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+
+                if (response.ok) {
+                    const data: GetUserResponse[] = await response.json();
+                    instructorsStore.setSubscribedInstructors(data)
+                }
+            } else {
+                // refresh students
+            }
         }
         async function refreshAnnouncements(): Promise<void> {
             if (role.value === 'STUDENT') {
@@ -215,8 +266,33 @@ export default defineComponent({
                 }
             }
         }
+        function getInstructorOrStudentName(lesson: GetLessonResponse) {
+            if (role.value === 'INSTRUCTOR')  {
+                return lesson.studentName;
+            } else {
+                return lesson.instructorName;
+            }
+        }
+
+        async function refreshLessons(): Promise<void> {
+            const response: Response = await fetch(getLessonsEndpoint.value, {
+                method: 'GET',
+                credentials: 'include',
+            })
+
+            if (response.ok) {
+                const data: GetLessonResponse[] = await response.json()
+                const addLessonsPayload: AddLessonsPayload = {
+                    userGUID: userGUID.value,
+                    lessons: data
+                }
+                lessonsStore.addLessonsByStudentGUID(addLessonsPayload);
+            }
+        }
         async function refreshAll(): Promise<void> {
             await refreshAnnouncements();
+            await refreshInstructorsOrStudents();
+            await refreshLessons();
         }
 
         onBeforeMount(async() => {
@@ -234,6 +310,9 @@ export default defineComponent({
             subscribedInstructors,
             announcements,
             mostRecentActiveAnnouncements,
+            lessons,
+            upcomingLessons,
+            getInstructorOrStudentName,
             refreshAll
         }
     },

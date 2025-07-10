@@ -9,8 +9,8 @@
                 <div class="card-text">
                     <h3 class="row ">On {{ humanReadableDate }} At {{ humanReadableTime }} At {{ location }}</h3>
                     <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary">View Lesson Details</button>
-                            <button class="btn btn-secondary">Update Lesson Details</button>
+                        <button class="btn btn-primary">View Lesson Details</button>
+                        <button class="btn btn-secondary">Update Lesson Details</button>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,7 @@ export default defineComponent({
                 minute: 'numeric',
             };
 
-            return time.toLocaleDateString('en-US', options);
+            return time.toLocaleTimeString('en-US', options);
         })
 
         return {
