@@ -1,41 +1,49 @@
 <template>
     <section>
         <base-card
-            card-title="Subscribed Instructors"
+            card-title="Instructors"
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
                 <div class="col-md-10 col-10">
-                    <the-search-bar
-                        :id="'search-instructors'"
-                        :placeholder="'Search Instructors'"
-                        v-model="keyword"
-                    ></the-search-bar>
-                    <ul class="d-flex align-items-center list-group my-3 p-1" v-if="isKeywordBlank">
-                        <instructor-summary
-                            class="mb-3"
-                            v-for="instructor in subscribedInstructors"
-                            :key="instructor.userGUID"
-                            :instructorGUID="instructor.userGUID"
-                            :instructorName="instructor.name"
-                            :email="instructor.email"
-                            :portraitPath="'/alice.jpg'"
-                            :display-subscribe="false"
-                        ></instructor-summary>
-
-                    </ul>
-                    <ul class="d-flex align-items-center list-group my-3 p-1" v-else>
-                        <instructor-summary
-                            class="mb-3"
-                            v-for="instructor in filteredInstructors"
-                            :key="instructor.userGUID"
-                            :instructorGUID="instructor.userGUID"
-                            :instructorName="instructor.name"
-                            :email="instructor.email"
-                            :portraitPath="'/alice.jpg'"
-                            :display-subscribe="false"
-                        ></instructor-summary>
-                    </ul>
+                    <nav class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <router-link
+                            class="nav-link active"
+                            id="nav-home-tab"
+                            data-bs-toggle="tab"
+                            to="#nav-home"
+                            role="tab"
+                            aria-controls="nav-home"
+                            aria-selected="true"
+                        >Subscribed</router-link>
+                        <router-link
+                            class="nav-link"
+                            id="nav-search-tab"
+                            data-bs-toggle="tab"
+                            to="#nav-search"
+                            role="tab"
+                            aria-controls="nav-search"
+                            aria-selected="false"
+                        >Search</router-link>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div
+                            class="tab-pane fade show active"
+                            id="nav-home"
+                            role="tabpanel"
+                            aria-labelledby="nav-home-tab"
+                        >
+                            <SubscribedInstructors></SubscribedInstructors>
+                        </div>
+                        <div
+                            class="tab-pane fade"
+                            id="nav-search"
+                            role="tabpanel"
+                            aria-labelledby="nav-search-tab"
+                        >
+                            <UnsubscribedInstructors></UnsubscribedInstructors>
+                        </div>
+                    </div>
                 </div>
             </div>
         </base-card>
@@ -43,54 +51,48 @@
 </template>
 
 <script lang="ts">
-import InstructorSummary from '../../components/instructors/InstructorSummary.vue'
-import BaseCard from '../../components/ui/BaseCard.vue'
-import TheSearchBar from '../../components/layout/TheSearchBar.vue'
-import {defineComponent, Ref, ref, computed, onBeforeMount} from 'vue'
+import {defineComponent, Ref, computed, onBeforeMount} from 'vue'
 import { useLoginStore } from "@/store/login";
 import { useInstructorsStore } from "@/store/instructors";
 import { GetUserResponse } from '@/dto/response/getUserResponse'
+import SubscribedInstructors from "@/components/instructors/SubscribedInstructors.vue";
+import UnsubscribedInstructors from "@/components/instructors/UnsubscribedInstructors.vue";
 export default defineComponent({
     name: 'InstructorList',
     components: {
-        InstructorSummary,
-        BaseCard,
-        TheSearchBar
+        SubscribedInstructors,
+        UnsubscribedInstructors
     },
     setup() {
         const loginStore = useLoginStore();
         const instructorsStore = useInstructorsStore();
-        const keyword: Ref<string> = ref('');
-        const isKeywordBlank: Ref<boolean> = computed(function() {
-            return keyword.value === '';
-        });
-        const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return instructorsStore.getSubscribedInstructors;
-        });
-        const hasSubscribedInstructors: Ref<boolean> = computed(function() {
-            return instructorsStore.hasSubscribedInstructors;
-        });
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
-        });
-        const filteredInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return subscribedInstructors.value.filter(
-                (instructor: GetUserResponse) => instructor.name.toLowerCase().includes(keyword.value.toLowerCase())
-            );
         });
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
         });
-
+        const unsubscribedInstructorsEndpoint: Ref<string> = computed(function() {
+            return 'http://localhost:8081/subscription/unsubscribed/' + userGUID.value;
+        });
         async function refresh(): Promise<void> {
-            const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
+            const subscriptionResponse: Response = await fetch(subscribedInstructorsEndpoint.value, {
                 method: 'GET',
                 credentials: 'include'
             })
 
-            if (response.ok) {
-                const data: GetUserResponse[] = await response.json();
+            if (subscriptionResponse.ok) {
+                const data: GetUserResponse[] = await subscriptionResponse.json();
                 instructorsStore.setSubscribedInstructors(data);
+            }
+
+            const unsubscribedResponse: Response = await fetch(unsubscribedInstructorsEndpoint.value, {
+                method: 'GET',
+                credentials: 'include'
+            })
+            if (unsubscribedResponse.ok) {
+                const data: GetUserResponse[] = await unsubscribedResponse.json();
+                instructorsStore.setUnsubscribedInstructors(data);
             }
         }
 
@@ -99,13 +101,6 @@ export default defineComponent({
         });
 
         return {
-            keyword,
-            isKeywordBlank,
-            subscribedInstructors,
-            hasSubscribedInstructors,
-            userGUID,
-            filteredInstructors,
-            subscribedInstructorsEndpoint,
             refresh
         }
     }

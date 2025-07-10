@@ -10,7 +10,6 @@ import AnnouncementsList from '../pages/announcements/AnnouncementsList.vue'
 import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
 import InstructorDetails from '../pages/instructors/InstructorDetails.vue'
 import InstructorContact from '../pages/instructors/InstructorContact.vue'
-import SearchInstructors from '../pages/instructors/SearchInstructors.vue'
 import LessonsList from '../pages/lessons/LessonsList.vue'
 import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
@@ -32,7 +31,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/instructors', component: InstructorsList },
   { path: '/announcements', component: AnnouncementsList },
   { path: '/announcements/create', component: AnnouncementForm },
-  { path: '/instructors/search', component: SearchInstructors },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
   ], props: true},

@@ -14,6 +14,9 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
+                        <router-link to="/announcements" class="nav-link">Announcements</router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link to="/instructors" class="nav-link">Instructors</router-link>
                     </li>
                     <li class="nav-item">
@@ -24,9 +27,6 @@
                     </li>
                     <li class="nav-item">
                         <router-link to="/transactions" class="nav-link ">Transaction</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link to="/instructors/search" class="nav-link ">Search</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link to="/login?logout=true" class="nav-link ">Logout</router-link>
