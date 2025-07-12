@@ -1,5 +1,5 @@
 export interface LoginResponse {
-    success: boolean
+    // tokenDuration: number
     userGUID: string
     email: string
     role: string

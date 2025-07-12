@@ -51,10 +51,8 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, Ref, computed, onBeforeMount} from 'vue'
-import { useLoginStore } from "@/store/login";
+import {defineComponent, onBeforeMount} from 'vue'
 import { useInstructorsStore } from "@/store/instructors";
-import { GetUserResponse } from '@/dto/response/getUserResponse'
 import SubscribedInstructors from "@/components/instructors/SubscribedInstructors.vue";
 import UnsubscribedInstructors from "@/components/instructors/UnsubscribedInstructors.vue";
 export default defineComponent({
@@ -64,36 +62,9 @@ export default defineComponent({
         UnsubscribedInstructors
     },
     setup() {
-        const loginStore = useLoginStore();
         const instructorsStore = useInstructorsStore();
-        const userGUID: Ref<string> = computed(function() {
-            return loginStore.getUserGUID;
-        });
-        const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
-        });
-        const unsubscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/unsubscribed/' + userGUID.value;
-        });
         async function refresh(): Promise<void> {
-            const subscriptionResponse: Response = await fetch(subscribedInstructorsEndpoint.value, {
-                method: 'GET',
-                credentials: 'include'
-            })
-
-            if (subscriptionResponse.ok) {
-                const data: GetUserResponse[] = await subscriptionResponse.json();
-                instructorsStore.setSubscribedInstructors(data);
-            }
-
-            const unsubscribedResponse: Response = await fetch(unsubscribedInstructorsEndpoint.value, {
-                method: 'GET',
-                credentials: 'include'
-            })
-            if (unsubscribedResponse.ok) {
-                const data: GetUserResponse[] = await unsubscribedResponse.json();
-                instructorsStore.setUnsubscribedInstructors(data);
-            }
+            await instructorsStore.setInstructors();
         }
 
         onBeforeMount(async () => {

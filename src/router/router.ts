@@ -18,35 +18,52 @@ import SubjectsList from '../pages/subjects/SubjectsList.vue'
 import SubjectDetails from '../pages/subjects/SubjectDetails.vue'
 import NotFound from '../pages/NotFound.vue'
 import Dashboard from '../pages/Dash-Board.vue'
+import {useLoginStore} from "@/store/login";
 
 const routes: RouteRecordRaw[] = [
-  { path: '/login', component: LoginForm },
-  { path: '/login?logout=true', component: LoginForm },
+    // paths that can only be accessed if logged out
+  { path: '/login', component: LoginForm, meta: { requiresLogout: true }},
+  { path: '/login?logout=true', component: LoginForm, meta: { requiresLogout: true }},
+
+    // paths that don't need to be protected
   { path: '/createAccount', component: CreateAccountForm },
   { path: '/forgetPassword', component: ForgetPasswordForm },
   { path: '/resetPassword', component: ResetPasswordForm },
+  { path: '/:notFound(.*)', redirect: '/notFound' },
+  { path: '/notFound', component: NotFound },
 
+    // paths that can only be accessed if logged in
   { path: '/', redirect: '/dashboard' },
-  { path: '/dashboard', component: Dashboard },
-  { path: '/instructors', component: InstructorsList },
-  { path: '/announcements', component: AnnouncementsList },
-  { path: '/announcements/create', component: AnnouncementForm },
+  { path: '/dashboard', component: Dashboard, meta: { requiresLogin: true } },
+  { path: '/instructors', component: InstructorsList, meta: { requiresLogin: true } },
+  { path: '/announcements', component: AnnouncementsList, meta: { requiresLogin: true } },
+  { path: '/announcements/create', component: AnnouncementForm, meta: { requiresLogin: true } },
   { path: '/instructors/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
-  ], props: true},
-  { path: '/lessons', component: LessonsList },
-  { path: '/lessons/schedule', component: ScheduleLessonForm },
-  { path: '/transactions', component: TransactionsList },
-  { path: '/transactions/:id', component: TransactionDetails },
-  { path: '/subjects', component: SubjectsList },
-  { path: '/subjects/:id', component: SubjectDetails },
-  { path: '/:notFound(.*)', redirect: '/notFound' },
-  { path: '/notFound', component: NotFound }
+  ], props: true, meta: { requiresLogin: true }},
+  { path: '/lessons', component: LessonsList, meta: { requiresLogin: true } },
+  { path: '/lessons/schedule', component: ScheduleLessonForm , meta: { requiresLogin: true }},
+  { path: '/transactions', component: TransactionsList, meta: { requiresLogin: true } },
+  { path: '/transactions/:id', component: TransactionDetails, meta: { requiresLogin: true } },
+  { path: '/subjects', component: SubjectsList, meta: { requiresLogin: true } },
+  { path: '/subjects/:id', component: SubjectDetails, meta: { requiresLogin: true } },
 ];
 
 const router: Router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach(function(to, _, next) {
+    const loginStore = useLoginStore();
+
+    if (to.meta.requiresLogin && !loginStore.isLoggedIn) {
+        next('/login');
+    } else if (to.meta.requiresLogout && loginStore.isLoggedIn) {
+        next('/dashboard');
+    } else {
+        next();
+    }
+})
 
 export default router;

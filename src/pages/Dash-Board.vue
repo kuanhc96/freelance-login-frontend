@@ -144,13 +144,12 @@ import DashboardLesson from '../components/lessons/DashboardLesson.vue'
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
-// import { useStore } from 'vuex';
 import { useLoginStore } from '@/store/login';
 import { useInstructorsStore } from '@/store/instructors';
 import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
-import {AddLessonsPayload, useLessonsStore} from "@/store/lessons";
+import { useLessonsStore } from "@/store/lessons";
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -176,18 +175,8 @@ export default defineComponent({
             return loginStore.isLoggedIn;
         })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/' + userGUID.value;
+            return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
         })
-        const getLessonsEndpoint: Ref<string> = computed(function() {
-            let endpoint = 'http://localhost:8081/lessons?';
-            if (role.value === 'INSTRUCTOR')  {
-                endpoint = endpoint + 'instructorGUID=';
-            } else {
-                endpoint = endpoint + 'studentGUID=';
-            }
-            endpoint = endpoint + userGUID.value;
-            return endpoint
-        });
         const lessons: Ref<GetLessonResponse[]> = computed(function() {
             if (role.value === 'STUDENT') {
                 return lessonsStore.getLessonsByStudentGUID(userGUID.value);
@@ -196,6 +185,7 @@ export default defineComponent({
             }
         });
         const upcomingLessons: Ref<GetLessonResponse[]> = computed(function() {
+            console.log(lessons.value);
             return lessons.value.slice(0, 3);
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
@@ -210,61 +200,11 @@ export default defineComponent({
             }) => announcement.announcementStatus === 'ACTIVE').slice(0, 3);
 
         });
-        function announcementsUrl(instructorGUID: string): string {
-            return "http://localhost:8081/announcement/" + instructorGUID;
-        }
         async function refreshInstructorsOrStudents(): Promise<void> {
-            if (role.value === 'STUDENT') {
-                const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-
-                if (response.ok) {
-                    const data: GetUserResponse[] = await response.json();
-                    instructorsStore.setSubscribedInstructors(data)
-                }
-            } else {
-                // refresh students
-            }
+            await    instructorsStore.setInstructorsOrStudents()
         }
         async function refreshAnnouncements(): Promise<void> {
-            if (role.value === 'STUDENT') {
-                const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-
-                if (response.ok) {
-                    const data: GetUserResponse[] = await response.json();
-                    instructorsStore.setSubscribedInstructors(data)
-                }
-
-                for (const instructor of subscribedInstructors.value) {
-                    const instructorGUID: string = instructor.userGUID;
-
-                    const response: Response = await fetch(announcementsUrl(instructorGUID), {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-                    if (response.ok) {
-                        const data: GetAnnouncementResponse[] = await response.json();
-                        if (data.length > 0) {
-                            announcementsStore.setAnnouncements(data);
-                        }
-                    }
-                }
-            } else {
-                // userGUID is the instructorGUID
-                const response: Response = await fetch(announcementsUrl(userGUID.value), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data: GetAnnouncementResponse[] = await response.json();
-                    announcementsStore.setAnnouncements(data);
-                }
-            }
+            await announcementsStore.setAnnouncements();
         }
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (role.value === 'INSTRUCTOR')  {
@@ -275,19 +215,7 @@ export default defineComponent({
         }
 
         async function refreshLessons(): Promise<void> {
-            const response: Response = await fetch(getLessonsEndpoint.value, {
-                method: 'GET',
-                credentials: 'include',
-            })
-
-            if (response.ok) {
-                const data: GetLessonResponse[] = await response.json()
-                const addLessonsPayload: AddLessonsPayload = {
-                    userGUID: userGUID.value,
-                    lessons: data
-                }
-                lessonsStore.addLessonsByStudentGUID(addLessonsPayload);
-            }
+            await lessonsStore.setLessons();
         }
         async function refreshAll(): Promise<void> {
             await refreshAnnouncements();
@@ -297,7 +225,7 @@ export default defineComponent({
 
         onBeforeMount(async() => {
             if (!isLoggedIn.value) {
-                router.push('/login');
+                await router.push('/login');
             } else {
                 await refreshAll();
             }

@@ -8,12 +8,18 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import TheHeader from './components/layout/TheHeader.vue'
+import { useLoginStore } from "@/store/login";
 
 @Options({
   components: {
     TheHeader
   },
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+    created() {
+        const loginStore = useLoginStore();
+        loginStore.checkLogin();
+    }
+}
 </script>
 

@@ -25,7 +25,7 @@
 import {computed, defineComponent, onBeforeMount, Ref} from 'vue';
 import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
-import {AddLessonsPayload, useLessonsStore} from "@/store/lessons";
+import { useLessonsStore } from "@/store/lessons";
 import { GetLessonResponse } from '@/dto/response/getLessonResponse';
 export default defineComponent({
     name: 'LessonsList',
@@ -41,16 +41,6 @@ export default defineComponent({
         const role: Ref<string> = computed(function() {
             return loginStore.getRole;
         });
-        const getLessonsEndpoint: Ref<string> = computed(function() {
-            let endpoint = 'http://localhost:8081/lessons?';
-            if (role.value === 'INSTRUCTOR')  {
-                endpoint = endpoint + 'instructorGUID=';
-            } else {
-                endpoint = endpoint + 'studentGUID=';
-            }
-            endpoint = endpoint + userGUID.value;
-            return endpoint
-        });
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (role.value === 'INSTRUCTOR')  {
                 return lesson.studentName;
@@ -63,20 +53,7 @@ export default defineComponent({
                 lessonsStore.getLessonsByStudentGUID(userGUID.value);
         })
         async function refresh(): Promise<void> {
-            const response: Response = await fetch(getLessonsEndpoint.value, {
-                method: 'GET',
-                credentials: 'include',
-            })
-
-            if (response.ok) {
-                const data: GetLessonResponse[] = await response.json()
-                const addLessonsPayload: AddLessonsPayload = {
-                    userGUID: userGUID.value,
-                    lessons: data
-                }
-                lessonsStore.addLessonsByStudentGUID(addLessonsPayload);
-            }
-
+            await lessonsStore.setLessons();
         }
 
         onBeforeMount(async () => {
