@@ -49,10 +49,9 @@
 <script lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
 import {useLoginStore} from "@/store/login";
-import {onBeforeMount, Ref, ref} from "vue";
+import {Ref, ref} from "vue";
 import {useRouter} from 'vue-router';
 import {LoginRequest} from "@/dto/request/loginRequest";
-import Cookies from "js-cookie";
 
 export default {
     components: {
