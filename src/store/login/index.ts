@@ -22,8 +22,6 @@ export const useLoginStore = defineStore('login', {
     }),
     getters: {
         isLoggedIn: (state) => {
-            console.log("LOL", state.xsrfToken);
-            console.log("LOL", state.userGUID);
             return !!state.userGUID?.trim() && !!state.xsrfToken?.trim()
         },
         getXsrfToken: state => state.xsrfToken,
@@ -77,7 +75,6 @@ export const useLoginStore = defineStore('login', {
 
             if (response.ok) {
                 const data: LoginResponse = await response.json();
-                console.log(data);
                 if (data) {
                     this.xsrfToken = Cookies.get('XSRF-TOKEN');
                     this.userGUID = data.userGUID;
