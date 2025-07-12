@@ -26,5 +26,4 @@ export const useSubjectsStore = defineStore('subjects', {
             this.instructorGUIDToSubjectsMap[payload.instructorGUID] = payload.subjects;
         }
     },
-    persist: true,
 })

@@ -17,6 +17,5 @@ export const useAnnouncementsStore = defineStore('announcements', {
             this.announcements = announcements;
         }
     },
-    persist: true,
 
 })

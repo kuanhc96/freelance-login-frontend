@@ -35,5 +35,4 @@ export const useInstructorsStore = defineStore('instructors', {
             this.allInstructors = allInstructors;
         }
     },
-    persist: true,
 })

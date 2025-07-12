@@ -28,5 +28,4 @@ export const useLessonsStore = defineStore('lessons', {
             this.instructorGUIDToLessonsMap[payload.userGUID] = payload.lessons;
         }
     },
-    persist: true,
 })
