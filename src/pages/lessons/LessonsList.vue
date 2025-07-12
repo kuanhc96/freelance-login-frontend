@@ -41,16 +41,6 @@ export default defineComponent({
         const role: Ref<string> = computed(function() {
             return loginStore.getRole;
         });
-        // const getLessonsEndpoint: Ref<string> = computed(function() {
-        //     let endpoint = 'http://localhost:8081/lessons?';
-        //     if (role.value === 'INSTRUCTOR')  {
-        //         endpoint = endpoint + 'instructorGUID=';
-        //     } else {
-        //         endpoint = endpoint + 'studentGUID=';
-        //     }
-        //     endpoint = endpoint + userGUID.value;
-        //     return endpoint
-        // });
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (role.value === 'INSTRUCTOR')  {
                 return lesson.studentName;

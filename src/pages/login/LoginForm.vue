@@ -80,18 +80,6 @@ export default {
             await loginStore.login(loginRequest);
         }
 
-        onBeforeMount(async() => {
-            // const urlParams = new URLSearchParams(window.location.search);
-            // const isLogout = urlParams.get('logout') === 'true';
-            // if (isLogout) {
-            //     try {
-            //         await loginStore.logout();
-            //     } catch (err) {
-            //         console.warn('Failed to logout on backend')
-            //     }
-            // }
-        })
-
         return {
             email,
             password,

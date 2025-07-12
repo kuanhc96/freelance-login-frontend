@@ -200,9 +200,6 @@ export default defineComponent({
             }) => announcement.announcementStatus === 'ACTIVE').slice(0, 3);
 
         });
-        // function announcementsUrl(instructorGUID: string): string {
-        //     return "http://localhost:8081/announcement/" + instructorGUID;
-        // }
         async function refreshInstructorsOrStudents(): Promise<void> {
             await    instructorsStore.setInstructorsOrStudents()
         }
