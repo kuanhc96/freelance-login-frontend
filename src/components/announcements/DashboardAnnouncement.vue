@@ -165,7 +165,6 @@ export default defineComponent({
         });
 
         async function submitEditedAnnouncement(): Promise<void> {
-            console.log('Edited Title: ' + editedTitle.value);
             const csrfToken = Cookies.get('XSRF-TOKEN');
             const response: Response = await fetch('http://localhost:8081/announcement/update', {
                 method: 'PUT',
