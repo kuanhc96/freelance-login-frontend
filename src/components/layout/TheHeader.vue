@@ -29,7 +29,7 @@
                         <router-link to="/transactions" class="nav-link ">Transaction</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="/login?logout=true" class="nav-link ">Logout</router-link>
+                        <router-link to="#" class="nav-link " @click="logout">Logout</router-link>
                     </li>
                 </ul>
                 <span class="nav-item">
@@ -57,16 +57,24 @@
 <script lang="ts">
 import { defineComponent, Ref, computed } from 'vue';
 import { useLoginStore } from "@/store/login";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
     setup() {
         const loginStore = useLoginStore();
+        const router = useRouter();
         const isLoggedIn: Ref<boolean> = computed(function() {
             return loginStore.isLoggedIn;
         })
 
+        async function logout(): Promise<void> {
+            await loginStore.logout();
+            await router.replace("/login?logout=true")
+        }
+
         return {
-            isLoggedIn
+            isLoggedIn,
+            logout
         }
     }
 })
