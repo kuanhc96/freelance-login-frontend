@@ -18,6 +18,7 @@
 import {defineComponent, PropType} from 'vue';
 
 export default defineComponent({
+    name: 'BaseCard',
     props: {
         cardTitle: {
             type: String as PropType<string>,

@@ -36,7 +36,7 @@ export default defineComponent({
         const instructorsStore = useInstructorsStore();
         const subjectsStore = useSubjectsStore();
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/' + loginStore.getUserGUID;
+            return 'http://localhost:8081/subscription/instructors/' + loginStore.getUserGUID;
         })
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return instructorsStore.getSubscribedInstructors;
@@ -45,22 +45,11 @@ export default defineComponent({
             return 'http://localhost:8081/subject/' + instructorGUID;
         }
         function getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
-            console.log(subjectsStore.getSubjectsByInstructorGUID(instructorGUID));
             return subjectsStore.getSubjectsByInstructorGUID(instructorGUID);
         }
 
         async function refresh(): Promise<void> {
-            for (const instructor of subscribedInstructors.value) {
-                const response: Response = await fetch(getSubjectsByInstructorEndpoint(instructor.userGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    const data: GetSubjectResponse[] = await response.json();
-                    subjectsStore.addSubjects({instructorGUID: instructor.userGUID, subjects: data})
-                }
-            }
+            await subjectsStore.setSubjects();
         }
 
         onBeforeMount(async(): Promise<void> => {

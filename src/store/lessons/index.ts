@@ -1,14 +1,11 @@
-import { GetLessonResponse } from '@/dto/response/getLessonResponse'
-import { defineStore } from 'pinia';
+import {GetLessonResponse} from '@/dto/response/getLessonResponse'
+import {defineStore} from 'pinia';
+import {LESSONS_ENDPOINT} from "@/store";
+import {useLoginStore} from "@/store/login";
 
 export interface LessonsState {
     studentGUIDToLessonsMap: Record<string, GetLessonResponse[]>,
     instructorGUIDToLessonsMap: Record<string, GetLessonResponse[]>
-}
-
-export interface AddLessonsPayload {
-    userGUID: string,
-    lessons: GetLessonResponse[]
 }
 
 export const useLessonsStore = defineStore('lessons', {
@@ -21,11 +18,35 @@ export const useLessonsStore = defineStore('lessons', {
         getLessonsByInstructorGUID: (state) => (instructorGUID: string) => { return state.instructorGUIDToLessonsMap[instructorGUID]},
     },
     actions: {
-        addLessonsByStudentGUID(payload: AddLessonsPayload) {
-            this.studentGUIDToLessonsMap[payload.userGUID] = payload.lessons;
+        async setLessonsByStudentGUID() {
+            const loginStore = useLoginStore();
+            const response: Response = await fetch(LESSONS_ENDPOINT + "studentGUID=" + loginStore.getUserGUID, {
+                method: 'GET',
+                credentials: 'include',
+            })
+
+            if (response.ok) {
+                this.studentGUIDToLessonsMap[loginStore.getUserGUID] = await response.json();
+            }
         },
-        addLessonsByInstructorGUID(payload: AddLessonsPayload) {
-            this.instructorGUIDToLessonsMap[payload.userGUID] = payload.lessons;
+        async setLessonsByInstructorGUID() {
+            const loginStore = useLoginStore();
+            const response: Response = await fetch(LESSONS_ENDPOINT + "instructorGUID=" + loginStore.getUserGUID, {
+                method: 'GET',
+                credentials: 'include',
+            })
+
+            if (response.ok) {
+                this.instructorGUIDToLessonsMap[loginStore.getUserGUID] = await response.json();
+            }
+        },
+        async setLessons() {
+            const loginStore = useLoginStore();
+            if (loginStore.isStudent) {
+                await this.setLessonsByStudentGUID();
+            } else {
+                await this.setLessonsByInstructorGUID();
+            }
         }
     },
 })

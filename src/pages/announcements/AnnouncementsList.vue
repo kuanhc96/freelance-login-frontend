@@ -189,9 +189,6 @@ export default defineComponent({
         const isKeywordBlank: Ref<boolean> = computed(function() {
             return keyword.value === '';
         });
-        const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/' + userGUID.value;
-        });
         const activeAnnouncements: Ref<GetAnnouncementResponse[]> = computed(function() {
             return announcements.value.filter(
                 (announcement: GetAnnouncementResponse) =>
@@ -218,31 +215,7 @@ export default defineComponent({
         });
 
         async function refresh() {
-            const response: Response = await fetch(subscribedInstructorsEndpoint.value, {
-                method: 'GET',
-                credentials: 'include'
-            })
-
-            if (response.ok) {
-                const data: GetUserResponse[] = await response.json();
-                instructorsStore.setSubscribedInstructors(data)
-            }
-
-
-            for (const instructor of subscribedInstructors.value) {
-                const response = await fetch(getAnnouncementsUrl(instructor.userGUID), {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    announcementsStore.setAnnouncements(data);
-                }
-            }
-        }
-
-        function getAnnouncementsUrl(instructorGUID: string): string {
-            return "http://localhost:8081/announcement/" + instructorGUID;
+            await announcementsStore.setAnnouncements();
         }
 
         onBeforeMount(async() => {

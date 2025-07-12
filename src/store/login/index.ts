@@ -3,6 +3,10 @@ import { LoginRequest } from '@/dto/request/loginRequest';
 import { defineStore } from 'pinia';
 import Cookies from "js-cookie";
 import router from "@/router/router";
+import {useLessonsStore} from "@/store/lessons";
+import {useAnnouncementsStore} from "@/store/announcements";
+import {useSubjectsStore} from "@/store/subjects";
+import {useInstructorsStore} from "@/store/instructors";
 
 export interface LoginState {
     xsrfToken: string
@@ -49,6 +53,7 @@ export const useLoginStore = defineStore('login', {
                         this.xsrfToken = Cookies.get('XSRF-TOKEN');
                         this.role = data.role;
                         this.email = data.email;
+                        await this.setup();
                         await router.replace('/')
                     }
                 } else {
@@ -82,7 +87,8 @@ export const useLoginStore = defineStore('login', {
                     this.role = data.role;
                     this.email = data.email;
                     // localStorage.setItem('expirationTimestamp', new Date().getTime() + data.tokenDuration)
-                    await router.replace('/')
+                    await this.setup();
+                    await router.replace('/');
                 }
             } else {
                 console.log(response);
@@ -98,6 +104,17 @@ export const useLoginStore = defineStore('login', {
             localStorage.removeItem('userGUID');
             this.role = '';
             this.email = '';
+        },
+        async setup(): Promise<void> {
+            const instructorsStore = useInstructorsStore();
+            const subjectsStore = useSubjectsStore();
+            const announcementsStore = useAnnouncementsStore();
+            const lessonsStore = useLessonsStore();
+
+            await instructorsStore.setInstructors();
+            await subjectsStore.setSubjects();
+            await announcementsStore.setAnnouncements();
+            await lessonsStore.setLessons();
         }
     },
 })
