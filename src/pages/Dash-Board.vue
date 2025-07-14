@@ -10,13 +10,13 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h2 class="card-title d-flex justify-content-between">
-                                    <div v-if="role==='STUDENT'" class="">
+                                    <div v-if="isStudent" class="">
                                         Announcements
                                     </div>
                                     <div v-else class="">
                                         My Active Announcements
                                     </div>
-                                    <div v-if="role==='INSTRUCTOR'" class="d-flex gap-2">
+                                    <div v-if="!isStudent" class="d-flex gap-2">
                                         <router-link to="/announcements/create" class="btn btn-primary btn-sm">Add New
                                         </router-link>
                                     </div>
@@ -32,17 +32,17 @@
                                     :announcement="announcement.announcement"
                                     @announcement-updated="refreshAll"
                                 ></dashboard-announcement>
-                                <div v-if="role === 'STUDENT' && announcements.length > 3"
+                                <div v-if="isStudent && announcements.length > 3"
                                      class="d-flex justify-content-center">
                                     <div class="fs-bold fs-2">...</div>
                                 </div>
-                                <div v-if="role === 'STUDENT' && announcements.length > 3"
+                                <div v-if="isStudent && announcements.length > 3"
                                      class="d-flex justify-content-center">
                                     <router-link to="/announcements" class="btn btn-primary btn-sm stretched-link">View
                                         All
                                     </router-link>
                                 </div>
-                                <div v-if="role === 'INSTRUCTOR'" class="d-flex justify-content-center">
+                                <div v-if="!isStudent" class="d-flex justify-content-center">
                                     <router-link to="/announcements" class="btn btn-primary btn-sm ">View All
                                     </router-link>
                                 </div>
@@ -96,7 +96,7 @@
                                     <div class="">
                                         Subscribed Instructors
                                     </div>
-                                    <div v-if="role==='STUDENT'" class="d-flex gap-2">
+                                    <div v-if="isStudent" class="d-flex gap-2">
                                         <router-link to="/instructors" class="btn btn-primary btn-sm">Search
                                         </router-link>
                                     </div>
@@ -168,17 +168,17 @@ export default defineComponent({
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
         })
-        const role: Ref<string> = computed(function() {
-            return loginStore.getRole;
-        })
         const isLoggedIn: Ref<boolean> = computed(function() {
             return loginStore.isLoggedIn;
         })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
         })
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        })
         const lessons: Ref<GetLessonResponse[]> = computed(function() {
-            if (role.value === 'STUDENT') {
+            if (isStudent.value) {
                 return lessonsStore.getLessonsByStudentGUID(userGUID.value);
             } else {
                 return lessonsStore.getLessonsByInstructorGUID(userGUID.value);
@@ -206,10 +206,10 @@ export default defineComponent({
             await announcementsStore.setAnnouncements();
         }
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
-            if (role.value === 'INSTRUCTOR')  {
-                return lesson.studentName;
-            } else {
+            if (isStudent.value)  {
                 return lesson.instructorName;
+            } else {
+                return lesson.studentName;
             }
         }
 
@@ -231,7 +231,7 @@ export default defineComponent({
         })
         return {
             userGUID,
-            role,
+            isStudent,
             isLoggedIn,
             subscribedInstructorsEndpoint,
             subscribedInstructors,

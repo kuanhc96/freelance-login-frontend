@@ -5,14 +5,14 @@
                 <div class="card-body">
                     <div class="w-100 me-2 d-flex justify-content-between align-items-center">
                         <div class="">
-                            <span v-if="isNew && role === 'STUDENT'" class="badge bg-secondary me-2">
+                            <span v-if="isNew && isStudent" class="badge bg-secondary me-2">
                                 New!
                             </span>
                             <span>
                                 {{ title }}
                             </span>
                         </div>
-                        <span v-if="role === 'STUDENT'">by {{ name }} </span>
+                        <span v-if="isStudent">by {{ name }} </span>
                         <span v-else>Published on {{ humanReadableDate }}</span>
                     </div>
                     <div class="card-text">
@@ -21,7 +21,7 @@
                     <div class="d-flex justify-content-end">
                         <!-- modal for editing announcement -->
                         <button
-                            v-if="role==='INSTRUCTOR'"
+                            v-if="!isStudent"
                             class="badge btn btn-primary me-2"
                             data-bs-toggle="modal"
                             :data-bs-target="'#modalEdit' + announcementId"
@@ -47,7 +47,7 @@
                                        <span class="fw-bold">
                                            Published On {{ humanReadableDate }}
                                        </span>
-                                       <span v-if="role==='STUDENT'">
+                                       <span v-if="isStudent">
                                            by {{ name }}
                                        </span>
                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -142,8 +142,8 @@ export default defineComponent({
         const editedTitle: Ref<string> = ref('');
         const editedAnnouncement: Ref<string> = ref('');
         const editedStatus: Ref<string> = ref('');
-        const role: Ref<string> = computed(function() {
-            return loginStore.getRole;
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
         });
         const isNew: Ref<boolean> = computed(function() {
             const inputDate = new Date(props.date);
@@ -190,7 +190,7 @@ export default defineComponent({
             editedTitle,
             editedAnnouncement,
             editedStatus,
-            role,
+            isStudent,
             isNew,
             humanReadableDate,
             submitEditedAnnouncement
