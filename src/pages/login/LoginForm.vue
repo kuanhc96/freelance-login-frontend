@@ -42,7 +42,18 @@
                 <router-link class="btn btn-primary me-3" to="/createAccount">Create an account</router-link>
                 <router-link class="btn btn-primary" to="/forgetPassword">Forgot password?</router-link>
             </div>
-            <!--        modal -->
+            <!--        Toast -->
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div class="toast" id="myToast">
+                    <div class="toast-header text-bg-light">
+                        <div class="me-auto">Auto Logged Out!</div>
+                        <button class="btn btn-close" data-bs-dismiss="toast" type="button" id="toastBtn"></button>
+                    </div>
+                    <div class="toast-body text-bg-light">
+                        Please Log In Again!
+                    </div>
+                </div>
+            </div>
         </BaseCard>
     </section>
 </template>
@@ -50,9 +61,10 @@
 <script lang="ts">
 import BaseCard from '../../components/ui/BaseCard.vue';
 import {useLoginStore} from "@/store/login";
-import {Ref, ref} from "vue";
+import {onMounted, Ref, ref} from "vue";
 import {useRouter} from 'vue-router';
 import {LoginRequest} from "@/dto/request/loginRequest";
+import Toast from 'bootstrap/js/dist/toast';
 
 export default {
     components: {
@@ -80,10 +92,30 @@ export default {
             await loginStore.login(loginRequest);
         }
 
+        function closeAutoLogout() {
+            loginStore.closeAutoLogout();
+        }
+
+        onMounted(() => {
+            const toast: Element | null = document.querySelector('#myToast');
+            if (loginStore.getDidAutoLogout) {
+                const toastBootstrap = Toast.getOrCreateInstance(toast!);
+                toastBootstrap.show();
+                const toastTrigger = document.querySelector('#toastBtn');
+                toastTrigger?.addEventListener('click', () => {
+                    toastBootstrap.hide();
+                    loginStore.closeAutoLogout();
+                })
+                loginStore.closeAutoLogout();
+            }
+
+        })
+
         return {
             email,
             password,
             selectedRole,
+            closeAutoLogout,
             refresh,
             submitForm
         }
