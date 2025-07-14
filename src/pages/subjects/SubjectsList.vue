@@ -4,20 +4,30 @@
             :card-title="'Courses'"
             @refresh="refresh"
         >
-            <subject-summary
-                v-for="instructor in subscribedInstructors"
-                :key="instructor.userGUID"
-                :instructorGUID="instructor.userGUID"
-                :instructorName="instructor.name"
-                :subjects="getSubjectsByInstructorGUID(instructor.userGUID)"
-            ></subject-summary>
+            <ul v-if="isStudent">
+                <subject-accordion
+                    v-for="instructor in subscribedInstructors"
+                    :key="instructor.userGUID"
+                    :instructorGUID="instructor.userGUID"
+                    :instructorName="instructor.name"
+                    :subjects="getSubjectsByInstructorGUID(instructor.userGUID)"
+                ></subject-accordion>
+            </ul>
+            <ul v-else>
+                <subject-accordion
+                    :key="userGUID"
+                    :instructorGUID="userGUID"
+                    instructorName="Me"
+                    :subjects="getSubjectsByInstructorGUID(userGUID)"
+                ></subject-accordion>
+            </ul>
 
         </base-card>
     </section>
 </template>
 
 <script lang="ts">
-import SubjectSummary from '@/components/subjects/SubjectAccordion.vue';
+import SubjectAccordion from '@/components/subjects/SubjectAccordion.vue';
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
@@ -29,12 +39,18 @@ import { useSubjectsStore} from "@/store/subjects";
 export default defineComponent({
     name: 'SubjectsList',
     components: {
-        SubjectSummary
+        SubjectAccordion
     },
     setup() {
         const loginStore = useLoginStore();
         const instructorsStore = useInstructorsOrStudentsStore();
         const subjectsStore = useSubjectsStore();
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        });
+        const userGUID: Ref<string> = computed(function() {
+            return loginStore.getUserGUID;
+        })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/instructors/' + loginStore.getUserGUID;
         })
@@ -57,6 +73,8 @@ export default defineComponent({
         })
 
         return {
+            isStudent,
+            userGUID,
             subscribedInstructors,
             subscribedInstructorsEndpoint,
             refresh,
