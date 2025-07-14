@@ -128,8 +128,11 @@ export const useLoginStore = defineStore('login', {
             await router.replace('/login');
         },
         async autoLogout(): Promise<void> {
-            await this.logout();
             this.didAutoLogout = true;
+            await this.logout();
+        },
+        closeAutoLogout(): void {
+            this.didAutoLogout = false;
         },
         async setup(): Promise<void> {
             const instructorsStore = useInstructorsStore();
