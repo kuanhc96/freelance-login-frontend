@@ -6,7 +6,7 @@ import router from "@/router/router";
 import {useLessonsStore} from "@/store/lessons";
 import {useAnnouncementsStore} from "@/store/announcements";
 import {useSubjectsStore} from "@/store/subjects";
-import {useInstructorsStore} from "@/store/instructorsOrStudents";
+import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 
 export interface LoginState {
     xsrfToken: string
@@ -135,7 +135,7 @@ export const useLoginStore = defineStore('login', {
             this.didAutoLogout = false;
         },
         async setup(): Promise<void> {
-            const instructorsStore = useInstructorsStore();
+            const instructorsStore = useInstructorsOrStudentsStore();
             const subjectsStore = useSubjectsStore();
             const announcementsStore = useAnnouncementsStore();
             const lessonsStore = useLessonsStore();

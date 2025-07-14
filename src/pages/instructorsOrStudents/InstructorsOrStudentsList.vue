@@ -1,11 +1,11 @@
 <template>
     <section>
         <base-card
-            card-title="Instructors"
+            :card-title="isStudent? 'Instructors': 'Students'"
             @refresh="refresh"
         >
             <div class="d-flex align-items-center flex-column">
-                <div class="col-md-10 col-10">
+                <div v-if="isStudent" class="col-md-10 col-10">
                     <nav class="nav nav-tabs" id="nav-tab" role="tablist">
                         <router-link
                             class="nav-link active"
@@ -45,26 +45,37 @@
                         </div>
                     </div>
                 </div>
+                <div v-else class="col-md-10 col-10">
+                    <MyStudents></MyStudents>
+                </div>
+
             </div>
         </base-card>
     </section>
 </template>
 
 <script lang="ts">
-import {defineComponent, onBeforeMount} from 'vue'
-import { useInstructorsStore } from "@/store/instructorsOrStudents";
+import {Ref, computed, defineComponent, onBeforeMount} from 'vue'
+import { useInstructorsOrStudentsStore } from "@/store/instructorsOrStudents";
+import { useLoginStore } from "@/store/login";
 import SubscribedInstructors from "@/components/instructors/SubscribedInstructors.vue";
 import UnsubscribedInstructors from "@/components/instructors/UnsubscribedInstructors.vue";
+import MyStudents from "@/components/students/MyStudents.vue";
 export default defineComponent({
-    name: 'InstructorList',
+    name: 'InstructorOrStudentsList',
     components: {
         SubscribedInstructors,
-        UnsubscribedInstructors
+        UnsubscribedInstructors,
+        MyStudents
     },
     setup() {
-        const instructorsStore = useInstructorsStore();
+        const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
+        const loginStore = useLoginStore();
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        })
         async function refresh(): Promise<void> {
-            await instructorsStore.setInstructors();
+            await instructorsOrStudentsStore.setInstructorsOrStudents();
         }
 
         onBeforeMount(async () => {
@@ -72,6 +83,7 @@ export default defineComponent({
         });
 
         return {
+            isStudent,
             refresh
         }
     }

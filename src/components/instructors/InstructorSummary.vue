@@ -66,13 +66,13 @@ export default defineComponent({
             return loginStore.getUserGUID;
         });
         const detailsLink: Ref<string> = computed(function() {
-            return route.path + '/' + userGUID.value;
+            return route.path + '/' + props.instructorGUID;
         });
         const resolvedPortrait: Ref<string> = computed(function() {
             return new URL(props.portraitPath, import.meta.url).href;
         });
         const contactLink: Ref<string> = computed(function() {
-            return route.path + '/' + userGUID.value + '/contact';
+            return route.path + '/' + props.instructorGUID + '/contact';
         });
         const subscribeOrUnsubscribeText: Ref<string> = computed(function() {
             if (props.displaySubscribe) {

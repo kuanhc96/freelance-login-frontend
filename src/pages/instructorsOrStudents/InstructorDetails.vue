@@ -22,7 +22,7 @@
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {PropType, defineComponent, ref, Ref, computed, onBeforeMount} from 'vue';
-import { useInstructorsStore} from "@/store/instructorsOrStudents";
+import { useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import { useSubjectsStore} from "@/store/subjects";
 
 export default defineComponent({
@@ -34,7 +34,7 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const instructorsStore = useInstructorsStore();
+        const instructorsStore = useInstructorsOrStudentsStore();
         const subjectsStore = useSubjectsStore();
         const selectedInstructor: Ref<GetUserResponse | null> = ref(null);
         const instructorName: Ref<string> = ref('');

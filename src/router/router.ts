@@ -5,11 +5,11 @@ import CreateAccountForm from '../pages/login/CreateAccountForm.vue';
 import ForgetPasswordForm from '../pages/login/ForgetPasswordForm.vue';
 import ResetPasswordForm from '../pages/login/ResetPasswordForm.vue';
 
-import InstructorsList from '../pages/instructors/InstructorList.vue'
+import InstructorsOrStudentsList from '@/pages/instructorsOrStudents/InstructorsOrStudentsList.vue'
 import AnnouncementsList from '../pages/announcements/AnnouncementsList.vue'
 import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
-import InstructorDetails from '../pages/instructors/InstructorDetails.vue'
-import InstructorContact from '../pages/instructors/InstructorContact.vue'
+import InstructorDetails from '@/pages/instructorsOrStudents/InstructorDetails.vue'
+import InstructorContact from '@/pages/instructorsOrStudents/InstructorContact.vue'
 import LessonsList from '../pages/lessons/LessonsList.vue'
 import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged in
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', component: Dashboard, meta: { requiresLogin: true } },
-  { path: '/instructorsOrStudents', component: InstructorsList, meta: { requiresLogin: true } },
+  { path: '/instructorsOrStudents', component: InstructorsOrStudentsList, meta: { requiresLogin: true } },
   { path: '/announcements', component: AnnouncementsList, meta: { requiresLogin: true } },
   { path: '/announcements/create', component: AnnouncementForm, meta: { requiresLogin: true } },
   { path: '/instructorsOrStudents/:id', component: InstructorDetails, children: [

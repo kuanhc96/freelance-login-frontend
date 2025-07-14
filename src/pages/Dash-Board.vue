@@ -145,7 +145,7 @@ import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import { useLoginStore } from '@/store/login';
-import { useInstructorsStore } from '@/store/instructorsOrStudents';
+import { useInstructorsOrStudentsStore } from '@/store/instructorsOrStudents';
 import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
@@ -162,7 +162,7 @@ export default defineComponent({
     setup() {
         const loginStore = useLoginStore();
         const lessonsStore = useLessonsStore();
-        const instructorsStore = useInstructorsStore();
+        const instructorsStore = useInstructorsOrStudentsStore();
         const announcementsStore = useAnnouncementsStore();
         const router = useRouter();
         const userGUID: Ref<string> = computed(function() {

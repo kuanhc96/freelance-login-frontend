@@ -13,7 +13,7 @@ export interface InstructorsState {
     myStudents: GetUserResponse[]
 }
 
-export const useInstructorsStore = defineStore('instructors', {
+export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents', {
     state: (): InstructorsState => ({
         subscribedInstructors: [],
         unsubscribedInstructors: [],

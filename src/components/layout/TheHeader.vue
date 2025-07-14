@@ -17,7 +17,10 @@
                         <router-link to="/announcements" class="nav-link">Announcements</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="/instructors" class="nav-link">Instructors</router-link>
+                        <router-link to="/instructorsOrStudents" class="nav-link">
+                            <span v-if="isStudent">Instructors</span>
+                            <span v-else>Students</span>
+                        </router-link>
                     </li>
                     <li class="nav-item">
                         <router-link to="/lessons" class="nav-link ">Lessons</router-link>
@@ -67,13 +70,18 @@ export default defineComponent({
             return loginStore.isLoggedIn;
         })
 
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        })
+
         async function logout(): Promise<void> {
             await loginStore.logout();
-            await router.replace("/login?logout=true")
+            await router.replace("/login")
         }
 
         return {
             isLoggedIn,
+            isStudent,
             logout
         }
     }

@@ -1,6 +1,6 @@
 import {GetSubjectResponse} from '@/dto/response/getSubjectResponse';
 import {defineStore} from 'pinia';
-import {useInstructorsStore} from "@/store/instructorsOrStudents";
+import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {SUBJECTS_ENDPOINT} from "@/store";
 
 export interface SubjectsState {
@@ -30,7 +30,7 @@ export const useSubjectsStore = defineStore('subjects', {
     },
     actions: {
         async setSubjects() {
-            const instructorsStore = useInstructorsStore();
+            const instructorsStore = useInstructorsOrStudentsStore();
             for (const instructor of instructorsStore.getSubscribedInstructors) {
                 const response: Response = await fetch(SUBJECTS_ENDPOINT + instructor.userGUID, {
                     method: 'GET',

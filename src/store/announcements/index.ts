@@ -1,7 +1,7 @@
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import {defineStore} from 'pinia';
 import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
-import {useInstructorsStore} from "@/store/instructorsOrStudents";
+import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useLoginStore} from "@/store/login";
 
 export interface AnnouncementsState {
@@ -17,7 +17,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     },
     actions: {
         async setAnnouncementsForStudent() {
-            const instructorsStore = useInstructorsStore();
+            const instructorsStore = useInstructorsOrStudentsStore();
 
             for (const instructor of instructorsStore.getSubscribedInstructors) {
                 const response = await fetch(ANNOUNCEMENTS_ENDPOINT + instructor.userGUID, {

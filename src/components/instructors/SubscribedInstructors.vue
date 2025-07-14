@@ -36,7 +36,7 @@
 import InstructorSummary from "@/components/instructors/InstructorSummary.vue";
 import TheSearchBar from "@/components/layout/TheSearchBar.vue";
 import {computed, defineComponent, ref, Ref} from "vue";
-import {useInstructorsStore} from "@/store/instructorsOrStudents";
+import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 
 export default defineComponent({
@@ -46,7 +46,7 @@ export default defineComponent({
         TheSearchBar,
     },
     setup() {
-        const instructorsStore = useInstructorsStore();
+        const instructorsStore = useInstructorsOrStudentsStore();
         const keyword: Ref<string> = ref('');
         const isKeywordBlank: Ref<boolean> = computed(function () {
             return keyword.value === '';

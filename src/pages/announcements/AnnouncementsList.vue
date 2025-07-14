@@ -158,7 +158,7 @@ import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.
 import { defineComponent, Ref, ref, computed, onBeforeMount } from 'vue'
 import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
 import { useLoginStore } from "@/store/login";
-import { useInstructorsStore } from "@/store/instructorsOrStudents";
+import { useInstructorsOrStudentsStore } from "@/store/instructorsOrStudents";
 import { useAnnouncementsStore } from "@/store/announcements";
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 export default defineComponent({
@@ -170,7 +170,7 @@ export default defineComponent({
     },
     setup() {
         const loginStore = useLoginStore();
-        const instructorsStore = useInstructorsStore();
+        const instructorsStore = useInstructorsOrStudentsStore();
         const announcementsStore = useAnnouncementsStore();
         const keyword: Ref<string> = ref('');
         const activeTab: Ref<string> = ref('active');

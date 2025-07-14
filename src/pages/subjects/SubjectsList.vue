@@ -22,7 +22,7 @@ import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import { useLoginStore} from "@/store/login";
-import { useInstructorsStore} from "@/store/instructorsOrStudents";
+import { useInstructorsOrStudentsStore } from "@/store/instructorsOrStudents";
 import { useSubjectsStore} from "@/store/subjects";
 
 
@@ -33,7 +33,7 @@ export default defineComponent({
     },
     setup() {
         const loginStore = useLoginStore();
-        const instructorsStore = useInstructorsStore();
+        const instructorsStore = useInstructorsOrStudentsStore();
         const subjectsStore = useSubjectsStore();
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
             return 'http://localhost:8081/subscription/instructors/' + loginStore.getUserGUID;
