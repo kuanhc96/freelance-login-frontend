@@ -42,6 +42,7 @@
                 <router-link class="btn btn-primary me-3" to="/createAccount">Create an account</router-link>
                 <router-link class="btn btn-primary" to="/forgetPassword">Forgot password?</router-link>
             </div>
+            <!--        modal -->
         </BaseCard>
     </section>
 </template>

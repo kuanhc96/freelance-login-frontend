@@ -185,7 +185,6 @@ export default defineComponent({
             }
         });
         const upcomingLessons: Ref<GetLessonResponse[]> = computed(function() {
-            console.log(lessons.value);
             return lessons.value.slice(0, 3);
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {

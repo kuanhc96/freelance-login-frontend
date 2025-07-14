@@ -11,12 +11,12 @@ import TheHeader from './components/layout/TheHeader.vue'
 import { useLoginStore } from "@/store/login";
 
 @Options({
-  components: {
-    TheHeader
-  },
+    components: {
+      TheHeader
+    },
 })
 export default class App extends Vue {
-    created() {
+    created(): void {
         const loginStore = useLoginStore();
         loginStore.checkLogin();
     }

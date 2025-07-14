@@ -11,7 +11,7 @@
             </div>
             <div class="d-flex justify-content-center">
                 <!-- modal button -->
-                <button 
+                <button
                     class="btn btn-secondary"
                     data-bs-toggle="modal"
                     :data-bs-target="'#modal' + subjectGUID"
@@ -45,7 +45,7 @@
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </template>
 
 <script lang="ts">

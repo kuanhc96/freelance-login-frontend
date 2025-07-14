@@ -7,20 +7,25 @@ export interface SubjectsState {
     instructorGUIDToSubjectsMap: Record<string, GetSubjectResponse[]>
 }
 
-export interface AddSubjectPayload {
-    instructorGUID: string
-    subjects: GetSubjectResponse[]
-}
-
 export const useSubjectsStore = defineStore('subjects', {
     state: (): SubjectsState => ({
         instructorGUIDToSubjectsMap: {}
     }),
     getters: {
-        getSubjectsByInstructorGUID: (state) => (instructorGUID: string) => { return state.instructorGUIDToSubjectsMap[instructorGUID] },
+        getSubjectsByInstructorGUID: (state) => (instructorGUID: string) => {
+            if (instructorGUID in state.instructorGUIDToSubjectsMap) {
+                return state.instructorGUIDToSubjectsMap[instructorGUID];
+            } else {
+                return [];
+            }
+        },
         hasSubjectsByInstructorGUID: (state) => (instructorGUID: string) => {
-            const list = state.instructorGUIDToSubjectsMap[instructorGUID];
-            return !((Array.isArray(list)) && list.length > 0);
+            if (instructorGUID in state.instructorGUIDToSubjectsMap) {
+                const list = state.instructorGUIDToSubjectsMap[instructorGUID];
+                return !((Array.isArray(list)) && list.length > 0);
+            } else {
+                return false;
+            }
         }
     },
     actions: {

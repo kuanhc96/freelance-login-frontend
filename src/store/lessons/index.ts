@@ -14,8 +14,20 @@ export const useLessonsStore = defineStore('lessons', {
         instructorGUIDToLessonsMap: {},
     }),
     getters: {
-        getLessonsByStudentGUID: (state) => (studentGUID: string) => { return state.studentGUIDToLessonsMap[studentGUID]},
-        getLessonsByInstructorGUID: (state) => (instructorGUID: string) => { return state.instructorGUIDToLessonsMap[instructorGUID]},
+        getLessonsByStudentGUID: (state) => (studentGUID: string) => {
+            if (studentGUID in state.studentGUIDToLessonsMap) {
+                return state.studentGUIDToLessonsMap[studentGUID];
+            } else {
+                return [];
+            }
+        },
+        getLessonsByInstructorGUID: (state) => (instructorGUID: string) => {
+            if (instructorGUID in state.instructorGUIDToLessonsMap) {
+                return state.instructorGUIDToLessonsMap[instructorGUID]
+            } else {
+                 return [];
+            }
+        },
     },
     actions: {
         async setLessonsByStudentGUID() {

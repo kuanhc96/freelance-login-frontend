@@ -13,27 +13,31 @@ export interface LoginState {
     userGUID: string
     email: string
     role: string
-    backendService: string
+    expirationTimestamp: string
+    didAutoLogout: boolean
 }
+
+let timer: number;
 
 export const useLoginStore = defineStore('login', {
     state: (): LoginState => ({
         xsrfToken: Cookies.get('XSRF-TOKEN') || '',
         userGUID: localStorage.getItem('userGUID') || '',
+        expirationTimestamp: localStorage.getItem('expirationTimestamp') || '0',
         email: '',
         role: '',
-        backendService: 'http://localhost:8081/'
+        didAutoLogout: false
     }),
     getters: {
         isLoggedIn: (state) => {
-            return !!state.userGUID?.trim() && !!state.xsrfToken?.trim()
+            return !!state.userGUID?.trim() && !!state.xsrfToken?.trim() && state.expirationTimestamp !== '0'
         },
         getXsrfToken: state => state.xsrfToken,
         getUserGUID: state => state.userGUID,
         getRole: state => state.role,
         isStudent: state => state.role === 'STUDENT',
         getEmail: state => state.email,
-        getBackendService: state => state.backendService
+        getDidAutoLogout: state => state.didAutoLogout
     },
     actions: {
         async checkLogin(): Promise<void> {
@@ -53,6 +57,15 @@ export const useLoginStore = defineStore('login', {
                         this.xsrfToken = Cookies.get('XSRF-TOKEN');
                         this.role = data.role;
                         this.email = data.email;
+                        const expiresIn = +this.expirationTimestamp - new Date().getTime();
+                        if (expiresIn < 0) {
+                            return;
+                        }
+
+                        timer = setTimeout(async() => {
+                            await this.autoLogout();
+                        }, expiresIn);
+
                         await this.setup();
                         await router.replace('/')
                     }
@@ -87,6 +100,11 @@ export const useLoginStore = defineStore('login', {
                     this.role = data.role;
                     this.email = data.email;
                     // localStorage.setItem('expirationTimestamp', new Date().getTime() + data.tokenDuration)
+                    localStorage.setItem("expirationTimestamp", '' + data.expirationTimestamp);
+                    this.expirationTimestamp = '' + data.expirationTimestamp;
+                    timer = setTimeout(async () => {
+                        await this.autoLogout();
+                    }, data.expirationTimestamp - new Date().getTime())
                     await this.setup();
                     await router.replace('/');
                 }
@@ -101,9 +119,17 @@ export const useLoginStore = defineStore('login', {
             })
             this.xsrfToken = '';
             this.userGUID = '';
-            localStorage.removeItem('userGUID');
             this.role = '';
             this.email = '';
+            this.expirationTimestamp = '0';
+            localStorage.removeItem('userGUID');
+            localStorage.removeItem('expirationTimestamp');
+            clearTimeout(timer);
+            await router.replace('/login');
+        },
+        async autoLogout(): Promise<void> {
+            await this.logout();
+            this.didAutoLogout = true;
         },
         async setup(): Promise<void> {
             const instructorsStore = useInstructorsStore();
