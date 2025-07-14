@@ -140,7 +140,7 @@ import { computed, defineComponent, Ref, ref } from 'vue'
 import { GetSubjectResponse } from "@/dto/response/getSubjectResponse";
 import { useSubjectsStore } from "@/store/subjects";
 import { useLoginStore } from "@/store/login";
-import { useInstructorsStore } from '@/store/instructors';
+import { useInstructorsStore } from '@/store/instructorsOrStudents';
 import { useRouter } from 'vue-router';
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'

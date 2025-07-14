@@ -25,23 +25,27 @@ export const useInstructorsStore = defineStore('instructors', {
     actions: {
         async setSubscribedInstructors() {
             const loginStore = useLoginStore();
-            const subscriptionResponse: Response = await fetch(SUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include'
-            })
+            if (loginStore.isStudent) {
+                const subscriptionResponse: Response = await fetch(SUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
 
-            if (subscriptionResponse.ok) {
-                this.subscribedInstructors = await subscriptionResponse.json();
+                if (subscriptionResponse.ok) {
+                    this.subscribedInstructors = await subscriptionResponse.json();
+                }
             }
         },
         async setUnsubscribedInstructors() {
             const loginStore = useLoginStore();
-            const unsubscribedResponse: Response = await fetch(UNSUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include'
-            })
-            if (unsubscribedResponse.ok) {
-                this.unsubscribedInstructors = await unsubscribedResponse.json();
+            if (!loginStore.isStudent) {
+                const unsubscribedResponse: Response = await fetch(UNSUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
+                    method: 'GET',
+                    credentials: 'include'
+                })
+                if (unsubscribedResponse.ok) {
+                    this.unsubscribedInstructors = await unsubscribedResponse.json();
+                }
             }
         },
         async setInstructors() {

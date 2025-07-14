@@ -1,6 +1,6 @@
 import { SubjectsState } from '@/store/subjects'
 import { LoginState } from './login'
-import { InstructorsState } from './instructors'
+import { InstructorsState } from './instructorsOrStudents'
 import { AnnouncementsState } from './announcements'
 export interface RootState {
     subjects: SubjectsState

@@ -36,10 +36,10 @@ const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged in
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', component: Dashboard, meta: { requiresLogin: true } },
-  { path: '/instructors', component: InstructorsList, meta: { requiresLogin: true } },
+  { path: '/instructorsOrStudents', component: InstructorsList, meta: { requiresLogin: true } },
   { path: '/announcements', component: AnnouncementsList, meta: { requiresLogin: true } },
   { path: '/announcements/create', component: AnnouncementForm, meta: { requiresLogin: true } },
-  { path: '/instructors/:id', component: InstructorDetails, children: [
+  { path: '/instructorsOrStudents/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
   ], props: true, meta: { requiresLogin: true }},
   { path: '/lessons', component: LessonsList, meta: { requiresLogin: true } },

@@ -1,6 +1,6 @@
 import {GetSubjectResponse} from '@/dto/response/getSubjectResponse';
 import {defineStore} from 'pinia';
-import {useInstructorsStore} from "@/store/instructors";
+import {useInstructorsStore} from "@/store/instructorsOrStudents";
 import {SUBJECTS_ENDPOINT} from "@/store";
 
 export interface SubjectsState {

@@ -145,7 +145,7 @@ import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import {GetUserResponse} from '@/dto/response/getUserResponse';
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import { useLoginStore } from '@/store/login';
-import { useInstructorsStore } from '@/store/instructors';
+import { useInstructorsStore } from '@/store/instructorsOrStudents';
 import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";

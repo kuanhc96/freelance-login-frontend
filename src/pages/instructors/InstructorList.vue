@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import {defineComponent, onBeforeMount} from 'vue'
-import { useInstructorsStore } from "@/store/instructors";
+import { useInstructorsStore } from "@/store/instructorsOrStudents";
 import SubscribedInstructors from "@/components/instructors/SubscribedInstructors.vue";
 import UnsubscribedInstructors from "@/components/instructors/UnsubscribedInstructors.vue";
 export default defineComponent({

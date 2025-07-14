@@ -34,7 +34,7 @@ import {computed, defineComponent, ref, Ref} from "vue";
 import InstructorSummary from "@/components/instructors/InstructorSummary.vue";
 import TheSearchBar from "@/components/layout/TheSearchBar.vue";
 import {useLoginStore} from "@/store/login";
-import {useInstructorsStore} from "@/store/instructors";
+import {useInstructorsStore} from "@/store/instructorsOrStudents";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 
 export default defineComponent({

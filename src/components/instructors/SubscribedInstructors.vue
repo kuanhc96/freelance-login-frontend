@@ -1,6 +1,6 @@
 <template>
     <the-search-bar
-        :id="'search-instructors'"
+        :id="'search-instructorsOrStudents'"
         :placeholder="'Search Instructors'"
         v-model="keyword"
     ></the-search-bar>
@@ -36,7 +36,7 @@
 import InstructorSummary from "@/components/instructors/InstructorSummary.vue";
 import TheSearchBar from "@/components/layout/TheSearchBar.vue";
 import {computed, defineComponent, ref, Ref} from "vue";
-import {useInstructorsStore} from "@/store/instructors";
+import {useInstructorsStore} from "@/store/instructorsOrStudents";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 
 export default defineComponent({

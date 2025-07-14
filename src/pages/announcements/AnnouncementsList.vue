@@ -158,7 +158,7 @@ import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.
 import { defineComponent, Ref, ref, computed, onBeforeMount } from 'vue'
 import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
 import { useLoginStore } from "@/store/login";
-import { useInstructorsStore } from "@/store/instructors";
+import { useInstructorsStore } from "@/store/instructorsOrStudents";
 import { useAnnouncementsStore } from "@/store/announcements";
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 export default defineComponent({

@@ -22,7 +22,7 @@
 import { GetSubjectResponse } from '@/dto/response/getSubjectResponse';
 import { GetUserResponse } from '@/dto/response/getUserResponse';
 import {PropType, defineComponent, ref, Ref, computed, onBeforeMount} from 'vue';
-import { useInstructorsStore} from "@/store/instructors";
+import { useInstructorsStore} from "@/store/instructorsOrStudents";
 import { useSubjectsStore} from "@/store/subjects";
 
 export default defineComponent({

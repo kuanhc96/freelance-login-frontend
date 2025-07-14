@@ -1,7 +1,7 @@
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import {defineStore} from 'pinia';
 import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
-import {useInstructorsStore} from "@/store/instructors";
+import {useInstructorsStore} from "@/store/instructorsOrStudents";
 import {useLoginStore} from "@/store/login";
 
 export interface AnnouncementsState {
