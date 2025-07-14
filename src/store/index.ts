@@ -11,6 +11,7 @@ export default pinia;
 
 export const SUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/instructors/';
 export const UNSUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/unsubscribed/';
+export const SUBSCRIBED_STUDENTS_ENDPOINT: string = 'http://localhost:8081/subscription/students/';
 export const ANNOUNCEMENTS_ENDPOINT: string =  "http://localhost:8081/announcements/";
 export const SUBJECTS_ENDPOINT: string =  "http://localhost:8081/subjects/";
 export const LESSONS_ENDPOINT: string =  "http://localhost:8081/lessons?";

@@ -1,17 +1,23 @@
 import {GetUserResponse} from '@/dto/response/getUserResponse'
 import {defineStore} from "pinia";
-import {SUBSCRIBED_INSTRUCTORS_ENDPOINT, UNSUBSCRIBED_INSTRUCTORS_ENDPOINT} from "@/store";
+import {
+    SUBSCRIBED_INSTRUCTORS_ENDPOINT,
+    SUBSCRIBED_STUDENTS_ENDPOINT,
+    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT
+} from "@/store";
 import {useLoginStore} from "@/store/login";
 
 export interface InstructorsState {
     subscribedInstructors: GetUserResponse[]
     unsubscribedInstructors: GetUserResponse[]
+    myStudents: GetUserResponse[]
 }
 
 export const useInstructorsStore = defineStore('instructors', {
     state: (): InstructorsState => ({
         subscribedInstructors: [],
-        unsubscribedInstructors: []
+        unsubscribedInstructors: [],
+        myStudents: []
     }),
     getters: {
         getSubscribedInstructors: state => state.subscribedInstructors,
@@ -20,9 +26,23 @@ export const useInstructorsStore = defineStore('instructors', {
         hasUnsubscribedInstructors: state => state.unsubscribedInstructors && state.unsubscribedInstructors.length > 0,
         getAllInstructors: state => state.subscribedInstructors.concat(state.unsubscribedInstructors),
         hasAllInstructors: state => state.subscribedInstructors.concat(state.unsubscribedInstructors).length > 0,
-
+        getMyStudents: state => state.myStudents
     },
     actions: {
+        async setMyStudents() {
+            const loginStore = useLoginStore();
+            if (!loginStore.isStudent) {
+                const myStudentsResponse: Response = await fetch(SUBSCRIBED_STUDENTS_ENDPOINT + loginStore.getUserGUID, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (myStudentsResponse.ok) {
+                    this.myStudents = await myStudentsResponse.json();
+                }
+            }
+
+        },
         async setSubscribedInstructors() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
@@ -57,7 +77,7 @@ export const useInstructorsStore = defineStore('instructors', {
             if (loginStore.isStudent) {
                 await this.setInstructors();
             } else {
-                // TODO: refresh students
+                await this.setMyStudents();
             }
         }
     },
