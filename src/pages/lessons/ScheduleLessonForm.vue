@@ -23,7 +23,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center m-3">
+                <div
+                    class="d-flex justify-content-center m-3"
+                    v-if="selectedInstructorGUID !== ''"
+                >
                     <div class="w-100 row d-flex justify-content-between align-items-center">
                         <div class="col-md-4">
                             <label class="form-label fs-5" for="subjectDropdown">Choose Course Subject</label>
@@ -32,14 +35,38 @@
                             <select
                                 class="w-100 form-select"
                                 id="subjectDropdown"
-                                v-model="selectedSubjectName"
+                                v-model="selectedSubjectGUID"
                             >
                                 <option selected="">Select Subject</option>
                                 <option
                                     v-for="subject in subjects"
                                     :key="subject.subjectGUID"
-                                    :value="subject.subjectName"
+                                    :value="subject.subjectGUID"
                                 >{{ subject.subjectName }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="d-flex justify-content-center m-3"
+                    v-if="selectedSubjectGUID !== ''"
+                >
+                    <div class="w-100 row d-flex justify-content-between align-items-center">
+                        <div class="col-md-4">
+                            <label for="packagesDropdown" class="form-label fs-5">Plan</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select
+                                class="w-100 form-select"
+                                id="packagesDropdown"
+                                v-model="selectedPackageGUID"
+                            >
+                                <option selected="">Select Plan</option>
+                                <option
+                                    v-for="package_ in packages"
+                                    :key="package_.packageGUID"
+                                    :value="package_.packageGUID"
+                                >{{ package_.discountCode }}</option>
                             </select>
                         </div>
                     </div>
@@ -61,25 +88,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center m-3">
-                    <div class="w-100 row d-flex justify-content-between align-items-center">
-                        <div class="col-md-4">
-                            <label for="repeat" class="form-label fs-5">Repeat</label>
-                        </div>
-                        <div class="col-md-6">
-                            <input
-                                type="number"
-                                id="repeat"
-                                min="0"
-                                step="1"
-                                class="form-control"
-                                v-model="repeat"
-                            >
-                        </div>
-                    </div>
-                </div>
                 <div
-                    v-if="repeat > 0"
+                    v-if="numberOfLessons > 0"
                     class="d-flex justify-content-center m-3"
                 >
                     <div class="w-100 row d-flex justify-content-between align-items-center">
@@ -141,10 +151,12 @@ import { GetSubjectResponse } from "@/dto/response/getSubjectResponse";
 import { useSubjectsStore } from "@/store/subjects";
 import { useLoginStore } from "@/store/login";
 import { useInstructorsOrStudentsStore } from '@/store/instructorsOrStudents';
+import { usePackagesStore } from '@/store/packages';
 import { useRouter } from 'vue-router';
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'
 import Cookies from "js-cookie";
+import {GetPackageResponse} from "@/dto/response/getPackageResponse";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -152,29 +164,36 @@ export default defineComponent({
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
         const instructorsStore = useInstructorsOrStudentsStore();
+        const packagesStore = usePackagesStore();
         const router = useRouter();
 
         const selectedInstructorGUID: Ref<string> = ref('');
-        const selectedSubjectName: Ref<string> = ref('');
+        const selectedSubjectGUID: Ref<string> = ref('');
+        const selectedPackageGUID: Ref<string> = ref('');
         const inputDateTime: Ref<string> = ref('');
-        const repeat: Ref<number> = ref(0);
         const frequency: Ref<string> = ref('');
         const selectedLocation: Ref<string> = ref('');
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
-        })
+        });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return instructorsStore.getSubscribedInstructors;
-        })
-        const role: Ref<string> = computed(function() {
-            return loginStore.getRole;
-        })
+        });
         const subjects: Ref<GetSubjectResponse[]> = computed(function() {
-            if (role.value === 'INSTRUCTOR') {
-                return subjectsStore.getSubjectsByInstructorGUID(userGUID.value);
-            } else {
+            if (loginStore.isStudent) {
                 return subjectsStore.getSubjectsByInstructorGUID(selectedInstructorGUID.value);
+            } else {
+                return subjectsStore.getSubjectsByInstructorGUID(userGUID.value);
             }
+        });
+
+        const packages: Ref<GetPackageResponse[]> = computed(function() {
+            return packagesStore.getPackagesBySubjectGUID(selectedSubjectGUID.value)
+        });
+
+        const numberOfLessons: Ref<number> = computed(function() {
+            const package_ = packages.value.find(package_ => package_.packageGUID === selectedPackageGUID.value);
+            return package_?.numberOfLessons!;
         })
 
         async function submitSchedule(): Promise<void> {
@@ -184,9 +203,9 @@ export default defineComponent({
                 instructorGUID: selectedInstructorGUID.value,
                 startDate: inputDateTime.value,
                 location: selectedLocation.value,
-                subject: selectedSubjectName.value,
+                subjectGUID: selectedSubjectGUID.value,
                 topic: 'testTopic',
-                repeat: repeat.value,
+                packageGUID: selectedPackageGUID.value,
                 lessonFrequency: frequency.value
             };
             const response: Response = await fetch(
@@ -201,18 +220,20 @@ export default defineComponent({
                 }
             );
             if (response.ok) {
-                router.push('/lessons')
+                await router.push('/lessons')
             }
         }
 
         return {
             selectedInstructorGUID,
-            selectedSubjectName,
+            selectedSubjectGUID,
             inputDateTime,
-            repeat,
+            selectedPackageGUID,
+            numberOfLessons,
             frequency,
             selectedLocation,
             subjects,
+            packages,
             subscribedInstructors,
             submitSchedule
         }
