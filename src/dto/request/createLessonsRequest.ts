@@ -3,8 +3,8 @@ export interface CreateLessonsRequest {
     instructorGUID: string,
     startDate: string,
     location: string,
-    subject: string,
+    subjectGUID: string,
     topic: string,
-    repeat: number,
+    packageGUID: string,
     lessonFrequency: string
 }

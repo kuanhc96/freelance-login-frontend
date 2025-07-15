@@ -6,6 +6,7 @@ import router from "@/router/router";
 import {useLessonsStore} from "@/store/lessons";
 import {useAnnouncementsStore} from "@/store/announcements";
 import {useSubjectsStore} from "@/store/subjects";
+import {usePackagesStore} from "@/store/packages";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 
 export interface LoginState {
@@ -139,11 +140,13 @@ export const useLoginStore = defineStore('login', {
             const subjectsStore = useSubjectsStore();
             const announcementsStore = useAnnouncementsStore();
             const lessonsStore = useLessonsStore();
+            const packagesStore = usePackagesStore();
 
             await instructorsStore.setInstructors();
             await subjectsStore.setSubjects();
             await announcementsStore.setAnnouncements();
             await lessonsStore.setLessons();
+            await packagesStore.setPackages();
         }
     },
 })

@@ -15,5 +15,7 @@ export const SUBSCRIBED_STUDENTS_ENDPOINT: string = 'http://localhost:8081/subsc
 export const ANNOUNCEMENTS_ENDPOINT: string =  "http://localhost:8081/announcements/";
 export const SUBJECTS_ENDPOINT: string =  "http://localhost:8081/subjects/";
 export const LESSONS_ENDPOINT: string =  "http://localhost:8081/lessons?";
+export const PACKAGES_ENDPOINT: string =  "http://localhost:8081/packages/";
+export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  "http://localhost:8081/packages/subject/";
 // export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transaction/";
 
