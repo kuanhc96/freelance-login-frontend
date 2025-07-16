@@ -66,9 +66,9 @@
                             <!-- List of active announcements -->
                             <div
                                 class="tab-pane fade"
+                                :class="{show: activeTab === 'active', active: activeTab === 'active'}"
                                 id="nav-active"
                                 role="tabpanel"
-                                v-show="activeTab === 'active'"
                             >
                                 <ul class="d-flex align-items-center list-group my-3 p-1" id="activeAnnouncementList">
                                     <announcement-summary
@@ -155,7 +155,7 @@
 import BaseCard from '../../components/ui/BaseCard.vue'
 import TheSearchBar from '@/components/layout/TheSearchBar.vue';
 import AnnouncementSummary from '@/components/announcements/AnnouncementSummary.vue';
-import { defineComponent, Ref, ref, computed, onBeforeMount } from 'vue'
+import { defineComponent, Ref, ref, computed } from 'vue'
 import { GetAnnouncementResponse } from '@/dto/response/getAnnouncementResponse';
 import { useLoginStore } from "@/store/login";
 import { useInstructorsOrStudentsStore } from "@/store/instructorsOrStudents";
@@ -217,10 +217,6 @@ export default defineComponent({
         async function refresh() {
             await announcementsStore.setAnnouncements();
         }
-
-        onBeforeMount(async() => {
-            await refresh();
-        });
 
         return {
             keyword,
