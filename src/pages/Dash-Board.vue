@@ -93,27 +93,50 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h3 class="card-title d-flex justify-content-between align-items-center">
-                                    <div class="">
+                                    <div v-if="isStudent" class="">
                                         Subscribed Instructors
                                     </div>
-                                    <div v-if="isStudent" class="d-flex gap-2">
-                                        <router-link to="/instructors" class="btn btn-primary btn-sm">Search
+                                    <div v-else class="">
+                                        My Students
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <router-link to="/instructorsOrStudents" class="btn btn-primary btn-sm">Search
                                         </router-link>
                                     </div>
                                 </h3>
-                                <dashboard-instructor v-for="instructor in subscribedInstructors"
-                                                      :key="instructor.userGUID"
-                                                      :instructorGUID="instructor.userGUID"
-                                                      :instructorName="instructor.name"
-                                                      :email="instructor.email"
-                                                      :portrait-path="'/alice.jpg'"></dashboard-instructor>
-                                <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
-                                    <div class="fs-bold fs-2">...</div>
+                                <div v-if="isStudent" class="">
+                                    <dashboard-instructor v-for="instructor in subscribedInstructors"
+                                                          :key="instructor.userGUID"
+                                                          :instructorGUID="instructor.userGUID"
+                                                          :instructorName="instructor.name"
+                                                          :email="instructor.email"
+                                                          :portrait-path="'/alice.jpg'"></dashboard-instructor>
+                                    <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
+                                        <div class="fs-bold fs-2">...</div>
+                                    </div>
+                                    <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
+                                        <router-link to="/instructors" class="btn btn-primary btn-sm stretched-link">View
+                                            All
+                                        </router-link>
+                                    </div>
                                 </div>
-                                <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
-                                    <router-link to="/instructors" class="btn btn-primary btn-sm stretched-link">View
-                                        All
-                                    </router-link>
+                                <div v-else class="">
+                                    <dashboard-student v-for="student in myStudents"
+                                                          :key="student.userGUID"
+                                                          :studentGUID="student.userGUID"
+                                                          :studentName="student.name"
+                                                          :email="student.email"
+                                                          :portrait-path="'/alice.jpg'">
+
+                                    </dashboard-student>
+                                    <div v-if="myStudents.length > 3" class="d-flex justify-content-center">
+                                        <div class="fs-bold fs-2">...</div>
+                                    </div>
+                                    <div v-if="myStudents.length > 3" class="d-flex justify-content-center">
+                                        <router-link to="/instructorsOrStudents" class="btn btn-primary btn-sm stretched-link">View
+                                            All
+                                        </router-link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +153,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </base-card>
     </section>
@@ -150,10 +172,12 @@ import { useAnnouncementsStore } from '@/store/announcements';
 import { useRouter } from 'vue-router';
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import { useLessonsStore } from "@/store/lessons";
+import DashboardStudent from "@/components/students/DashboardStudent.vue";
 
 export default defineComponent({
     name: 'Dash-Board',
     components: {
+        DashboardStudent,
         BaseCard,
         DashboardAnnouncement,
         DashboardInstructor,
@@ -162,7 +186,7 @@ export default defineComponent({
     setup() {
         const loginStore = useLoginStore();
         const lessonsStore = useLessonsStore();
-        const instructorsStore = useInstructorsOrStudentsStore();
+        const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
         const announcementsStore = useAnnouncementsStore();
         const router = useRouter();
         const userGUID: Ref<string> = computed(function() {
@@ -188,8 +212,11 @@ export default defineComponent({
             return lessons.value.slice(0, 3);
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return instructorsStore.getSubscribedInstructors;
+            return instructorsOrStudentsStore.getSubscribedInstructors;
         });
+        const myStudents: Ref<GetUserResponse[]> = computed(function() {
+            return instructorsOrStudentsStore.getMyStudents;
+        })
         const announcements: Ref<GetAnnouncementResponse[]> = computed(function() {
             return announcementsStore.getAnnouncements;
         });
@@ -200,7 +227,7 @@ export default defineComponent({
 
         });
         async function refreshInstructorsOrStudents(): Promise<void> {
-            await    instructorsStore.setInstructorsOrStudents()
+            await    instructorsOrStudentsStore.setInstructorsOrStudents()
         }
         async function refreshAnnouncements(): Promise<void> {
             await announcementsStore.setAnnouncements();
@@ -235,6 +262,7 @@ export default defineComponent({
             isLoggedIn,
             subscribedInstructorsEndpoint,
             subscribedInstructors,
+            myStudents,
             announcements,
             mostRecentActiveAnnouncements,
             lessons,
