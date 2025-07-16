@@ -8,7 +8,9 @@
                             <label class="form-label fs-5" for="instructorDropdown">Schedule Lesson With</label>
                         </div>
                         <div class="col-md-6">
+<!--                            if student, select instructor -->
                             <select
+                                v-if="isStudent"
                                 class="w-100 form-select"
                                 id="instructorDropdown"
                                 v-model="selectedInstructorGUID"
@@ -20,12 +22,26 @@
                                     :value="instructor.userGUID"
                                 >{{ instructor.name }}</option>
                             </select>
+<!--                        if instructor, select student-->
+                            <select
+                                v-else
+                                class="w-100 form-select"
+                                id="studentDropdown"
+                                v-model="selectedStudentGUID"
+                            >
+                                <option selected="">Select Student</option>
+                                <option
+                                    v-for="student in myStudents"
+                                    :key="student.userGUID"
+                                    :value="student.userGUID"
+                                >{{ student.name }}</option>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div
                     class="d-flex justify-content-center m-3"
-                    v-if="selectedInstructorGUID !== ''"
+                    v-if="selectedInstructorGUID !== '' || selectedStudentGUID !== ''"
                 >
                     <div class="w-100 row d-flex justify-content-between align-items-center">
                         <div class="col-md-4">
@@ -66,7 +82,9 @@
                                     v-for="package_ in packages"
                                     :key="package_.packageGUID"
                                     :value="package_.packageGUID"
-                                >{{ package_.discountCode }}</option>
+                                >
+                                    {{package_.numberOfLessons}} Lesson(s), {{price}} NTD/Lesson ({{ package_.discountCode }} plan)
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -89,7 +107,7 @@
                     </div>
                 </div>
                 <div
-                    v-if="numberOfLessons > 0"
+                    v-if="numberOfLessons > 1"
                     class="d-flex justify-content-center m-3"
                 >
                     <div class="w-100 row d-flex justify-content-between align-items-center">
@@ -163,21 +181,28 @@ export default defineComponent({
     setup() {
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
-        const instructorsStore = useInstructorsOrStudentsStore();
+        const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
         const packagesStore = usePackagesStore();
         const router = useRouter();
 
         const selectedInstructorGUID: Ref<string> = ref('');
+        const selectedStudentGUID: Ref<string> = ref('');
         const selectedSubjectGUID: Ref<string> = ref('');
         const selectedPackageGUID: Ref<string> = ref('');
         const inputDateTime: Ref<string> = ref('');
-        const frequency: Ref<string> = ref('');
+        const frequency: Ref<string> = ref('NONE');
         const selectedLocation: Ref<string> = ref('');
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
         });
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
-            return instructorsStore.getSubscribedInstructors;
+            return instructorsOrStudentsStore.getSubscribedInstructors;
+        });
+        const myStudents: Ref<GetUserResponse[]> = computed(function() {
+            return instructorsOrStudentsStore.getMyStudents;
+        });
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
         });
         const subjects: Ref<GetSubjectResponse[]> = computed(function() {
             if (loginStore.isStudent) {
@@ -191,6 +216,11 @@ export default defineComponent({
             return packagesStore.getPackagesBySubjectGUID(selectedSubjectGUID.value)
         });
 
+        const price: Ref<number> = computed(function() {
+            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value);
+            return subject?.price!;
+        })
+
         const numberOfLessons: Ref<number> = computed(function() {
             const package_ = packages.value.find(package_ => package_.packageGUID === selectedPackageGUID.value);
             return package_?.numberOfLessons!;
@@ -199,8 +229,8 @@ export default defineComponent({
         async function submitSchedule(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
             const createLessonsRequest: CreateLessonsRequest = {
-                studentGUID: userGUID.value,
-                instructorGUID: selectedInstructorGUID.value,
+                studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
+                instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
                 startDate: inputDateTime.value,
                 location: selectedLocation.value,
                 subjectGUID: selectedSubjectGUID.value,
@@ -226,15 +256,19 @@ export default defineComponent({
 
         return {
             selectedInstructorGUID,
+            selectedStudentGUID,
             selectedSubjectGUID,
             inputDateTime,
             selectedPackageGUID,
             numberOfLessons,
+            price,
             frequency,
             selectedLocation,
             subjects,
             packages,
             subscribedInstructors,
+            myStudents,
+            isStudent,
             submitSchedule
         }
     }
