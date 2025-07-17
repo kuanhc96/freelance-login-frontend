@@ -14,7 +14,9 @@
                 ></subject-accordion>
             </ul>
             <ul v-else>
-                <div class="d-flex justify-content-around align-items-center m-3">
+                <div
+                    v-if="!isStudent"
+                    class="d-flex justify-content-around align-items-center m-3">
                     <router-link class="btn btn-primary" to="/subjects/register">Register New Course</router-link>
                     <router-link class="btn btn-secondary" to="/packages/register">Register New Course Plan</router-link>
                 </div>
