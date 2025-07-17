@@ -16,6 +16,6 @@ export const ANNOUNCEMENTS_ENDPOINT: string =  "http://localhost:8081/announceme
 export const SUBJECTS_ENDPOINT: string =  "http://localhost:8081/subjects/";
 export const LESSONS_ENDPOINT: string =  "http://localhost:8081/lessons?";
 export const PACKAGES_ENDPOINT: string =  "http://localhost:8081/packages/";
-export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  "http://localhost:8081/packages/subject/";
-// export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transaction/";
+export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  PACKAGES_ENDPOINT + "subject/";
+export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transactions/";
 

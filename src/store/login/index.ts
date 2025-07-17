@@ -8,6 +8,7 @@ import {useAnnouncementsStore} from "@/store/announcements";
 import {useSubjectsStore} from "@/store/subjects";
 import {usePackagesStore} from "@/store/packages";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
+import {useTransactionsStore} from "@/store/transactions";
 
 export interface LoginState {
     xsrfToken: string
@@ -141,12 +142,14 @@ export const useLoginStore = defineStore('login', {
             const announcementsStore = useAnnouncementsStore();
             const lessonsStore = useLessonsStore();
             const packagesStore = usePackagesStore();
+            const transactionsStore = useTransactionsStore();
 
             await instructorsStore.setInstructors();
             await subjectsStore.setSubjects();
             await announcementsStore.setAnnouncements();
             await lessonsStore.setLessons();
             await packagesStore.setPackages();
+            await transactionsStore.setTransactions();
         }
     },
 })
