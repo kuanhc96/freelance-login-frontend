@@ -149,14 +149,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-grid">
-                    <button
-                        @click="submitSchedule"
-                        type="button"
-                        class="btn btn-secondary"
-                    >
-                        Submit Schedule
-                    </button>
+                <div class="d-flex justify-content-center m-3">
+                    <div class="col-md-8">
+                        <div class="d-grid">
+                            <button
+                                @click="submitSchedule"
+                                type="button"
+                                class="btn btn-secondary"
+                            >
+                                Submit Schedule
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </form>
         </base-card>

@@ -20,6 +20,7 @@ import NotFound from '../pages/NotFound.vue'
 import Dashboard from '../pages/Dash-Board.vue'
 import {useLoginStore} from "@/store/login";
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
+import SubjectRegistrationForm from "@/pages/subjects/SubjectRegistrationForm.vue";
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
@@ -48,6 +49,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/transactions/record', component: TransactionForm, meta: { requiresLogin: true } },
   { path: '/transactions/:id', component: TransactionDetails, meta: { requiresLogin: true } },
   { path: '/subjects', component: SubjectsList, meta: { requiresLogin: true } },
+    { path: '/subjects/register', component: SubjectRegistrationForm, meta: { requiresLogin: true } },
   { path: '/subjects/:id', component: SubjectDetails, meta: { requiresLogin: true } },
 ];
 
