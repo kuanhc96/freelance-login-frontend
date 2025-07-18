@@ -13,7 +13,7 @@ import InstructorContact from '@/pages/instructorsOrStudents/InstructorContact.v
 import LessonsList from '../pages/lessons/LessonsList.vue'
 import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
-import TransactionDetails from '../pages/transactions/TransactionDetails.vue'
+import TransactionDetailsModal from '../components/transactions/TransactionDetailsModal.vue'
 import SubjectsList from '../pages/subjects/SubjectsList.vue'
 import SubjectDetails from '../pages/subjects/SubjectDetails.vue'
 import NotFound from '../pages/NotFound.vue'
@@ -48,7 +48,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/lessons/schedule', component: ScheduleLessonForm , meta: { requiresLogin: true }},
   { path: '/transactions', component: TransactionsList, meta: { requiresLogin: true } },
   { path: '/transactions/record', component: TransactionForm, meta: { requiresLogin: true } },
-  { path: '/transactions/:id', component: TransactionDetails, meta: { requiresLogin: true } },
+  { path: '/transactions/:id', component: TransactionDetailsModal, meta: { requiresLogin: true } },
   { path: '/subjects', component: SubjectsList, meta: { requiresLogin: true } },
     { path: '/packages/register', component: PackageRegistrationForm, meta: { requiresLogin: true } },
     { path: '/subjects/register', component: SubjectRegistrationForm, meta: { requiresLogin: true } },

@@ -1,4 +1,5 @@
 export interface GetTransactionResponse {
+    transactionGUID: string
     studentName: string
     instructorName: string
     subjectName: string

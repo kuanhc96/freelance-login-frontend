@@ -40,46 +40,9 @@
                             id="nav-pending"
                             role="tabpanel"
                         >
-                            <table class="table-hover w-100">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Student</th>
-                                    <th scope="col">Instructor</th>
-                                    <th scope="col">Subject</th>
-                                    <th scope="col">Details</th>
-                                    <th scope="col">Code</th>
-                                    <th scope="col">#Lessons</th>
-                                    <th scope="col">% Off</th>
-                                    <th scope="col">Payment</th>
-                                    <th scope="col">Creation</th>
-                                    <th scope="col">Completion</th>
-                                    <th scope="col">Cancellation</th>
-                                    <th scope="col">Comments</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr
-                                    v-for="(transaction, index) in pendingTransactions"
-                                    :key="transaction.transactionGUID"
-                                >
-                                    <th scope="row">{{ index }}</th>
-                                    <td>{{transaction.studentName}}</td>
-                                    <td>{{transaction.instructorName}}</td>
-                                    <td>{{transaction.subjectName}}</td>
-                                    <td>{{transaction.subjectDescription}}</td>
-                                    <td>{{transaction.discountCode}}</td>
-                                    <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
-                                    <td>{{transaction.paymentAmount}}</td>
-                                    <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.canceledDate)}}</td>
-                                    <td>{{transaction.comments}}</td>
-                                    <td><button class="btn btn-secondary badge">Do Something</button></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <transaction-table
+                                :transactions="pendingTransactions"
+                            ></transaction-table>
                         </div>
                         <!--                            list of completed transactions -->
                         <div
@@ -88,46 +51,9 @@
                             id="nav-completed"
                             role="tabpanel"
                         >
-                            <table class="table-hover">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Student Name</th>
-                                    <th scope="col">Instructor Name</th>
-                                    <th scope="col">Course Subject</th>
-                                    <th scope="col">Subject Desc</th>
-                                    <th scope="col">Discount Code</th>
-                                    <th scope="col">Number of Lessons</th>
-                                    <th scope="col">% Off</th>
-                                    <th scope="col">Payment Amount</th>
-                                    <th scope="col">Creation Date</th>
-                                    <th scope="col">Completion Date</th>
-                                    <th scope="col">Cancellation Date</th>
-                                    <th scope="col">Comments</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr
-                                    v-for="(transaction, index) in completedTransactions"
-                                    :key="transaction.transactionGUID"
-                                >
-                                    <th scope="row">{{ index }}</th>
-                                    <td>{{transaction.studentName}}</td>
-                                    <td>{{transaction.instructorName}}</td>
-                                    <td>{{transaction.subjectName}}</td>
-                                    <td>{{transaction.subjectDescription}}</td>
-                                    <td>{{transaction.discountCode}}</td>
-                                    <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
-                                    <td>{{transaction.paymentAmount}}</td>
-                                    <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.canceledDate)}}</td>
-                                    <td>{{transaction.comments}}</td>
-                                    <td><button class="btn btn-secondary badge">Do Something</button></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <transaction-table
+                                :transactions="completedTransactions"
+                            ></transaction-table>
                         </div>
                         <!--                            list of pending transactions -->
                         <div
@@ -136,46 +62,9 @@
                             id="nav-canceled"
                             role="tabpanel"
                         >
-                            <table class="table-hover">
-                                <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Student Name</th>
-                                    <th scope="col">Instructor Name</th>
-                                    <th scope="col">Course Subject</th>
-                                    <th scope="col">Subject Desc</th>
-                                    <th scope="col">Discount Code</th>
-                                    <th scope="col">Number of Lessons</th>
-                                    <th scope="col">% Off</th>
-                                    <th scope="col">Payment Amount</th>
-                                    <th scope="col">Creation Date</th>
-                                    <th scope="col">Completion Date</th>
-                                    <th scope="col">Cancellation Date</th>
-                                    <th scope="col">Comments</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr
-                                    v-for="(transaction, index) in canceledTransactions"
-                                    :key="transaction.transactionGUID"
-                                >
-                                    <th scope="row">{{ index }}</th>
-                                    <td>{{transaction.studentName}}</td>
-                                    <td>{{transaction.instructorName}}</td>
-                                    <td>{{transaction.subjectName}}</td>
-                                    <td>{{transaction.subjectDescription}}</td>
-                                    <td>{{transaction.discountCode}}</td>
-                                    <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
-                                    <td>{{transaction.paymentAmount}}</td>
-                                    <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
-                                    <td>{{getHumanReadableDate(transaction.canceledDate)}}</td>
-                                    <td>{{transaction.comments}}</td>
-                                    <td><button class="btn btn-secondary badge">Do Something</button></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <transaction-table
+                                :transactions="canceledTransactions"
+                            ></transaction-table>
                         </div>
                     </div>
                 </div>
@@ -185,16 +74,26 @@
 </template>
 <script lang="ts">
 import {computed, defineComponent, ref, Ref} from 'vue';
+import TransactionTable from "@/components/transactions/TransactionTable.vue";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 import {useTransactionsStore} from "@/store/transactions";
+import {useLoginStore} from "@/store/login";
+
 export default defineComponent({
     name: 'TransactionsList',
+    components: {
+        TransactionTable
+    },
     setup() {
         const transactionsStore = useTransactionsStore();
+        const loginStore = useLoginStore();
         const activeTab: Ref<string> = ref('pending');
         const transactions: Ref<GetTransactionResponse[]> = computed(function() {
             return transactionsStore.getTransactions;
         });
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        })
         const pendingTransactions: Ref<GetTransactionResponse[]> = computed(function() {
             return transactions.value
                 .filter(transaction => transaction.transactionStatus === 'PENDING');
@@ -207,23 +106,6 @@ export default defineComponent({
             return transactionsStore.getTransactions
                 .filter(transaction => transaction.transactionStatus === 'CANCELED');
         });
-        function getHumanReadableDate(dateString: string): string {
-            if (dateString == null) {
-                return '';
-            }
-            const date = new Date(dateString);
-            const options: Intl.DateTimeFormatOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            };
-
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        function getHumanReadablePercentage(value: number) {
-            return (100*value).toPrecision(2);
-        }
 
         async function refresh() {
             await transactionsStore.setTransactions();
@@ -234,9 +116,8 @@ export default defineComponent({
             pendingTransactions,
             completedTransactions,
             canceledTransactions,
+            isStudent,
             refresh,
-            getHumanReadableDate,
-            getHumanReadablePercentage
         }
     }
 });

@@ -30,7 +30,9 @@ export const useTransactionsStore = defineStore('transactions', {
                 credentials: 'include'
             })
             if (response.ok) {
+
                 this.transactions = await response.json();
+                console.log(this.transactions);
             }
         }
     }
