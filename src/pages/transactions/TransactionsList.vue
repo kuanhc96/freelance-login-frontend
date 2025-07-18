@@ -70,7 +70,7 @@
                                     <td>{{transaction.subjectDescription}}</td>
                                     <td>{{transaction.discountCode}}</td>
                                     <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{1.00 - transaction.discountRate}}</td>
+                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
                                     <td>{{transaction.paymentAmount}}</td>
                                     <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
                                     <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
@@ -118,7 +118,7 @@
                                     <td>{{transaction.subjectDescription}}</td>
                                     <td>{{transaction.discountCode}}</td>
                                     <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{1.00 - transaction.discountRate}}</td>
+                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
                                     <td>{{transaction.paymentAmount}}</td>
                                     <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
                                     <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
@@ -166,7 +166,7 @@
                                     <td>{{transaction.subjectDescription}}</td>
                                     <td>{{transaction.discountCode}}</td>
                                     <td>{{transaction.numberOfLessons}}</td>
-                                    <td>{{1.00 - transaction.discountRate}}</td>
+                                    <td>{{getHumanReadablePercentage( 1.00 - transaction.discountRate )}}</td>
                                     <td>{{transaction.paymentAmount}}</td>
                                     <td>{{getHumanReadableDate(transaction.creationDate)}}</td>
                                     <td>{{getHumanReadableDate(transaction.confirmedDate)}}</td>
@@ -222,6 +222,10 @@ export default defineComponent({
             return date.toLocaleDateString('en-US', options);
         }
 
+        function getHumanReadablePercentage(value: number) {
+            return (100*value).toPrecision(2);
+        }
+
         async function refresh() {
             await transactionsStore.setTransactions();
         }
@@ -232,7 +236,8 @@ export default defineComponent({
             completedTransactions,
             canceledTransactions,
             refresh,
-            getHumanReadableDate
+            getHumanReadableDate,
+            getHumanReadablePercentage
         }
     }
 });
