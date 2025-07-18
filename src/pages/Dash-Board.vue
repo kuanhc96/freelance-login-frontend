@@ -81,8 +81,14 @@
                             <div class="card-body">
                                 <h2 class="card-title">Most Recent Transactions</h2>
                                 <p class="card-text">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque
-                                    rerum minus rem saepe consequuntur at culpa molestiae.
+                                    <dashboard-transaction
+                                        v-for="transaction in mostRecentPendingTransactions"
+                                        :key="transaction.transactionGUID"
+                                        :subject-name="transaction.subjectName"
+                                        :instructor-or-student-name="isStudent? transaction.instructorName: transaction.studentName"
+                                        :payment-amount="transaction.paymentAmount"
+                                        :number-of-lessons="transaction.numberOfLessons"
+                                    ></dashboard-transaction>
                                 </p>
                             </div>
                         </div>
@@ -173,6 +179,9 @@ import { useRouter } from 'vue-router';
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import { useLessonsStore } from "@/store/lessons";
 import DashboardStudent from "@/components/students/DashboardStudent.vue";
+import DashboardTransaction from "@/components/transactions/DashboardTransaction.vue";
+import {useTransactionsStore} from "@/store/transactions";
+import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -181,13 +190,15 @@ export default defineComponent({
         BaseCard,
         DashboardAnnouncement,
         DashboardInstructor,
-        DashboardLesson
+        DashboardLesson,
+        DashboardTransaction
     },
     setup() {
         const loginStore = useLoginStore();
         const lessonsStore = useLessonsStore();
         const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
         const announcementsStore = useAnnouncementsStore();
+        const transactionsStore = useTransactionsStore();
         const router = useRouter();
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
@@ -226,6 +237,11 @@ export default defineComponent({
             }) => announcement.announcementStatus === 'ACTIVE').slice(0, 3);
 
         });
+        const mostRecentPendingTransactions: Ref<GetTransactionResponse[]> = computed(function() {
+            return transactionsStore.getTransactions.filter(
+                (transaction: GetTransactionResponse) => transaction.transactionStatus === 'PENDING'
+            ).slice(0, 3)
+        });
         async function refreshInstructorsOrStudents(): Promise<void> {
             await    instructorsOrStudentsStore.setInstructorsOrStudents()
         }
@@ -243,10 +259,14 @@ export default defineComponent({
         async function refreshLessons(): Promise<void> {
             await lessonsStore.setLessons();
         }
+        async function refreshTransactions(): Promise<void> {
+            await transactionsStore.setTransactions();
+        }
         async function refreshAll(): Promise<void> {
             await refreshAnnouncements();
             await refreshInstructorsOrStudents();
             await refreshLessons();
+            await refreshTransactions();
         }
 
         onBeforeMount(async() => {
@@ -267,6 +287,7 @@ export default defineComponent({
             mostRecentActiveAnnouncements,
             lessons,
             upcomingLessons,
+            mostRecentPendingTransactions,
             getInstructorOrStudentName,
             refreshAll
         }
