@@ -4,6 +4,9 @@ import { defineComponent, PropType, Ref, computed } from 'vue'
 import { GetTransactionResponse } from '@/dto/response/getTransactionResponse'
 import TransactionDetailsModal from "@/components/transactions/TransactionDetailsModal.vue";
 import { useLoginStore } from "@/store/login";
+import {TRANSACTIONS_ENDPOINT} from "@/store";
+import {useTransactionsStore} from "@/store/transactions";
+import Cookies from 'js-cookie';
 
 export default defineComponent({
     name: 'TransactionTable',
@@ -15,6 +18,7 @@ export default defineComponent({
     },
     setup() {
         const loginStore = useLoginStore();
+        const transactionsStore = useTransactionsStore();
         const isStudent: Ref<boolean> = computed(function() {
             return loginStore.isStudent;
         });
@@ -36,8 +40,20 @@ export default defineComponent({
             return (100*value).toPrecision(2);
         }
 
-        async function cancelTransaction() {
+        async function cancelTransaction(transactionGUID: string) {
+            const csrfToken = Cookies.get('XSRF-TOKEN');
+            const response: Response = await fetch(TRANSACTIONS_ENDPOINT + transactionGUID, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken
+                }
+            })
 
+            if (response.status === 204) {
+                await transactionsStore.setTransactions();
+            }
         }
 
         return {
@@ -73,7 +89,7 @@ export default defineComponent({
         >
             <td><button
                 type="button"
-                @click="cancelTransaction"
+                @click="cancelTransaction(transaction.transactionGUID)"
                 class="btn btn-secondary badge"
             >Cancel</button></td>
             <th scope="row">{{ index }}</th>
