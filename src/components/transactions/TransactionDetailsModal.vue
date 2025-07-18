@@ -76,7 +76,7 @@ export default defineComponent({
         instructorOrStudentName: String as PropType<string>,
         numberOfLessons: Number as PropType<number>,
         paymentAmount: Number as PropType<number>,
-        percentOff: Number as PropType<number>,
+        percentOff: String as PropType<string>,
         studentName: String as PropType<string>,
         instructorName: String as PropType<string>,
         discountCode: String as PropType<string>,

@@ -36,7 +36,7 @@ export default defineComponent({
             return date.toLocaleDateString('en-US', options);
         }
 
-        function getHumanReadablePercentage(value: number) {
+        function getHumanReadablePercentage(value: number): string {
             return (100*value).toPrecision(2);
         }
 
