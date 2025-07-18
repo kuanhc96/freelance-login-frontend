@@ -2,7 +2,7 @@
     <div class="card w-100 h-100 bg-white m-3">
         <div class="card-body">
             <div class="d-flex justify-content-center align-items-center position-relative">
-                <h2 class="card-title">{{ subjectGUID }}  with {{ studentOrInstructor }}</h2>
+                <h2 class="card-title">{{ subjectName }}  with {{ studentOrInstructor }}</h2>
                 <span class="badge bg-secondary position-absolute end-0">{{ status }}</span>
             </div>
             <div class="d-flex justify-content-center">
@@ -22,7 +22,7 @@
 import {computed, defineComponent, PropType, Ref} from 'vue'
 export default defineComponent({
     props: {
-        subjectGUID: {
+        subjectName: {
             type: String as PropType<string>,
             required: true
         },

@@ -10,7 +10,7 @@
                     v-for="lesson in lessons"
                     :key="lesson.lessonGUID"
                     :lesson-g-u-i-d="lesson.lessonGUID"
-                    :subject-g-u-i-d="lesson.subjectGUID"
+                    :subject-name="lesson.subjectName"
                     :student-or-instructor="getInstructorOrStudentName(lesson)"
                     :date-time="lesson.startDate"
                     :location="lesson.location"
