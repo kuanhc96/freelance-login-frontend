@@ -195,7 +195,6 @@ export default defineComponent({
         const transactions: Ref<GetTransactionResponse[]> = computed(function() {
             return transactionsStore.getTransactions;
         });
-        console.log(transactions);
         const pendingTransactions: Ref<GetTransactionResponse[]> = computed(function() {
             return transactions.value
                 .filter(transaction => transaction.transactionStatus === 'PENDING');

@@ -23,7 +23,7 @@ export const useTransactionsStore = defineStore('transactions', {
             if (loginStore.isStudent) {
                 transactionsEndpoint += 'student/' + loginStore.getUserGUID;
             } else {
-                transactionsEndpoint += 'instructors/' + loginStore.getUserGUID;
+                transactionsEndpoint += 'instructor/' + loginStore.getUserGUID;
             }
             const response: Response = await fetch(transactionsEndpoint, {
                 method: 'GET',
