@@ -6,3 +6,4 @@ declare module '*.vue' {
 }
 
 declare module 'js-cookie';
+declare module 'bootstrap/js/dist/toast';

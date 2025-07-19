@@ -4,6 +4,7 @@
             :card-title="'Lessons'"
             @refresh="refresh"
         >
+            <the-calendar></the-calendar>
             <ul class="d-flex align-items-center list-group my-3 p-1">
                 <router-link to="/lessons/schedule" class="btn btn-secondary my-2">+ Schedule New Lesson</router-link>
                 <lesson-summary
@@ -26,11 +27,13 @@ import {computed, defineComponent, onBeforeMount, Ref} from 'vue';
 import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
 import { useLessonsStore } from "@/store/lessons";
+import TheWeeklyCalendar from '@/components/layout/TheWeeklyCalendar.vue';
 import { GetLessonResponse } from '@/dto/response/getLessonResponse';
 export default defineComponent({
     name: 'LessonsList',
     components: {
-        LessonSummary
+        LessonSummary,
+        TheCalendar: TheWeeklyCalendar
     },
     setup() {
         const loginStore = useLoginStore();
