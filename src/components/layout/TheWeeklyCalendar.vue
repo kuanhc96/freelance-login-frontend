@@ -1,11 +1,36 @@
 <script lang="ts">
-import {defineComponent, onMounted, Ref, ref} from 'vue'
+import {defineComponent, onMounted, Ref, ref, PropType, computed} from 'vue'
 import Calendar, {Options} from "@toast-ui/calendar";
+import {GetLessonResponse} from "@/dto/response/getLessonResponse";
+import {EventObject} from "@toast-ui/calendar/types/types/events";
 export default defineComponent({
     name: 'CalendarPage',
-    setup() {
+    props: {
+        lessons: {
+            type: Array as PropType<GetLessonResponse[]>,
+            default:() => []
+        }
+    },
+    setup(props) {
         const calendarContainer: Ref<HTMLDivElement | null> = ref(null);
         let calendarInstance: Calendar;
+
+        const calendarEvents: Ref<EventObject[]> = computed(function() {
+            if (props.lessons.length == 0) {
+                return [];
+            }
+            return props.lessons!.map((lesson, index) => {
+               const eventObject: EventObject = {
+                   id: index,
+                   calendarId: '1',
+                   title: lesson.subjectName,
+                   category: 'time',
+                   start: lesson.startDate,
+                   end: new Date(new Date(lesson.startDate).getTime() + 60 * 60 * 1000).toLocaleTimeString()
+               }
+               return eventObject;
+            })
+        })
 
         onMounted(() => {
             if (calendarContainer.value) {
@@ -32,20 +57,13 @@ export default defineComponent({
                 }
                 calendarInstance = new Calendar(calendarContainer.value, options);
 
-                calendarInstance.createEvents([
-                    {
-                        id: '1',
-                        calendarId: '1',
-                        title: 'Meeting',
-                        category: 'time',
-                        start: '2025-07-16T10:30:00',
-                        end: '2025-07-16T12:30:00'
-                    }
-                ]);
+                calendarInstance.createEvents(calendarEvents.value);
             }
         });
 
-        return { calendarContainer }
+        return {
+            calendarContainer
+        }
     }
 })
 

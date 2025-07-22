@@ -27,6 +27,15 @@
                     to="#nav-unscheduled"
                     role="tab"
                 > Unscheduled </router-link>
+                <router-link
+                    class="nav-link"
+                    :class="{active: activeTab==='completed'}"
+                    @click.prevent="activeTab = 'completed'"
+                    id="nav-completed-tab"
+                    data-bs-toggle="tab"
+                    to="#nav-completed"
+                    role="tab"
+                > Completed </router-link>
             </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div
@@ -55,6 +64,14 @@
                     v-show="activeTab==='unscheduled'"
                 >
 <!--                    TODO: unscheduled lessons-->
+                </div>
+                <div
+                    class="tab-pane fade"
+                    id="nav-unscheduled"
+                    role="tabpanel"
+                    v-show="activeTab==='completed'"
+                >
+                <!--                    TODO: completed lessons-->
                 </div>
             </div>
         </base-card>
