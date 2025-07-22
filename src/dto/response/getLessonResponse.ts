@@ -8,6 +8,7 @@ export interface GetLessonResponse {
     location: string
     topic: string
     subjectName: string
+    endDate: string
     lessonStatus: string
     discount: number
     instructorComments: string

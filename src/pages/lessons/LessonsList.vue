@@ -4,7 +4,10 @@
             :card-title="'Lessons'"
             @refresh="refresh"
         >
-            <the-calendar></the-calendar>
+            <the-calendar
+                calendar-id="lessonListCalendar"
+                :lessons="lessons"
+            ></the-calendar>
             <div class="d-flex justify-content-center align-items-center my-2">
                 <router-link to="/lessons/schedule" class="btn btn-secondary my-2">+ Schedule New Lesson</router-link>
             </div>

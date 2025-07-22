@@ -6,10 +6,14 @@ import {EventObject} from "@toast-ui/calendar/types/types/events";
 export default defineComponent({
     name: 'CalendarPage',
     props: {
+        calendarId: {
+            type: String as PropType<string>,
+            required: true
+        },
         lessons: {
             type: Array as PropType<GetLessonResponse[]>,
             default:() => []
-        }
+        },
     },
     setup(props) {
         const calendarContainer: Ref<HTMLDivElement | null> = ref(null);
@@ -22,11 +26,13 @@ export default defineComponent({
             return props.lessons!.map((lesson, index) => {
                const eventObject: EventObject = {
                    id: index,
-                   calendarId: '1',
+                   calendarId: props.calendarId,
                    title: lesson.subjectName,
                    category: 'time',
                    start: lesson.startDate,
-                   end: new Date(new Date(lesson.startDate).getTime() + 60 * 60 * 1000).toLocaleTimeString()
+                   end: lesson.endDate,
+                   isReadOnly: true,
+                   attendees: [lesson.instructorName, lesson.studentName]
                }
                return eventObject;
             })
@@ -45,7 +51,7 @@ export default defineComponent({
                             }
                         ]
                     },
-                    useDetailPopup: false,
+                    useDetailPopup: true,
                     useFormPopup: false,
                     week: {
                         startDayOfWeek: 1,
