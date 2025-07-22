@@ -5,25 +5,64 @@
             @refresh="refresh"
         >
             <the-calendar></the-calendar>
-            <ul class="d-flex align-items-center list-group my-3 p-1">
+            <div class="d-flex justify-content-center align-items-center my-2">
                 <router-link to="/lessons/schedule" class="btn btn-secondary my-2">+ Schedule New Lesson</router-link>
-                <lesson-summary
-                    v-for="lesson in lessons"
-                    :key="lesson.lessonGUID"
-                    :lesson-g-u-i-d="lesson.lessonGUID"
-                    :subject-name="lesson.subjectName"
-                    :student-or-instructor="getInstructorOrStudentName(lesson)"
-                    :date-time="lesson.startDate"
-                    :location="lesson.location"
-                    :status="lesson.lessonStatus"
-                ></lesson-summary>
-            </ul>
+            </div>
+            <nav class="nav nav-tabs mt-3" id="nav-tab" role="tablist">
+                <router-link
+                    class="nav-link"
+                    :class="{active: activeTab==='scheduled'}"
+                    @click.prevent="activeTab = 'scheduled'"
+                    id="nav-scheduled-tab"
+                    data-bs-toggle="tab"
+                    to="#nav-scheduled"
+                    role="tab"
+                > Scheduled </router-link>
+                <router-link
+                    class="nav-link"
+                    :class="{active: activeTab==='unscheduled'}"
+                    @click.prevent="activeTab = 'unscheduled'"
+                    id="nav-unscheduled-tab"
+                    data-bs-toggle="tab"
+                    to="#nav-unscheduled"
+                    role="tab"
+                > Unscheduled </router-link>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div
+                    class="tab-pane fade"
+                    :class="{show: activeTab==='scheduled', active: activeTab==='scheduled'}"
+                    id="nav-scheduled"
+                    role="tabpanel"
+                >
+                    <ul class="d-flex align-items-center list-group my-3 p-1">
+                        <lesson-summary
+                            v-for="lesson in lessons"
+                            :key="lesson.lessonGUID"
+                            :lesson-g-u-i-d="lesson.lessonGUID"
+                            :subject-name="lesson.subjectName"
+                            :student-or-instructor="getInstructorOrStudentName(lesson)"
+                            :date-time="lesson.startDate"
+                            :location="lesson.location"
+                            :status="lesson.lessonStatus"
+                        ></lesson-summary>
+                    </ul>
+                </div>
+                <div
+                    class="tab-pane fade"
+                    id="nav-unscheduled"
+                    role="tabpanel"
+                    v-show="activeTab==='unscheduled'"
+                >
+<!--                    TODO: unscheduled lessons-->
+                </div>
+            </div>
         </base-card>
     </section>
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeMount, Ref} from 'vue';
+import {computed, defineComponent, onBeforeMount, ref, Ref} from 'vue';
 import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
 import { useLessonsStore } from "@/store/lessons";
@@ -44,6 +83,7 @@ export default defineComponent({
         const role: Ref<string> = computed(function() {
             return loginStore.getRole;
         });
+        const activeTab: Ref<string> = ref('scheduled');
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (role.value === 'INSTRUCTOR')  {
                 return lesson.studentName;
@@ -64,6 +104,7 @@ export default defineComponent({
         });
 
         return {
+            activeTab,
             lessons,
             getInstructorOrStudentName,
             refresh

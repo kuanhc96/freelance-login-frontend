@@ -52,7 +52,7 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="m-3 p-3" ref="calendarContainer" style="height: 600px;"></div>
+    <div class="m-3 p-3" ref="calendarContainer" style="height: 300px;"></div>
 </template>
 
 <style scoped>
