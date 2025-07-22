@@ -1,6 +1,14 @@
 <template>
     <section>
         <base-card :card-title="'Schedule Lesson'">
+            <the-monthly-calendar
+                v-if="inputDate !== '' && inputTime !== ''"
+                :key="inputDate + 'T' + inputTime"
+                :start-date="inputDate"
+                :start-time="inputTime"
+                :duration="duration"
+                :subject-name="subjectName"
+            ></the-monthly-calendar>
             <form action="" @submit.prevent="submitSchedule">
                 <div class="d-flex justify-content-center m-3">
                     <div class="w-100 row d-flex justify-content-between align-items-center">
@@ -89,21 +97,64 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex justify-content-center m-3">
+                <div class="d-flex justify-content-center mt-3">
                     <div class="w-100 row d-flex justify-content-between align-items-center">
                         <div class="col-md-4">
                             <label for="dateTimeInput" class="form-label fs-5">
                                 Start Date &amp; Time
                             </label>
                         </div>
-                        <div class="col-md-6">
-                            <input
-                                type="datetime-local"
-                                id="dateTimeInput"
-                                class="form-control"
-                                v-model="inputDateTime"
-                            >
+                        <div class="col-md-6 d-flex justify-content-around">
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="decideDateTimeLater"
+                                    :value="true"
+                                    v-model="decideDateTimeLater"
+                                    checked
+                                >
+                                <label
+                                    class="form-check-label"
+                                    for="decideDateTimeLater"
+                                >
+                                    Decide Later
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    id="decideDateTimeNow"
+                                    :value="false"
+                                    v-model="decideDateTimeLater"
+                                >
+                                <label
+                                    class="form-check-label"
+                                    for="decideDateTimeNow"
+                                >
+                                    Schedule Now
+                                </label>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mb-3" v-if="!decideDateTimeLater">
+                    <div class="col-md-4">
+                        <input
+                            type="date"
+                            id="dateInput"
+                            class="form-control"
+                            v-model="inputDate"
+                        >
+                    </div>
+                    <div class="col-md-4">
+                        <input
+                            type="time"
+                            id="timeInput"
+                            class="form-control"
+                            v-model="inputTime"
+                        >
                     </div>
                 </div>
                 <div
@@ -168,20 +219,24 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from 'vue'
-import { GetSubjectResponse } from "@/dto/response/getSubjectResponse";
-import { useSubjectsStore } from "@/store/subjects";
-import { useLoginStore } from "@/store/login";
-import { useInstructorsOrStudentsStore } from '@/store/instructorsOrStudents';
-import { usePackagesStore } from '@/store/packages';
-import { useRouter } from 'vue-router';
+import {computed, defineComponent, Ref, ref} from 'vue'
+import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
+import {useSubjectsStore} from "@/store/subjects";
+import {useLoginStore} from "@/store/login";
+import {useInstructorsOrStudentsStore} from '@/store/instructorsOrStudents';
+import {usePackagesStore} from '@/store/packages';
+import {useRouter} from 'vue-router';
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'
 import Cookies from "js-cookie";
 import {GetPackageResponse} from "@/dto/response/getPackageResponse";
+import TheMonthlyCalendar from "@/components/layout/TheMonthlyCalendar.vue";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
+    components: {
+        TheMonthlyCalendar
+    },
     setup() {
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
@@ -193,7 +248,9 @@ export default defineComponent({
         const selectedStudentGUID: Ref<string> = ref('');
         const selectedSubjectGUID: Ref<string> = ref('');
         const selectedPackageGUID: Ref<string> = ref('');
-        const inputDateTime: Ref<string> = ref('');
+        const decideDateTimeLater: Ref<boolean> = ref(true);
+        const inputDate: Ref<string> = ref('');
+        const inputTime: Ref<string> = ref('');
         const frequency: Ref<string> = ref('NONE');
         const selectedLocation: Ref<string> = ref('');
         const userGUID: Ref<string> = computed(function() {
@@ -221,8 +278,18 @@ export default defineComponent({
         });
 
         const price: Ref<number> = computed(function() {
-            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value);
-            return subject?.price!;
+            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
+            return subject.price;
+        })
+
+        const duration: Ref<number> = computed(function() {
+            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
+            return subject.duration;
+        })
+
+        const subjectName: Ref<string> = computed(function() {
+            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
+            return subject.subjectName;
         })
 
         const numberOfLessons: Ref<number> = computed(function() {
@@ -235,7 +302,7 @@ export default defineComponent({
             const createLessonsRequest: CreateLessonsRequest = {
                 studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
                 instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
-                startDate: inputDateTime.value,
+                startDate: inputDate.value + "T" + inputTime.value,
                 location: selectedLocation.value,
                 subjectGUID: selectedSubjectGUID.value,
                 topic: 'testTopic',
@@ -262,10 +329,14 @@ export default defineComponent({
             selectedInstructorGUID,
             selectedStudentGUID,
             selectedSubjectGUID,
-            inputDateTime,
+            price,
+            subjectName,
+            decideDateTimeLater,
+            duration,
+            inputDate,
+            inputTime,
             selectedPackageGUID,
             numberOfLessons,
-            price,
             frequency,
             selectedLocation,
             subjects,
