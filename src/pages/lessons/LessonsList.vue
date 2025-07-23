@@ -6,6 +6,7 @@
         >
             <the-calendar
                 calendar-id="lessonListCalendar"
+                :key="lessons.length"
                 :lessons="lessons"
             ></the-calendar>
             <div class="d-flex justify-content-center align-items-center my-2">

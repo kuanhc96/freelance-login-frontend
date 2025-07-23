@@ -1,22 +1,20 @@
 <script lang="ts">
 import {defineComponent, onMounted, ref, Ref, PropType, computed} from 'vue'
 import Calendar, {Options} from "@toast-ui/calendar";
+import {GetLessonResponse} from "@/dto/response/getLessonResponse";
+import {EventObject} from "@toast-ui/calendar/types/types/events";
 export default defineComponent({
     name: 'MonthlyCalendar',
     props: {
-        startDate: {
-            type: String as PropType<string>,
-            required: true
-        },
-        startTime: {
-            type: String as PropType<string>,
-            required: true
-        },
-        duration: {
-            type: Number as PropType<number>,
-            required: true
+        precreatedLessons: {
+            type: Array as PropType<GetLessonResponse[]>,
+            default: () => []
         },
         subjectName: {
+            type: String as PropType<string>,
+            required: true
+        },
+        calendarId: {
             type: String as PropType<string>,
             required: true
         }
@@ -25,23 +23,23 @@ export default defineComponent({
         const calendarContainer: Ref<HTMLDivElement | null> = ref(null);
         let calendarInstance: Calendar;
 
-        const endDateTime: Ref<string> = computed(function() {
-            const inputDateTime: Date = new Date(props.startDate + "T" + props.startTime);
-            inputDateTime.setMinutes(inputDateTime.getMinutes() + props.duration);
-
-            const pad = (n: number) => n.toString().padStart(2, '0');
-
-            const year = inputDateTime.getFullYear();
-            const month = pad(inputDateTime.getMonth() + 1); // Months are 0-based
-            const day = pad(inputDateTime.getDate());
-            const hours = pad(inputDateTime.getHours());
-            const minutes = pad(inputDateTime.getMinutes());
-            const seconds = pad(inputDateTime.getSeconds());
-
-            return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        const calendarEvents: Ref<EventObject[]> = computed(function() {
+            if (props.precreatedLessons.length == 0) {
+                return [];
+            }
+            return props.precreatedLessons!.map((lesson, index) => {
+                const eventObject: EventObject = {
+                    id: index,
+                    calendarId: props.calendarId,
+                    title: props.subjectName,
+                    category: 'time',
+                    start: lesson.startDate,
+                    end: lesson.endDate,
+                    isReadOnly: true,
+                }
+                return eventObject;
+            })
         })
-
-
         onMounted(() => {
             if (calendarContainer.value) {
                 const options: Options = {
@@ -69,16 +67,7 @@ export default defineComponent({
                 }
                 calendarInstance = new Calendar(calendarContainer.value, options);
 
-                calendarInstance.createEvents([
-                    {
-                        id: '1',
-                        calendarId: 'monthly-form',
-                        title: props.subjectName,
-                        category: 'time',
-                        start: props.startDate + "T" + props.startTime,
-                        end: endDateTime.value
-                    }
-                ]);
+                calendarInstance.createEvents(calendarEvents.value);
             }
         });
 
@@ -95,6 +84,3 @@ export default defineComponent({
     <div class="m-3 p-3" ref="calendarContainer" style="height: 300px;"></div>
 </template>
 
-<style scoped>
-
-</style>

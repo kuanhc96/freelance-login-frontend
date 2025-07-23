@@ -2,12 +2,10 @@
     <section>
         <base-card :card-title="'Schedule Lesson'">
             <the-monthly-calendar
-                v-if="inputDate !== '' && inputTime !== ''"
-                :key="inputDate + 'T' + inputTime"
-                :start-date="inputDate"
-                :start-time="inputTime"
-                :duration="duration"
-                :subject-name="subjectName"
+                :key="precreatedLessons.length + '|' + precreatedLessons[0]?.startDate"
+                :subject-name="selectedSubject === null? '':selectedSubject.subjectName"
+                :precreated-lessons="precreatedLessons"
+                calendar-id="monthly-form"
             ></the-monthly-calendar>
             <form action="" @submit.prevent="submitSchedule">
                 <div class="d-flex justify-content-center m-3">
@@ -59,13 +57,13 @@
                             <select
                                 class="w-100 form-select"
                                 id="subjectDropdown"
-                                v-model="selectedSubjectGUID"
+                                v-model="selectedSubject"
                             >
                                 <option selected="">Select Subject</option>
                                 <option
                                     v-for="subject in subjects"
                                     :key="subject.subjectGUID"
-                                    :value="subject.subjectGUID"
+                                    :value="subject"
                                 >{{ subject.subjectName }}</option>
                             </select>
                         </div>
@@ -73,7 +71,7 @@
                 </div>
                 <div
                     class="d-flex justify-content-center m-3"
-                    v-if="selectedSubjectGUID !== ''"
+                    v-if="selectedSubject !== null && selectedSubject.subjectGUID !== ''"
                 >
                     <div class="w-100 row d-flex justify-content-between align-items-center">
                         <div class="col-md-4">
@@ -91,8 +89,28 @@
                                     :key="package_.packageGUID"
                                     :value="package_.packageGUID"
                                 >
-                                    {{package_.numberOfLessons}} Lesson(s), {{price}} NTD/Lesson ({{ package_.discountCode }} plan)
+                                    {{package_.numberOfLessons}} Lesson(s), {{selectedSubject.price}} NTD/Lesson ({{ package_.discountCode }} plan)
                                 </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center m-3">
+                    <div class="w-100 row d-flex justify-content-between align-items-center">
+                        <div class="col-md-4">
+                            <label for="locationDropdown" class="form-label fs-5">Location</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select
+                                class="w-100 form-select"
+                                id="locationDropdown"
+                                v-model="selectedLocation"
+                            >
+                                <option selected="">Location</option>
+                                <option value="test1">Test1</option>
+                                <option value="test2">Test2</option>
+                                <option value="test3">Test3</option>
+                                <option value="none">Decide Later</option>
                             </select>
                         </div>
                     </div>
@@ -142,18 +160,10 @@
                 <div class="d-flex justify-content-end mb-3" v-if="!decideDateTimeLater">
                     <div class="col-md-4">
                         <input
-                            type="date"
+                            type="datetime-local"
                             id="dateInput"
                             class="form-control"
-                            v-model="inputDate"
-                        >
-                    </div>
-                    <div class="col-md-4">
-                        <input
-                            type="time"
-                            id="timeInput"
-                            class="form-control"
-                            v-model="inputTime"
+                            v-model="inputDateTime"
                         >
                     </div>
                 </div>
@@ -181,26 +191,6 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center m-3">
-                    <div class="w-100 row d-flex justify-content-between align-items-center">
-                        <div class="col-md-4">
-                            <label for="locationDropdown" class="form-label fs-5">Location</label>
-                        </div>
-                        <div class="col-md-6">
-                            <select
-                                class="w-100 form-select"
-                                id="locationDropdown"
-                                v-model="selectedLocation"
-                            >
-                                <option selected="">Location</option>
-                                <option value="test1">Test1</option>
-                                <option value="test2">Test2</option>
-                                <option value="test3">Test3</option>
-                                <option value="none">Decide Later</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center m-3">
                     <div class="col-md-8">
                         <div class="d-grid">
                             <button
@@ -219,7 +209,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, Ref, ref} from 'vue'
+import {computed, defineComponent, Ref, ref, watch} from 'vue'
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 import {useSubjectsStore} from "@/store/subjects";
 import {useLoginStore} from "@/store/login";
@@ -231,6 +221,8 @@ import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'
 import Cookies from "js-cookie";
 import {GetPackageResponse} from "@/dto/response/getPackageResponse";
 import TheMonthlyCalendar from "@/components/layout/TheMonthlyCalendar.vue";
+import {PrecreateLessonsRequest} from "@/dto/request/precreateLessonsRequest";
+import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -246,13 +238,13 @@ export default defineComponent({
 
         const selectedInstructorGUID: Ref<string> = ref('');
         const selectedStudentGUID: Ref<string> = ref('');
-        const selectedSubjectGUID: Ref<string> = ref('');
+        const selectedSubject: Ref<GetSubjectResponse | null> = ref(null);
         const selectedPackageGUID: Ref<string> = ref('');
         const decideDateTimeLater: Ref<boolean> = ref(true);
-        const inputDate: Ref<string> = ref('');
-        const inputTime: Ref<string> = ref('');
+        const inputDateTime: Ref<string> = ref('');
         const frequency: Ref<string> = ref('NONE');
         const selectedLocation: Ref<string> = ref('');
+        const precreatedLessons: Ref<GetLessonResponse[]> = ref([]);
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
         });
@@ -274,70 +266,87 @@ export default defineComponent({
         });
 
         const packages: Ref<GetPackageResponse[]> = computed(function() {
-            return packagesStore.getPackagesBySubjectGUID(selectedSubjectGUID.value)
+            if (selectedSubject.value === null) {
+                return [];
+            } else {
+                return packagesStore.getPackagesBySubjectGUID(selectedSubject.value.subjectGUID);
+            }
         });
-
-        const price: Ref<number> = computed(function() {
-            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
-            return subject.price;
-        })
-
-        const duration: Ref<number> = computed(function() {
-            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
-            return subject.duration;
-        })
-
-        const subjectName: Ref<string> = computed(function() {
-            const subject = subjects.value.find(subject => subject.subjectGUID === selectedSubjectGUID.value)!;
-            return subject.subjectName;
-        })
 
         const numberOfLessons: Ref<number> = computed(function() {
             const package_ = packages.value.find(package_ => package_.packageGUID === selectedPackageGUID.value);
             return package_?.numberOfLessons!;
         })
 
-        async function submitSchedule(): Promise<void> {
+        async function precreateLessons(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
-            const createLessonsRequest: CreateLessonsRequest = {
+            const precreateLessonsRequest: PrecreateLessonsRequest = {
                 studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
                 instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
-                startDate: inputDate.value + "T" + inputTime.value,
+                startDate: inputDateTime.value,
                 location: selectedLocation.value,
-                subjectGUID: selectedSubjectGUID.value,
-                topic: 'testTopic',
+                subjectGUID: selectedSubject.value!.subjectGUID,
                 packageGUID: selectedPackageGUID.value,
                 lessonFrequency: frequency.value
-            };
+            }
             const response: Response = await fetch(
-                'http://localhost:8081/lessons/createLessons', {
+                'http://localhost:8081/lessons/precreateLessons', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-XSRF-TOKEN': csrfToken
                     },
-                    body: JSON.stringify(createLessonsRequest)
+                    body: JSON.stringify(precreateLessonsRequest)
                 }
             );
+
             if (response.ok) {
-                await router.push('/lessons')
+                precreatedLessons.value = await response.json();
+                console.log(precreatedLessons.value)
+            }
+        }
+
+        watch([inputDateTime, frequency], precreateLessons);
+
+        async function submitSchedule(): Promise<void> {
+            if (precreatedLessons.value.length > 0) {
+                const csrfToken = Cookies.get('XSRF-TOKEN');
+                const createLessonsRequest: CreateLessonsRequest = {
+                    studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
+                    instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
+                    subjectGUID: selectedSubject.value!.subjectGUID,
+                    packageGUID: selectedPackageGUID.value,
+                    precreatedLessons: precreatedLessons.value
+                };
+                const response: Response = await fetch(
+                    'http://localhost:8081/lessons/createLessons', {
+                        method: 'POST',
+                        credentials: 'include',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-XSRF-TOKEN': csrfToken
+                        },
+                        body: JSON.stringify(createLessonsRequest)
+                    }
+                );
+                if (response.ok) {
+                    await router.push('/lessons')
+                }
+
             }
         }
 
         return {
             selectedInstructorGUID,
             selectedStudentGUID,
-            selectedSubjectGUID,
-            price,
-            subjectName,
+            selectedSubject,
             decideDateTimeLater,
-            duration,
-            inputDate,
-            inputTime,
+            inputDateTime,
             selectedPackageGUID,
             numberOfLessons,
             frequency,
+            precreatedLessons,
             selectedLocation,
             subjects,
             packages,

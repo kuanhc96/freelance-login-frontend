@@ -1,10 +1,9 @@
+import {GetLessonResponse} from "@/dto/response/getLessonResponse";
+
 export interface CreateLessonsRequest {
+    precreatedLessons: GetLessonResponse[],
     studentGUID: string,
     instructorGUID: string,
-    startDate: string,
-    location: string,
     subjectGUID: string,
-    topic: string,
     packageGUID: string,
-    lessonFrequency: string
 }
