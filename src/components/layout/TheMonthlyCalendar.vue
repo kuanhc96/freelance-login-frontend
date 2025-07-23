@@ -53,7 +53,7 @@ export default defineComponent({
                             }
                         ]
                     },
-                    useDetailPopup: false,
+                    useDetailPopup: true,
                     useFormPopup: false,
                     month: {
                         startDayOfWeek: 1,
