@@ -6,7 +6,7 @@ import ForgetPasswordForm from '../pages/login/ForgetPasswordForm.vue';
 import ResetPasswordForm from '../pages/login/ResetPasswordForm.vue';
 
 import InstructorsOrStudentsList from '@/pages/instructorsOrStudents/InstructorsOrStudentsList.vue'
-import AnnouncementsList from '../pages/announcements/AnnouncementsList.vue'
+import AnnouncementsPage from '../pages/announcements/AnnouncementsPage.vue'
 import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
 import InstructorDetails from '@/pages/instructorsOrStudents/InstructorDetails.vue'
 import InstructorContact from '@/pages/instructorsOrStudents/InstructorContact.vue'
@@ -39,7 +39,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/dashboard' },
   { path: '/dashboard', component: Dashboard, meta: { requiresLogin: true } },
   { path: '/instructorsOrStudents', component: InstructorsOrStudentsList, meta: { requiresLogin: true } },
-  { path: '/announcements', component: AnnouncementsList, meta: { requiresLogin: true } },
+  { path: '/announcements', component: AnnouncementsPage, meta: { requiresLogin: true } },
   { path: '/announcements/create', component: AnnouncementForm, meta: { requiresLogin: true } },
   { path: '/instructorsOrStudents/:id', component: InstructorDetails, children: [
       { path: 'contact', component: InstructorContact} // /coaches/c1/contact
