@@ -319,7 +319,6 @@ export default defineComponent({
                 packageGUID: selectedPackageGUID.value,
                 lessonFrequency: frequency.value
             }
-            console.log("precreate lessons:", precreateLessonsRequest)
             const response: Response = await fetch(
                 'http://localhost:8081/lessons/precreateLessons', {
                     method: 'POST',
@@ -337,7 +336,6 @@ export default defineComponent({
                 scheduledPrecreatedLessons.value = precreatedLessons.value.filter(
                     lesson => lesson.lessonStatus === 'SCHEDULED'
                 );
-                console.log(precreatedLessons.value)
             }
         }
 
