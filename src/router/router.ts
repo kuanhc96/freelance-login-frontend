@@ -22,6 +22,7 @@ import {useLoginStore} from "@/store/login";
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import SubjectRegistrationForm from "@/pages/subjects/SubjectRegistrationForm.vue";
 import PackageRegistrationForm from "@/pages/packages/PackageRegistrationForm.vue";
+import ProfilePage from "@/pages/profile/ProfilePage.vue";
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
@@ -46,6 +47,7 @@ const routes: RouteRecordRaw[] = [
   ], props: true, meta: { requiresLogin: true }},
   { path: '/lessons', component: LessonsList, meta: { requiresLogin: true } },
   { path: '/lessons/schedule', component: ScheduleLessonForm , meta: { requiresLogin: true }},
+    {path: '/profile', component: ProfilePage, meta: { requiresLogin: true }},
   { path: '/transactions', component: TransactionsList, meta: { requiresLogin: true } },
   { path: '/transactions/record', component: TransactionForm, meta: { requiresLogin: true } },
   { path: '/transactions/:id', component: TransactionDetailsModal, meta: { requiresLogin: true } },

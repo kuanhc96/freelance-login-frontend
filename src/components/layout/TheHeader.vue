@@ -32,6 +32,9 @@
                         <router-link to="/transactions" class="nav-link ">Transaction</router-link>
                     </li>
                     <li class="nav-item">
+                        <router-link to="/profile" class="nav-link ">Profile</router-link>
+                    </li>
+                    <li class="nav-item">
                         <router-link to="#" class="nav-link " @click="logout">Logout</router-link>
                     </li>
                 </ul>
