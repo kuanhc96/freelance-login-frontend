@@ -1,8 +1,8 @@
 <template>
     <section>
         <base-card :card-title="'Schedule Lesson'">
-            <the-monthly-calendar
-                :key="monthlyCalendarKey"
+            <the-calendar
+                :key="calendarKey"
                 :already-created-lessons="alreadyScheduledLessons"
                 already-created-lessons-subject-name="Scheduled Lesson"
                 :precreated-lessons="scheduledPrecreatedLessons"
@@ -10,9 +10,9 @@
                 already-created-lessons-calendar-id="scheduled lessons"
                 precreated-lessons-calendar-id="TBD lessons"
                 view="month"
-            ></the-monthly-calendar>
-            <the-monthly-calendar
-                :key="monthlyCalendarKey"
+            ></the-calendar>
+            <the-calendar
+                :key="calendarKey"
                 :already-created-lessons="alreadyScheduledLessons"
                 already-created-lessons-subject-name="Scheduled Lesson"
                 :precreated-lessons="scheduledPrecreatedLessons"
@@ -20,7 +20,7 @@
                 already-created-lessons-calendar-id="scheduled lessons"
                 precreated-lessons-calendar-id="TBD lessons"
                 view="week"
-            ></the-monthly-calendar>
+            ></the-calendar>
             <form action="" @submit.prevent="submitSchedule">
                 <div class="d-flex justify-content-center m-3">
                     <div class="w-100 row d-flex justify-content-between align-items-center">
@@ -234,7 +234,7 @@ import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateLessonsRequest} from '@/dto/request/createLessonsRequest'
 import Cookies from "js-cookie";
 import {GetPackageResponse} from "@/dto/response/getPackageResponse";
-import TheMonthlyCalendar from "@/components/layout/TheMonthlyCalendar.vue";
+import TheCalendar from "@/components/layout/TheCalendar.vue";
 import {PrecreateLessonsRequest} from "@/dto/request/precreateLessonsRequest";
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import {useLessonsStore} from "@/store/lessons";
@@ -242,7 +242,7 @@ import {useLessonsStore} from "@/store/lessons";
 export default defineComponent({
     name: 'ScheduleLessonForm',
     components: {
-        TheMonthlyCalendar
+        TheCalendar
     },
     setup() {
         const subjectsStore = useSubjectsStore();
@@ -303,7 +303,7 @@ export default defineComponent({
             );
         });
 
-        const monthlyCalendarKey: Ref<string> = computed(function() {
+        const calendarKey: Ref<string> = computed(function() {
             return scheduledPrecreatedLessons.value.length + '|' + scheduledPrecreatedLessons.value[0]?.startDate + '|' +
                 alreadyScheduledLessons.value.length + '|' + alreadyScheduledLessons.value[0].startDate;
         });
@@ -387,7 +387,7 @@ export default defineComponent({
             subscribedInstructors,
             myStudents,
             isStudent,
-            monthlyCalendarKey,
+            calendarKey,
             submitSchedule
         }
     }
