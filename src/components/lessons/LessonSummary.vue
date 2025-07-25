@@ -49,6 +49,9 @@ export default defineComponent({
     },
     setup(props) {
         const humanReadableDate: Ref<string> = computed(function() {
+            if (props.dateTime == null) {
+                return 'unscheduled';
+            }
             const date = new Date(props.dateTime);
             const options: Intl.DateTimeFormatOptions = {
                 year: 'numeric',
@@ -60,6 +63,9 @@ export default defineComponent({
         })
 
         const humanReadableTime: Ref<string> = computed(function() {
+            if (props.dateTime == null) {
+                return '';
+            }
             const time = new Date(props.dateTime);
             const options: Intl.DateTimeFormatOptions = {
                 hour: 'numeric',

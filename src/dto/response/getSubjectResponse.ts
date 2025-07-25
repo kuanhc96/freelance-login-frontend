@@ -4,4 +4,5 @@ export interface GetSubjectResponse {
     instructorName: string
     price: number
     subjectDescription: string
+    duration: number
 }

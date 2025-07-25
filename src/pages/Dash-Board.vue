@@ -191,7 +191,7 @@ export default defineComponent({
         DashboardAnnouncement,
         DashboardInstructor,
         DashboardLesson,
-        DashboardTransaction
+        DashboardTransaction,
     },
     setup() {
         const loginStore = useLoginStore();
