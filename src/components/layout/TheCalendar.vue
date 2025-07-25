@@ -5,7 +5,7 @@ import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import {EventObject} from "@toast-ui/calendar/types/types/events";
 type ViewType = 'month' | 'week' | 'day';
 export default defineComponent({
-    name: 'MonthlyCalendar',
+    name: 'TheCalendar',
     props: {
         view: {
             type: String as PropType<ViewType>,
@@ -21,7 +21,7 @@ export default defineComponent({
         },
         alreadyCreatedLessonsSubjectName: {
             type: String as PropType<string>,
-            required: true
+            default: null
         },
         precreatedLessonsSubjectName: {
             type: String as PropType<string>,

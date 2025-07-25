@@ -5,9 +5,10 @@
             @refresh="refresh"
         >
             <the-calendar
-                calendar-id="lessonListCalendar"
+                already-created-lessons-calendar-id="lessonListCalendar"
                 :key="lessons.length"
-                :lessons="lessons"
+                :already-created-lessons="lessons"
+                view="week"
             ></the-calendar>
             <div class="d-flex justify-content-center align-items-center my-2">
                 <router-link to="/lessons/schedule" class="btn btn-secondary my-2">+ Schedule New Lesson</router-link>
@@ -87,13 +88,13 @@ import {computed, defineComponent, onBeforeMount, ref, Ref} from 'vue';
 import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
 import { useLessonsStore } from "@/store/lessons";
-import TheWeeklyCalendar from '@/components/layout/TheWeeklyCalendar.vue';
+import TheCalendar from '@/components/layout/TheCalendar.vue';
 import { GetLessonResponse } from '@/dto/response/getLessonResponse';
 export default defineComponent({
     name: 'LessonsList',
     components: {
         LessonSummary,
-        TheCalendar: TheWeeklyCalendar
+        TheCalendar
     },
     setup() {
         const loginStore = useLoginStore();
