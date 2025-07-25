@@ -6,8 +6,8 @@
         >
             <the-calendar
                 already-created-lessons-calendar-id="lessonListCalendar"
-                :key="lessons.length"
-                :already-created-lessons="lessons"
+                :key="scheduledLessons.length"
+                :already-created-lessons="scheduledLessons"
                 view="week"
             ></the-calendar>
             <div class="d-flex justify-content-center align-items-center my-2">
@@ -51,7 +51,7 @@
                 >
                     <ul class="d-flex align-items-center list-group my-3 p-1">
                         <lesson-summary
-                            v-for="lesson in lessons"
+                            v-for="lesson in scheduledLessons"
                             :key="lesson.lessonGUID"
                             :lesson-g-u-i-d="lesson.lessonGUID"
                             :subject-name="lesson.subjectName"
@@ -68,7 +68,17 @@
                     role="tabpanel"
                     v-show="activeTab==='unscheduled'"
                 >
-<!--                    TODO: unscheduled lessons-->
+                    <ul class="d-flex align-items-center list-group my-3 p-1">
+                        <lesson-summary
+                            v-for="lesson in unscheduledLessons"
+                            :key="lesson.lessonGUID"
+                            :lesson-g-u-i-d="lesson.lessonGUID"
+                            :subject-name="lesson.subjectName"
+                            :student-or-instructor="getInstructorOrStudentName(lesson)"
+                            :location="lesson.location"
+                            :status="lesson.lessonStatus"
+                        ></lesson-summary>
+                    </ul>
                 </div>
                 <div
                     class="tab-pane fade"
@@ -76,7 +86,18 @@
                     role="tabpanel"
                     v-show="activeTab==='completed'"
                 >
-                <!--                    TODO: completed lessons-->
+                    <ul class="d-flex align-items-center list-group my-3 p-1">
+                        <lesson-summary
+                            v-for="lesson in completedLessons"
+                            :key="lesson.lessonGUID"
+                            :lesson-g-u-i-d="lesson.lessonGUID"
+                            :subject-name="lesson.subjectName"
+                            :student-or-instructor="getInstructorOrStudentName(lesson)"
+                            :date-time="lesson.startDate"
+                            :location="lesson.location"
+                            :status="lesson.lessonStatus"
+                        ></lesson-summary>
+                    </ul>
                 </div>
             </div>
         </base-card>
@@ -116,7 +137,25 @@ export default defineComponent({
         const lessons: Ref<GetLessonResponse[]> = computed(function() {
             return role.value === 'INSTRUCTOR'? lessonsStore.getLessonsByInstructorGUID(userGUID.value):
                 lessonsStore.getLessonsByStudentGUID(userGUID.value);
-        })
+        });
+
+        const scheduledLessons: Ref<GetLessonResponse[]> = computed(function() {
+            return lessons.value.filter(
+                lesson => lesson.lessonStatus === 'SCHEDULED'
+            );
+        });
+
+        const unscheduledLessons: Ref<GetLessonResponse[]> = computed(function() {
+            return lessons.value.filter(
+                lesson => lesson.lessonStatus === 'CREATED'
+            );
+        });
+
+        const completedLessons: Ref<GetLessonResponse[]> = computed(function() {
+            return lessons.value.filter(
+                lesson => lesson.lessonStatus === 'COMPLETED'
+            );
+        });
         async function refresh(): Promise<void> {
             await lessonsStore.setLessons();
         }
@@ -127,7 +166,9 @@ export default defineComponent({
 
         return {
             activeTab,
-            lessons,
+            scheduledLessons,
+            unscheduledLessons,
+            completedLessons,
             getInstructorOrStudentName,
             refresh
         }
