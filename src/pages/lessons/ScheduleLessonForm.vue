@@ -2,10 +2,24 @@
     <section>
         <base-card :card-title="'Schedule Lesson'">
             <the-monthly-calendar
-                :key="precreatedLessons.length + '|' + precreatedLessons[0]?.startDate"
-                :subject-name="selectedSubject === null? '':selectedSubject.subjectName"
-                :precreated-lessons="precreatedLessons"
-                calendar-id="monthly-form"
+                :key="monthlyCalendarKey"
+                :already-created-lessons="alreadyScheduledLessons"
+                already-created-lessons-subject-name="Scheduled Lesson"
+                :precreated-lessons="scheduledPrecreatedLessons"
+                :precreated-lessons-subject-name="selectedSubject === null? '':selectedSubject.subjectName"
+                already-created-lessons-calendar-id="scheduled lessons"
+                precreated-lessons-calendar-id="TBD lessons"
+                view="month"
+            ></the-monthly-calendar>
+            <the-monthly-calendar
+                :key="monthlyCalendarKey"
+                :already-created-lessons="alreadyScheduledLessons"
+                already-created-lessons-subject-name="Scheduled Lesson"
+                :precreated-lessons="scheduledPrecreatedLessons"
+                :precreated-lessons-subject-name="selectedSubject === null? '':selectedSubject.subjectName"
+                already-created-lessons-calendar-id="scheduled lessons"
+                precreated-lessons-calendar-id="TBD lessons"
+                view="week"
             ></the-monthly-calendar>
             <form action="" @submit.prevent="submitSchedule">
                 <div class="d-flex justify-content-center m-3">
@@ -223,6 +237,7 @@ import {GetPackageResponse} from "@/dto/response/getPackageResponse";
 import TheMonthlyCalendar from "@/components/layout/TheMonthlyCalendar.vue";
 import {PrecreateLessonsRequest} from "@/dto/request/precreateLessonsRequest";
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
+import {useLessonsStore} from "@/store/lessons";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -234,6 +249,7 @@ export default defineComponent({
         const loginStore = useLoginStore();
         const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
         const packagesStore = usePackagesStore();
+        const lessonsStore = useLessonsStore();
         const router = useRouter();
 
         const selectedInstructorGUID: Ref<string> = ref('');
@@ -245,6 +261,7 @@ export default defineComponent({
         const frequency: Ref<string> = ref('NONE');
         const selectedLocation: Ref<string> = ref('');
         const precreatedLessons: Ref<GetLessonResponse[]> = ref([]);
+        const scheduledPrecreatedLessons: Ref<GetLessonResponse[]> = ref([]);
         const userGUID: Ref<string> = computed(function() {
             return loginStore.getUserGUID;
         });
@@ -276,7 +293,20 @@ export default defineComponent({
         const numberOfLessons: Ref<number> = computed(function() {
             const package_ = packages.value.find(package_ => package_.packageGUID === selectedPackageGUID.value);
             return package_?.numberOfLessons!;
-        })
+        });
+
+        const alreadyScheduledLessons: Ref<GetLessonResponse[]> = computed(function() {
+            const alreadyCreatedLessons = loginStore.isStudent? lessonsStore.getLessonsByStudentGUID(userGUID.value):
+                lessonsStore.getLessonsByInstructorGUID(userGUID.value);
+            return alreadyCreatedLessons.filter(
+                lesson => lesson.lessonStatus === 'SCHEDULED'
+            );
+        });
+
+        const monthlyCalendarKey: Ref<string> = computed(function() {
+            return scheduledPrecreatedLessons.value.length + '|' + scheduledPrecreatedLessons.value[0]?.startDate + '|' +
+                alreadyScheduledLessons.value.length + '|' + alreadyScheduledLessons.value[0].startDate;
+        });
 
         async function precreateLessons(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
@@ -289,6 +319,7 @@ export default defineComponent({
                 packageGUID: selectedPackageGUID.value,
                 lessonFrequency: frequency.value
             }
+            console.log("precreate lessons:", precreateLessonsRequest)
             const response: Response = await fetch(
                 'http://localhost:8081/lessons/precreateLessons', {
                     method: 'POST',
@@ -303,6 +334,9 @@ export default defineComponent({
 
             if (response.ok) {
                 precreatedLessons.value = await response.json();
+                scheduledPrecreatedLessons.value = precreatedLessons.value.filter(
+                    lesson => lesson.lessonStatus === 'SCHEDULED'
+                );
                 console.log(precreatedLessons.value)
             }
         }
@@ -347,12 +381,15 @@ export default defineComponent({
             numberOfLessons,
             frequency,
             precreatedLessons,
+            scheduledPrecreatedLessons,
+            alreadyScheduledLessons,
             selectedLocation,
             subjects,
             packages,
             subscribedInstructors,
             myStudents,
             isStudent,
+            monthlyCalendarKey,
             submitSchedule
         }
     }

@@ -1,20 +1,37 @@
 <script lang="ts">
-import {defineComponent, onMounted, ref, Ref, PropType, computed} from 'vue'
+import {defineComponent, onMounted, ref, Ref, PropType} from 'vue'
 import Calendar, {Options} from "@toast-ui/calendar";
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import {EventObject} from "@toast-ui/calendar/types/types/events";
+type ViewType = 'month' | 'week' | 'day';
 export default defineComponent({
     name: 'MonthlyCalendar',
     props: {
+        view: {
+            type: String as PropType<ViewType>,
+            default: 'month'
+        },
+        alreadyCreatedLessons: {
+            type: Array as PropType<GetLessonResponse[]>,
+            default: () => []
+        },
         precreatedLessons: {
             type: Array as PropType<GetLessonResponse[]>,
             default: () => []
         },
-        subjectName: {
+        alreadyCreatedLessonsSubjectName: {
             type: String as PropType<string>,
             required: true
         },
-        calendarId: {
+        precreatedLessonsSubjectName: {
+            type: String as PropType<string>,
+            required: true
+        },
+        alreadyCreatedLessonsCalendarId: {
+            type: String as PropType<string>,
+            required: true
+        },
+        precreatedLessonsCalendarId: {
             type: String as PropType<string>,
             required: true
         }
@@ -23,15 +40,15 @@ export default defineComponent({
         const calendarContainer: Ref<HTMLDivElement | null> = ref(null);
         let calendarInstance: Calendar;
 
-        const calendarEvents: Ref<EventObject[]> = computed(function() {
-            if (props.precreatedLessons.length == 0) {
+        function getCalendarEvents(lessons: GetLessonResponse[], subjectName: string, calendarId: string): EventObject[] {
+            if (lessons.length == 0) {
                 return [];
             }
-            return props.precreatedLessons!.map((lesson, index) => {
+            return lessons!.map((lesson, index) => {
                 const eventObject: EventObject = {
                     id: index,
-                    calendarId: props.calendarId,
-                    title: props.subjectName,
+                    calendarId: calendarId,
+                    title: subjectName? subjectName: lesson.subjectName,
                     category: 'time',
                     start: lesson.startDate,
                     end: lesson.endDate,
@@ -39,11 +56,12 @@ export default defineComponent({
                 }
                 return eventObject;
             })
-        })
+        }
+
         onMounted(() => {
             if (calendarContainer.value) {
                 const options: Options = {
-                    defaultView: 'month',
+                    defaultView: props.view,
                     isReadOnly: true,
                     timezone: {
                         zones: [
@@ -55,6 +73,13 @@ export default defineComponent({
                     },
                     useDetailPopup: true,
                     useFormPopup: false,
+                    week: {
+                        startDayOfWeek: 1,
+                        hourStart: 8,
+                        hourEnd: 21,
+                        eventView: ['time'],
+                        taskView: false
+                    },
                     month: {
                         startDayOfWeek: 1,
                         visibleWeeksCount: 3,
@@ -67,7 +92,11 @@ export default defineComponent({
                 }
                 calendarInstance = new Calendar(calendarContainer.value, options);
 
-                calendarInstance.createEvents(calendarEvents.value);
+                calendarInstance.createEvents(
+                    getCalendarEvents(props.precreatedLessons, props.precreatedLessonsSubjectName, props.precreatedLessonsCalendarId).concat(
+                        getCalendarEvents(props.alreadyCreatedLessons, props.alreadyCreatedLessonsSubjectName, props.alreadyCreatedLessonsCalendarId)
+                    )
+                );
             }
         });
 
