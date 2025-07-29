@@ -9,6 +9,7 @@ import {useSubjectsStore} from "@/store/subjects";
 import {usePackagesStore} from "@/store/packages";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useTransactionsStore} from "@/store/transactions";
+import {useLocationsStore} from "@/store/locations";
 
 export interface LoginState {
     xsrfToken: string
@@ -143,6 +144,7 @@ export const useLoginStore = defineStore('login', {
             const lessonsStore = useLessonsStore();
             const packagesStore = usePackagesStore();
             const transactionsStore = useTransactionsStore();
+            const locationsStore = useLocationsStore();
 
             await instructorsStore.setInstructors();
             await subjectsStore.setSubjects();
@@ -150,6 +152,7 @@ export const useLoginStore = defineStore('login', {
             await lessonsStore.setLessons();
             await packagesStore.setPackages();
             await transactionsStore.setTransactions();
+            await locationsStore.setLocations();
         }
     },
 })
