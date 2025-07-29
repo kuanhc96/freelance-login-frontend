@@ -121,10 +121,12 @@
                                 v-model="selectedLocation"
                             >
                                 <option selected="">Location</option>
-                                <option value="test1">Test1</option>
-                                <option value="test2">Test2</option>
-                                <option value="test3">Test3</option>
-                                <option value="none">Decide Later</option>
+                                <option
+                                    v-for="location in locations"
+                                    :key="location.locationGUID"
+                                    :value="location"
+                                >{{ location.locationName }}</option>
+                                <option :value="null">Decide Later</option>
                             </select>
                         </div>
                     </div>
@@ -238,6 +240,8 @@ import TheCalendar from "@/components/layout/TheCalendar.vue";
 import {PrecreateLessonsRequest} from "@/dto/request/precreateLessonsRequest";
 import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import {useLessonsStore} from "@/store/lessons";
+import {useLocationsStore} from "@/store/locations";
+import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -250,6 +254,7 @@ export default defineComponent({
         const instructorsOrStudentsStore = useInstructorsOrStudentsStore();
         const packagesStore = usePackagesStore();
         const lessonsStore = useLessonsStore();
+        const locationsStore = useLocationsStore();
         const router = useRouter();
 
         const selectedInstructorGUID: Ref<string> = ref('');
@@ -259,7 +264,7 @@ export default defineComponent({
         const decideDateTimeLater: Ref<boolean> = ref(true);
         const inputDateTime: Ref<string> = ref('');
         const frequency: Ref<string> = ref('NONE');
-        const selectedLocation: Ref<string> = ref('');
+        const selectedLocation: Ref<GetLocationResponse | null> = ref(null);
         const precreatedLessons: Ref<GetLessonResponse[]> = ref([]);
         const scheduledPrecreatedLessons: Ref<GetLessonResponse[]> = ref([]);
         const userGUID: Ref<string> = computed(function() {
@@ -295,6 +300,10 @@ export default defineComponent({
             return package_?.numberOfLessons!;
         });
 
+        const locations: Ref<GetLocationResponse[]> = computed(function() {
+            return locationsStore.getLocations;
+        })
+
         const alreadyScheduledLessons: Ref<GetLessonResponse[]> = computed(function() {
             const alreadyCreatedLessons = loginStore.isStudent? lessonsStore.getLessonsByStudentGUID(userGUID.value):
                 lessonsStore.getLessonsByInstructorGUID(userGUID.value);
@@ -314,7 +323,7 @@ export default defineComponent({
                 studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
                 instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
                 startDate: inputDateTime.value,
-                location: selectedLocation.value,
+                locationGUID: selectedLocation.value? selectedLocation.value.locationGUID: "",
                 subjectGUID: selectedSubject.value!.subjectGUID,
                 packageGUID: selectedPackageGUID.value,
                 lessonFrequency: frequency.value
@@ -377,6 +386,7 @@ export default defineComponent({
             inputDateTime,
             selectedPackageGUID,
             numberOfLessons,
+            locations,
             frequency,
             precreatedLessons,
             scheduledPrecreatedLessons,

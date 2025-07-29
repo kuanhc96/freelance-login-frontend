@@ -61,7 +61,7 @@
                                     :lesson-g-u-i-d="lesson.lessonGUID"
                                     :student-or-instructor-name="getInstructorOrStudentName(lesson)"
                                     :date-time="lesson.startDate"
-                                    :location="lesson.location"
+                                    :location="lesson.locationName"
                                     :subject="lesson.subjectName"
                                 ></dashboard-lesson>
                                 <div v-if="lessons.length > 3" class="d-flex justify-content-center">

@@ -25,6 +25,7 @@ export const useLocationsStore = defineStore('locations', {
 
             if (response.ok) {
                 this.locations = await response.json();
+                console.log(this.locations);
             }
         }
     }

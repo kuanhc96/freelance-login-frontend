@@ -57,7 +57,7 @@
                             :subject-name="lesson.subjectName"
                             :student-or-instructor="getInstructorOrStudentName(lesson)"
                             :date-time="lesson.startDate"
-                            :location="lesson.location"
+                            :location="lesson.locationName"
                             :status="lesson.lessonStatus"
                         ></lesson-summary>
                     </ul>
@@ -75,7 +75,7 @@
                             :lesson-g-u-i-d="lesson.lessonGUID"
                             :subject-name="lesson.subjectName"
                             :student-or-instructor="getInstructorOrStudentName(lesson)"
-                            :location="lesson.location"
+                            :location="lesson.locationName"
                             :status="lesson.lessonStatus"
                         ></lesson-summary>
                     </ul>
@@ -94,7 +94,7 @@
                             :subject-name="lesson.subjectName"
                             :student-or-instructor="getInstructorOrStudentName(lesson)"
                             :date-time="lesson.startDate"
-                            :location="lesson.location"
+                            :location="lesson.locationName"
                             :status="lesson.lessonStatus"
                         ></lesson-summary>
                     </ul>
