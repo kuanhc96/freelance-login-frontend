@@ -3,10 +3,12 @@ import {computed, defineComponent, Ref} from 'vue'
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 import {useLocationsStore} from "@/store/locations";
 import LocationDetailsModal from "@/components/locations/LocationDetailsModal.vue";
+import AddLocationModal from "@/components/locations/AddLocationModal.vue";
 export default defineComponent({
     name: 'ProfilePage',
     components: {
-        LocationDetailsModal
+        LocationDetailsModal,
+        AddLocationModal
     },
     setup() {
         const locationsStore = useLocationsStore();
@@ -39,9 +41,7 @@ export default defineComponent({
                                 :location="location"
                             > </location-details-modal>
                             <span v-if="preferredLocations.length > 2" class="fs-6"> ... </span>
-                            <span class="badge btn text-bg-primary text-dark fs-7 mx-2">
-                                + Add
-                            </span>
+                            <add-location-modal></add-location-modal>
                         </div>
                     </div>
                 </div>
