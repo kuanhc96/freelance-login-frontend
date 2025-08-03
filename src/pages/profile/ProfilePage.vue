@@ -3,21 +3,41 @@ import {computed, defineComponent, Ref} from 'vue'
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 import {useLocationsStore} from "@/store/locations";
 import LocationDetailsModal from "@/components/locations/LocationDetailsModal.vue";
+import SubjectDetailsModal from "@/components/subjects/SubjectDetailsModal.vue";
 import AddLocationModal from "@/components/locations/AddLocationModal.vue";
+import AddSubjectModal from "@/components/subjects/AddSubjectModal.vue";
+import {useSubjectsStore} from "@/store/subjects";
+import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
+import {useLoginStore} from "@/store/login";
 export default defineComponent({
     name: 'ProfilePage',
     components: {
         LocationDetailsModal,
-        AddLocationModal
+        SubjectDetailsModal,
+        AddLocationModal,
+        AddSubjectModal
     },
     setup() {
         const locationsStore = useLocationsStore();
+        const subjectsStore = useSubjectsStore();
+        const loginStore = useLoginStore();
         const preferredLocations: Ref<GetLocationResponse[]> = computed(function() {
             return locationsStore.getLocations;
         })
 
+        const subjects: Ref<GetSubjectResponse[]> = computed(function() {
+            return subjectsStore.getSubjectsByInstructorGUID(loginStore.getUserGUID);
+        })
+
+        const isStudent: Ref<boolean> = computed(function() {
+            return loginStore.isStudent;
+        })
+
+
         return {
-            preferredLocations
+            preferredLocations,
+            subjects,
+            isStudent
         }
     }
 })
@@ -54,18 +74,21 @@ export default defineComponent({
                                 </div>
                             </div>
                         </div>
-                        <div class="row col-md-12 col-12 m-3">
+                        <div
+                            class="row col-md-12 col-12 m-3"
+                            v-if="!isStudent"
+                        >
                             <div class="d-flex justify-content-between">
                                 <h5>Available Subjects:</h5>
                                 <div class="">
                                     <!--                            modal button for location details -->
-                                    <location-details-modal
-                                        v-for="location in preferredLocations"
-                                        :key="location.locationGUID"
-                                        :location="location"
-                                    > </location-details-modal>
-                                    <span v-if="preferredLocations.length > 2" class="fs-6"> ... </span>
-                                    <add-location-modal></add-location-modal>
+                                    <subject-details-modal
+                                        v-for="subject in subjects"
+                                        :key="subject.subjectGUID"
+                                        :subject="subject"
+                                    > </subject-details-modal>
+                                    <span v-if="subjects.length > 2" class="fs-6"> ... </span>
+                                    <add-subject-modal></add-subject-modal>
                                 </div>
                             </div>
                         </div>
