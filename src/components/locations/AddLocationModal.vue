@@ -3,6 +3,7 @@ import {defineComponent, ref, Ref} from "vue";
 import Cookies from "js-cookie";
 import {CreateLocationRequest} from "@/dto/request/createLocationRequest";
 import {useLoginStore} from "@/store/login";
+import {useLocationsStore} from "@/store/locations";
 
 export default defineComponent({
     name: "AddLocationModal" ,
@@ -37,7 +38,8 @@ export default defineComponent({
             })
 
             if (response.ok) {
-                console.log(await response.json())
+                const locationStore = useLocationsStore();
+                await locationStore.setLocations();
             }
 
         }
@@ -75,26 +77,56 @@ export default defineComponent({
                         <div class="row m-3">
                             <div class="d-flex justify-content-between">
                                 <label for="locationNameInput">Location Name</label>
-                                <input type="text" id="locationNameInput" class="form-control" placeholder="My Apartment"/>
+                                <input
+                                    type="text"
+                                    id="locationNameInput"
+                                    class="form-control"
+                                    placeholder="My Apartment"
+                                    v-model="locationName"
+                                />
                             </div>
                         </div>
                         <div class="row m-3">
                             <div class="d-flex">
                                 <div class="">
                                     <label for="street">street</label>
-                                    <input type="text" id="street" class="form-control" placeholder="Street"/>
+                                    <input
+                                        type="text"
+                                        id="street"
+                                        class="form-control"
+                                        placeholder="Street"
+                                        v-model="street"
+                                    />
                                 </div>
                                 <div class="">
                                     <label for="city">city</label>
-                                    <input type="text" id="city" class="form-control" placeholder="Taipei"/>
+                                    <input
+                                        type="text"
+                                        id="city"
+                                        class="form-control"
+                                        placeholder="Taipei"
+                                        v-model="city"
+                                    />
                                 </div>
                                 <div class="">
                                     <label for="country">Country</label>
-                                    <input type="text" id="country" class="form-control" placeholder="Taiwan"/>
+                                    <input
+                                        type="text"
+                                        id="country"
+                                        class="form-control"
+                                        placeholder="Taiwan"
+                                        v-model="country"
+                                    />
                                 </div>
                                 <div class="">
                                     <label for="zip">Zip</label>
-                                    <input type="text" id="zip" class="form-control" placeholder="100"/>
+                                    <input
+                                        type="text"
+                                        id="zip"
+                                        class="form-control"
+                                        placeholder="100"
+                                        v-model="zip"
+                                    />
                                 </div>
                             </div>
                         </div>
