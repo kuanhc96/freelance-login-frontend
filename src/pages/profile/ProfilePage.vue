@@ -29,19 +29,45 @@ export default defineComponent({
         <base-card
             card-title="Profile"
         >
-            <div class="d-flex align-items-center justify-content-center">
-                <div class="row col-md-12 col-12 m-3">
-                    <div class="d-flex justify-content-between">
-                        <h5>Preferred Locations:</h5>
-                        <div class="">
-<!--                            modal button for location details -->
-                            <location-details-modal
-                                v-for="location in preferredLocations"
-                                :key="location.locationGUID"
-                                :location="location"
-                            > </location-details-modal>
-                            <span v-if="preferredLocations.length > 2" class="fs-6"> ... </span>
-                            <add-location-modal></add-location-modal>
+            <div class="card shadow m-4">
+                <div class="card-body">
+                    <div class="d-flex flex-column align-items-center justify-content-center">
+                        <div class="row col-md-12 col-12 m-3">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="portrait-img rounded-circle overflow-hidden border" style="width:250px; height:250px;">
+                                    <img src="/alice.jpg" alt="portrait" class="h-100 w-100 object-fit-cover">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-md-12 col-12 m-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>Preferred Locations:</h5>
+                                <div class="">
+                                    <!--                            modal button for location details -->
+                                    <location-details-modal
+                                        v-for="location in preferredLocations"
+                                        :key="location.locationGUID"
+                                        :location="location"
+                                    > </location-details-modal>
+                                    <span v-if="preferredLocations.length > 2" class="fs-6"> ... </span>
+                                    <add-location-modal></add-location-modal>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row col-md-12 col-12 m-3">
+                            <div class="d-flex justify-content-between">
+                                <h5>Available Subjects:</h5>
+                                <div class="">
+                                    <!--                            modal button for location details -->
+                                    <location-details-modal
+                                        v-for="location in preferredLocations"
+                                        :key="location.locationGUID"
+                                        :location="location"
+                                    > </location-details-modal>
+                                    <span v-if="preferredLocations.length > 2" class="fs-6"> ... </span>
+                                    <add-location-modal></add-location-modal>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
