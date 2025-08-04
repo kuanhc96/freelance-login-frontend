@@ -9,6 +9,7 @@ pinia.use(({ store }) => {
 
 export default pinia;
 
+export const USERS_ENDPOINT: string = 'http://localhost:8081/user/';
 export const SUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/instructors/';
 export const UNSUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/unsubscribed/';
 export const SUBSCRIBED_STUDENTS_ENDPOINT: string = 'http://localhost:8081/subscription/students/';

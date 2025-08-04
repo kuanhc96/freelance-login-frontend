@@ -116,7 +116,7 @@
                                                           :instructorGUID="instructor.userGUID"
                                                           :instructorName="instructor.name"
                                                           :email="instructor.email"
-                                                          :portrait-path="'/alice.jpg'"></dashboard-instructor>
+                                                          :portrait-path="instructor.profilePicture"></dashboard-instructor>
                                     <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
                                         <div class="fs-bold fs-2">...</div>
                                     </div>
@@ -132,7 +132,7 @@
                                                           :studentGUID="student.userGUID"
                                                           :studentName="student.name"
                                                           :email="student.email"
-                                                          :portrait-path="'/alice.jpg'">
+                                                          :portrait-path="student.profilePicture">
 
                                     </dashboard-student>
                                     <div v-if="myStudents.length > 3" class="d-flex justify-content-center">

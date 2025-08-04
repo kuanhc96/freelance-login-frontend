@@ -8,7 +8,9 @@ import AddLocationModal from "@/components/locations/AddLocationModal.vue";
 import AddSubjectModal from "@/components/subjects/AddSubjectModal.vue";
 import {useSubjectsStore} from "@/store/subjects";
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
+import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {useLoginStore} from "@/store/login";
+import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 export default defineComponent({
     name: 'ProfilePage',
     components: {
@@ -21,6 +23,8 @@ export default defineComponent({
         const locationsStore = useLocationsStore();
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
+        const usersStore = useInstructorsOrStudentsStore();
+
         const preferredLocations: Ref<GetLocationResponse[]> = computed(function() {
             return locationsStore.getLocationsByUserGUID(loginStore.userGUID);
         })
@@ -33,11 +37,14 @@ export default defineComponent({
             return loginStore.isStudent;
         })
 
-
+        const myInfo: Ref<GetUserResponse | null> = computed(function() {
+            return usersStore.getMyInfo;
+        })
         return {
             preferredLocations,
             subjects,
-            isStudent
+            isStudent,
+            myInfo
         }
     }
 })
@@ -53,9 +60,24 @@ export default defineComponent({
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center justify-content-center">
                         <div class="row col-md-12 col-12 m-3">
-                            <div class="d-flex justify-content-center align-items-center">
+                            <div class="d-flex justify-content-around align-items-center">
                                 <div class="portrait-img rounded-circle overflow-hidden border" style="width:250px; height:250px;">
-                                    <img src="/alice.jpg" alt="portrait" class="h-100 w-100 object-fit-cover">
+                                    <img :src="myInfo.profilePicture" alt="portrait" class="h-100 w-100 object-fit-cover">
+                                </div>
+                                <div class="d-flex justify-content-center align-items-center flex-column gap-3">
+                                    <div class="d-flex">
+                                        <div class="display-5">
+                                            {{myInfo.name}}
+                                        </div>
+                                        <span>
+                                            <i class="fa-solid fa-venus"></i>
+                                        </span>
+                                    </div>
+                                    <p>
+                                        <i class="fa-solid fa-cake-candles"></i>
+                                        {{myInfo.birthday}}
+                                    </p>
+                                    <p>{{myInfo.description}}</p>
                                 </div>
                             </div>
                         </div>

@@ -12,7 +12,7 @@
             :student-g-u-i-d="student.userGUID"
             :student-name="student.name"
             :email="student.email"
-            :portraitPath="'/alice.jpg'"
+            :portraitPath="student.profilePicture"
             :display-subscribe="false"
         ></student-summary>
     </ul>
@@ -24,7 +24,7 @@
             :student-g-u-i-d="student.userGUID"
             :student-name="student.name"
             :email="student.email"
-            :portraitPath="'/alice.jpg'"
+            :portraitPath="student.profilePicture"
             :display-subscribe="false"
         ></student-summary>
     </ul>
