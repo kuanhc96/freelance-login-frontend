@@ -39,11 +39,11 @@ export const useLocationsStore = defineStore('locations', {
                 this.userGUIDToLocationsMap[loginStore.getUserGUID] = await response.json();
             }
 
-            const subscribers: GetUserResponse[] = [];
+            let subscribers: GetUserResponse[];
             if (loginStore.isStudent) {
-                subscribers.concat(instructorsStore.getSubscribedInstructors);
+                subscribers = instructorsStore.getSubscribedInstructors;
             } else {
-                subscribers.concat(instructorsStore.getMyStudents);
+                subscribers = instructorsStore.getMyStudents;
             }
 
             for (const subscriber of subscribers) {
@@ -57,7 +57,6 @@ export const useLocationsStore = defineStore('locations', {
                 }
 
             }
-            console.log(this.userGUIDToLocationsMap);
         }
     }
 })

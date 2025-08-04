@@ -301,12 +301,14 @@ export default defineComponent({
         });
 
         const locations: Ref<GetLocationResponse[]> = computed(function() {
-            const locations = locationsStore.getLocationsByUserGUID(loginStore.userGUID);
+            let locations = locationsStore.getLocationsByUserGUID(loginStore.userGUID);
             if (loginStore.isStudent) {
-                locations.concat(locationsStore.getLocationsByUserGUID(selectedInstructorGUID.value));
+                locations = locations.concat(locationsStore.getLocationsByUserGUID(selectedInstructorGUID.value));
             } else {
-                locations.concat(locationsStore.getLocationsByUserGUID(selectedStudentGUID.value));
+                locations = locations.concat(locationsStore.getLocationsByUserGUID(selectedStudentGUID.value));
             }
+            console.log(locationsStore.getLocationsByUserGUID(selectedStudentGUID.value));
+            console.log(locations);
             return locations;
         })
 
