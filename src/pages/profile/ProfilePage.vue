@@ -22,7 +22,7 @@ export default defineComponent({
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
         const preferredLocations: Ref<GetLocationResponse[]> = computed(function() {
-            return locationsStore.getLocations;
+            return locationsStore.getLocationsByUserGUID(loginStore.userGUID);
         })
 
         const subjects: Ref<GetSubjectResponse[]> = computed(function() {

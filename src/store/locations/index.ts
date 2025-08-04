@@ -1,32 +1,63 @@
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 import {defineStore} from "pinia";
 import {useLoginStore} from "@/store/login";
+import {useInstructorsOrStudentsStore} from  "@/store/instructorsOrStudents"
 import {LOCATIONS_ENDPOINT} from "@/store";
+import {GetUserResponse} from "@/dto/response/getUserResponse";
 
 export interface LocationsState {
-    locations: GetLocationResponse[]
+    userGUIDToLocationsMap: Record<string, GetLocationResponse[]>
 }
 
 export const useLocationsStore = defineStore('locations', {
     state: (): LocationsState => ({
-        locations: []
+        userGUIDToLocationsMap: {}
     }),
     getters: {
-        getLocations: (state) => state.locations,
-        hasLocations: (state) => state.locations.length > 0,
+        getLocationsByUserGUID: (state) => (userGUID: string) => {
+            if (userGUID in state.userGUIDToLocationsMap) {
+                return state.userGUIDToLocationsMap[userGUID];
+            } else {
+                return [];
+            }
+        },
+        hasLocationsByUserGUID: (state) => (userGUID: string) => {
+            return state.userGUIDToLocationsMap[userGUID].length > 0;
+        }
     },
     actions: {
         async setLocations() {
             const loginStore = useLoginStore();
+            const instructorsStore = useInstructorsOrStudentsStore();
+
             const response: Response = await fetch(LOCATIONS_ENDPOINT + loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include'
             });
 
             if (response.ok) {
-                this.locations = await response.json();
-                console.log(this.locations);
+                this.userGUIDToLocationsMap[loginStore.getUserGUID] = await response.json();
             }
+
+            const subscribers: GetUserResponse[] = [];
+            if (loginStore.isStudent) {
+                subscribers.concat(instructorsStore.getSubscribedInstructors);
+            } else {
+                subscribers.concat(instructorsStore.getMyStudents);
+            }
+
+            for (const subscriber of subscribers) {
+                const response: Response = await fetch(LOCATIONS_ENDPOINT + subscriber.userGUID, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    this.userGUIDToLocationsMap[subscriber.userGUID] = await response.json();
+                }
+
+            }
+            console.log(this.userGUIDToLocationsMap);
         }
     }
 })

@@ -301,7 +301,13 @@ export default defineComponent({
         });
 
         const locations: Ref<GetLocationResponse[]> = computed(function() {
-            return locationsStore.getLocations;
+            const locations = locationsStore.getLocationsByUserGUID(loginStore.userGUID);
+            if (loginStore.isStudent) {
+                locations.concat(locationsStore.getLocationsByUserGUID(selectedInstructorGUID.value));
+            } else {
+                locations.concat(locationsStore.getLocationsByUserGUID(selectedStudentGUID.value));
+            }
+            return locations;
         })
 
         const alreadyScheduledLessons: Ref<GetLessonResponse[]> = computed(function() {
