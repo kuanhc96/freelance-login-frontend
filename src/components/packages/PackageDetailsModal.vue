@@ -31,8 +31,8 @@ const props = defineProps({
                                 <span>{{props.package.numberOfLessons}}</span>
                             </div>
                             <div class="row w-10">
-                                <h5>Discount Rate: </h5>
-                                <span>{{props.package.discountRate}}</span>
+                                <h5>Percent Off: </h5>
+                                <span>{{100 - props.package.discountRate * 100}}%</span>
                             </div>
                         </div>
                     </div>
