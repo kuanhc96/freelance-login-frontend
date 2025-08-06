@@ -51,10 +51,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/transactions', component: TransactionsList, meta: { requiresLogin: true } },
   { path: '/transactions/record', component: TransactionForm, meta: { requiresLogin: true } },
   { path: '/transactions/:id', component: TransactionDetailsModal, meta: { requiresLogin: true } },
-  { path: '/subjects', component: SubjectsList, meta: { requiresLogin: true } },
-    { path: '/packages/register', component: PackageRegistrationForm, meta: { requiresLogin: true } },
-    { path: '/subjects/register', component: SubjectRegistrationForm, meta: { requiresLogin: true } },
-  { path: '/subjects/:id', component: SubjectDetails, meta: { requiresLogin: true } },
 ];
 
 const router: Router = createRouter({
