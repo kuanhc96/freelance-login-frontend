@@ -6,24 +6,30 @@ import LocationDetailsModal from "@/components/locations/LocationDetailsModal.vu
 import SubjectDetailsModal from "@/components/subjects/SubjectDetailsModal.vue";
 import AddLocationModal from "@/components/locations/AddLocationModal.vue";
 import AddSubjectModal from "@/components/subjects/AddSubjectModal.vue";
+import AddPackageModal from "@/components/packages/AddPackageModal.vue";
+import PackageDetailsModal from "@/components/packages/PackageDetailsModal.vue";
 import {useSubjectsStore} from "@/store/subjects";
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {useLoginStore} from "@/store/login";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
+import {usePackagesStore} from "@/store/packages";
 export default defineComponent({
     name: 'ProfilePage',
     components: {
+        PackageDetailsModal,
         LocationDetailsModal,
         SubjectDetailsModal,
         AddLocationModal,
-        AddSubjectModal
+        AddSubjectModal,
+        AddPackageModal
     },
     setup() {
         const locationsStore = useLocationsStore();
         const subjectsStore = useSubjectsStore();
         const loginStore = useLoginStore();
         const usersStore = useInstructorsOrStudentsStore();
+        const packagesStore = usePackagesStore();
 
         const preferredLocations: Ref<GetLocationResponse[]> = computed(function() {
             return locationsStore.getLocationsByUserGUID(loginStore.userGUID);
@@ -40,11 +46,17 @@ export default defineComponent({
         const myInfo: Ref<GetUserResponse | null> = computed(function() {
             return usersStore.getMyInfo;
         })
+
+        function getPackages(subjectGUID: string) {
+            return packagesStore.getPackagesBySubjectGUID(subjectGUID);
+        }
+
         return {
             preferredLocations,
             subjects,
             isStudent,
-            myInfo
+            myInfo,
+            getPackages
         }
     }
 })
@@ -112,6 +124,29 @@ export default defineComponent({
                                     <span v-if="subjects.length > 2" class="fs-6"> ... </span>
                                     <add-subject-modal></add-subject-modal>
                                 </div>
+                            </div>
+                            <div class="my-3">
+                                <h5>Packages:</h5>
+                                <div
+                                    class="border rounded-3 p-3 my-2 d-flex gap-3"
+                                    v-for="subject in subjects"
+                                    :key="subject.subjectGUID"
+                                >
+                                    <subject-details-modal
+                                        :subject="subject"
+                                    ></subject-details-modal>
+                                    <package-details-modal
+                                        class="badge text-bg-light"
+                                        v-for="package_ in getPackages(subject.subjectGUID)"
+                                        :key="package_.packageGUID"
+                                        :package="package_"
+                                    >
+                                    </package-details-modal>
+                                    <add-package-modal
+                                        :subjectGUID="subject.subjectGUID"
+                                    ></add-package-modal>
+                                </div>
+
                             </div>
                         </div>
                     </div>

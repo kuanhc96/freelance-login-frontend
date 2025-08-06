@@ -51,6 +51,10 @@ export default defineComponent({
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer d-flex justify-content-between">
+                    <button class="btn btn-danger inactive">Delete</button>
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
