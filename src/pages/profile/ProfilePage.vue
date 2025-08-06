@@ -86,6 +86,10 @@ export default defineComponent({
                                         </span>
                                     </div>
                                     <p>
+                                        <i class="fa-solid fa-envelope"></i>
+                                        {{myInfo.email}}
+                                    </p>
+                                    <p>
                                         <i class="fa-solid fa-cake-candles"></i>
                                         {{myInfo.birthday}}
                                     </p>

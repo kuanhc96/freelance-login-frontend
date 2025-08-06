@@ -151,10 +151,7 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h2 class="card-title">Account Information</h2>
-                                <p class="card-text">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque
-                                    rerum minus rem saepe consequuntur at culpa molestiae.
-                                </p>
+                                <dashboard-profile></dashboard-profile>
                             </div>
                         </div>
                     </div>
@@ -180,6 +177,7 @@ import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import { useLessonsStore } from "@/store/lessons";
 import DashboardStudent from "@/components/students/DashboardStudent.vue";
 import DashboardTransaction from "@/components/transactions/DashboardTransaction.vue";
+import DashboardProfile from "@/components/profile/DashboardProfile.vue";
 import {useTransactionsStore} from "@/store/transactions";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 
@@ -192,6 +190,7 @@ export default defineComponent({
         DashboardInstructor,
         DashboardLesson,
         DashboardTransaction,
+        DashboardProfile
     },
     setup() {
         const loginStore = useLoginStore();
