@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
-import {reactive} from "vue";
+import ProfileDetailsModal from "@/components/profile/ProfileDetailsModal.vue";
+import {reactive, computed} from "vue";
 const store = useInstructorsOrStudentsStore();
 const state = reactive({
-    myInfo: store.getMyInfo
+    myInfo: computed(() => {
+        if (store.getMyInfo) {
+           return store.getMyInfo;
+        } else {
+            return {};
+        }
+    })
 });
 </script>
 
@@ -22,7 +29,14 @@ const state = reactive({
         <div class="fs-5">
             {{ state.myInfo.birthday }}
         </div>
-        <div class="badge btn btn-secondary stretched-link">See Details >></div>
+        <div
+            class="badge btn btn-secondary stretched-link"
+            :data-bs-target="'#modal' + state.myInfo.userGUID"
+            data-bs-toggle="modal"
+        >See Details >></div>
+        <profile-details-modal
+            :user="state.myInfo"
+        ></profile-details-modal>
     </div>
 </div>
 </template>

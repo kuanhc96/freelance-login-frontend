@@ -6,14 +6,17 @@ import LocationDetailsModal from "@/components/locations/LocationDetailsModal.vu
 import AddLocationModal from "@/components/locations/AddLocationModal.vue";
 import SubjectDetailsModal from "@/components/subjects/SubjectDetailsModal.vue";
 import AddPackageModal from "@/components/packages/AddPackageModal.vue";
-import {defineProps, PropType, Ref, computed} from "vue";
+import {defineProps, PropType, Ref, computed, provide} from "vue";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
+import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 import {useLoginStore} from "@/store/login";
 import {useLocationsStore} from "@/store/locations";
 import {usePackagesStore} from "@/store/packages";
+import {useSubjectsStore} from "@/store/subjects";
 
 const loginStore = useLoginStore();
+const subjectsStore = useSubjectsStore();
 const locationsStore = useLocationsStore();
 const packagesStore = usePackagesStore();
 
@@ -21,8 +24,14 @@ const props = defineProps({
     userInfo: {
         type: Object as PropType<GetUserResponse>,
         required: true
+    },
+    disableToggle: {
+        type: Boolean,
+        default: false
     }
 });
+
+provide('disableToggle', props.disableToggle);
 
 const isStudent: Ref<boolean> = computed(() => {
     return loginStore.isStudent;
@@ -32,8 +41,12 @@ const isMyProfile: Ref<boolean> = computed(() => {
     return props.userInfo.userGUID === loginStore.userGUID;
 });
 
+const subjects: Ref<GetSubjectResponse[]> = computed(() => {
+    return subjectsStore.getSubjectsByInstructorGUID(props.userInfo.userGUID);
+})
+
 const preferredLocations: Ref<GetLocationResponse[]> = computed(function() {
-    return locationsStore.getLocationsByUserGUID(loginStore.userGUID);
+    return locationsStore.getLocationsByUserGUID(props.userInfo.userGUID);
 });
 
 function getPackages(subjectGUID: string) {
@@ -54,14 +67,21 @@ function getPackages(subjectGUID: string) {
                             {{props.userInfo.name}}
                         </div>
                         <span>
-                            <i class="fa-solid fa-venus"></i>
+                            <i
+                                class="fa-solid fa-venus"
+                                v-if="props.userInfo.gender === 'FEMALE'"
+                            ></i>
+                            <i
+                                class="fa-solid fa-mars"
+                                v-else
+                            ></i>
                         </span>
                     </div>
-                    <p>
+                    <p v-if="isMyProfile">
                         <i class="fa-solid fa-envelope"></i>
                         {{props.userInfo.email}}
                     </p>
-                    <p>
+                    <p v-if="isMyProfile">
                         <i class="fa-solid fa-cake-candles"></i>
                         {{props.userInfo.birthday}}
                     </p>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, PropType} from "vue";
+import {defineComponent, PropType, inject} from "vue";
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 
 export default defineComponent({
@@ -10,17 +10,24 @@ export default defineComponent({
             required: true
         }
     },
+    setup() {
+        const disableToggle = inject('disableToggle')
+        return {
+            disableToggle
+        }
+    }
 })
 </script>
 
 <template>
-    <span
+    <button
         class="badge btn text-bg-secondary text-white fs-7 mx-2"
         :data-bs-target="'#modal' + location.locationGUID"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         {{location.locationName}}
-    </span>
+    </button>
     <div class="modal fade" :id="'modal'+location.locationGUID">
         <div class="modal-dialog">
             <div class="modal-content">

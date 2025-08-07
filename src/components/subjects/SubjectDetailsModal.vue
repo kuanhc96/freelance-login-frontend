@@ -1,6 +1,6 @@
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {defineComponent, PropType, inject} from "vue";
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 
 export default defineComponent({
@@ -10,18 +10,25 @@ export default defineComponent({
             type: Object as PropType<GetSubjectResponse>,
             required: true
         }
+    },
+    setup() {
+        const disableToggle = inject('disableToggle');
+        return {
+            disableToggle
+        }
     }
 })
 </script>
 
 <template>
-    <span
+    <button
         class="badge btn text-bg-secondary text-white fs-7 mx-2"
         :data-bs-target="'#modal' + subject.subjectGUID"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         {{subject.subjectName}}
-    </span>
+    </button>
     <div class="modal fade" :id="'modal' + subject.subjectGUID">
         <div class="modal-dialog">
             <div class="modal-content">

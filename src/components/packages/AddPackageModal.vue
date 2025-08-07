@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import Cookies from "js-cookie";
-import {reactive, defineProps} from "vue";
+import {reactive, defineProps, inject} from "vue";
 import {PACKAGES_ENDPOINT} from "@/store";
 import {usePackagesStore} from "@/store/packages";
+
+const disableToggle = inject('disableToggle');
 
 const packagesStore = usePackagesStore();
 
@@ -46,13 +48,14 @@ async function registerPackage() {
 </script>
 
 <template>
-    <span
+    <button
         class="badge btn text-bg-primary text-dark fs-7 mx-2"
         data-bs-target="#addPackageModal"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         + Add
-    </span>
+    </button>
     <div class="modal fade" id="addPackageModal">
         <div class="modal-dialog">
             <div class="modal-content">

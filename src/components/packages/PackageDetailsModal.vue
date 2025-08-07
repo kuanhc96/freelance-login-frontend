@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import {GetPackageResponse} from "@/dto/response/getPackageResponse";
-import {PropType, defineProps} from "vue";
+import {PropType, defineProps, inject} from "vue";
 const props = defineProps({
     package: {
         type: Object as PropType<GetPackageResponse>,
         required: true,
     }
-})
+});
+const disableToggle = inject('disableToggle');
 </script>
 <template>
-    <span
+    <button
         class="badge btn text-bg-light fs-7 mx-2"
         :data-bs-target="'#modal'+ props.package.packageGUID"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         {{package.discountCode}}
-    </span>
+    </button>
     <div class="modal fade" :id="'modal' + props.package.packageGUID">
         <div class="modal-dialog">
             <div class="modal-content">

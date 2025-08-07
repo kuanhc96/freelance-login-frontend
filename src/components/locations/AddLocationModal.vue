@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref, Ref} from "vue";
+import {defineComponent, ref, Ref, inject} from "vue";
 import Cookies from "js-cookie";
 import {CreateLocationRequest} from "@/dto/request/createLocationRequest";
 import {useLoginStore} from "@/store/login";
@@ -9,6 +9,8 @@ export default defineComponent({
     name: "AddLocationModal" ,
     setup() {
         const loginStore = useLoginStore();
+
+        const disableToggle = inject('disableToggle')
 
         const locationName: Ref<string> = ref('');
         const country: Ref<string> = ref('');
@@ -50,7 +52,8 @@ export default defineComponent({
             city,
             street,
             zip,
-            submit
+            submit,
+            disableToggle
         }
     }
 })
@@ -58,13 +61,14 @@ export default defineComponent({
 </script>
 
 <template>
-    <span
+    <button
         class="badge btn text-bg-primary text-dark fs-7 mx-2"
         data-bs-target="#addLocationModal"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         + Add
-    </span>
+    </button>
     <div class="modal fade" id="addLocationModal">
         <div class="modal-dialog">
             <div class="modal-content">

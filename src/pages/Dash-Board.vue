@@ -113,10 +113,8 @@
                                 <div v-if="isStudent" class="">
                                     <dashboard-instructor v-for="instructor in subscribedInstructors"
                                                           :key="instructor.userGUID"
-                                                          :instructorGUID="instructor.userGUID"
-                                                          :instructorName="instructor.name"
-                                                          :email="instructor.email"
-                                                          :portrait-path="instructor.profilePicture"></dashboard-instructor>
+                                                          :instructor="instructor"
+                                    ></dashboard-instructor>
                                     <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
                                         <div class="fs-bold fs-2">...</div>
                                     </div>
@@ -127,13 +125,11 @@
                                     </div>
                                 </div>
                                 <div v-else class="">
-                                    <dashboard-student v-for="student in myStudents"
-                                                          :key="student.userGUID"
-                                                          :studentGUID="student.userGUID"
-                                                          :studentName="student.name"
-                                                          :email="student.email"
-                                                          :portrait-path="student.profilePicture">
-
+                                    <dashboard-student
+                                        v-for="student in myStudents"
+                                        :key="student.userGUID"
+                                        :student="student"
+                                    >
                                     </dashboard-student>
                                     <div v-if="myStudents.length > 3" class="d-flex justify-content-center">
                                         <div class="fs-bold fs-2">...</div>
@@ -151,7 +147,8 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h2 class="card-title">Account Information</h2>
-                                <dashboard-profile></dashboard-profile>
+                                <dashboard-profile
+                                ></dashboard-profile>
                             </div>
                         </div>
                     </div>
@@ -241,12 +238,6 @@ export default defineComponent({
                 (transaction: GetTransactionResponse) => transaction.transactionStatus === 'PENDING'
             ).slice(0, 3)
         });
-        async function refreshInstructorsOrStudents(): Promise<void> {
-            await    instructorsOrStudentsStore.setInstructorsOrStudents()
-        }
-        async function refreshAnnouncements(): Promise<void> {
-            await announcementsStore.setAnnouncements();
-        }
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (isStudent.value)  {
                 return lesson.instructorName;
@@ -254,18 +245,8 @@ export default defineComponent({
                 return lesson.studentName;
             }
         }
-
-        async function refreshLessons(): Promise<void> {
-            await lessonsStore.setLessons();
-        }
-        async function refreshTransactions(): Promise<void> {
-            await transactionsStore.setTransactions();
-        }
         async function refreshAll(): Promise<void> {
-            await refreshAnnouncements();
-            await refreshInstructorsOrStudents();
-            await refreshLessons();
-            await refreshTransactions();
+            await loginStore.setup();
         }
 
         onBeforeMount(async() => {

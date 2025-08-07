@@ -1,5 +1,5 @@
 <script lang="ts">
-import {defineComponent, ref, Ref} from "vue";
+import {defineComponent, ref, Ref, inject} from "vue";
 import {useLoginStore} from "@/store/login";
 import {useSubjectsStore} from "@/store/subjects";
 import {useRouter} from "vue-router";
@@ -10,6 +10,7 @@ import {SUBJECTS_ENDPOINT} from "@/store";
 export default defineComponent({
     name: 'AddSubjectModal',
     setup() {
+        const disableToggle = inject('disableToggle')
         const loginStore = useLoginStore();
         const subjectsStore = useSubjectsStore();
         const router = useRouter();
@@ -48,7 +49,8 @@ export default defineComponent({
             price,
             duration,
             description,
-            registerSubject
+            registerSubject,
+            disableToggle
         }
     }
 })
@@ -56,13 +58,14 @@ export default defineComponent({
 </script>
 
 <template>
-    <span
+    <button
         class="badge btn text-bg-primary text-dark fs-7 mx-2"
         data-bs-target="#addSubjectModal"
         data-bs-toggle="modal"
+        :disabled="disableToggle"
     >
         + Add
-    </span>
+    </button>
     <div class="modal fade" id="addSubjectModal">
         <div class="modal-dialog">
             <div class="modal-content">
