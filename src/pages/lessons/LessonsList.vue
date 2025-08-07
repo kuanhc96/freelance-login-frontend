@@ -105,19 +105,20 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onBeforeMount, ref, Ref} from 'vue';
+import {computed, defineComponent, onBeforeMount, ref, Ref, defineAsyncComponent} from 'vue';
 import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
 import { useLessonsStore } from "@/store/lessons";
-import TheCalendar from '@/components/layout/TheCalendar.vue';
+// import TheCalendar from '@/components/layout/TheCalendar.vue';
 import { GetLessonResponse } from '@/dto/response/getLessonResponse';
 export default defineComponent({
     name: 'LessonsList',
     components: {
         LessonSummary,
-        TheCalendar
+        // TheCalendar
     },
     setup() {
+        const TheCalendar = defineAsyncComponent(() => import('@/components/layout/TheCalendar.vue'));
         const loginStore = useLoginStore();
         const lessonsStore = useLessonsStore();
         const userGUID: Ref<string> = computed(function() {
@@ -170,7 +171,8 @@ export default defineComponent({
             unscheduledLessons,
             completedLessons,
             getInstructorOrStudentName,
-            refresh
+            refresh,
+            TheCalendar
         }
     }
 })
