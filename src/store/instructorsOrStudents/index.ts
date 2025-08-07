@@ -85,6 +85,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         },
         async setInstructors() {
             await this.setSubscribedInstructors();
+            console.log(this.subscribedInstructors);
             await this.setUnsubscribedInstructors();
         },
         async setInstructorsOrStudents() {

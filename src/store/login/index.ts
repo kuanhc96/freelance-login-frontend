@@ -146,7 +146,7 @@ export const useLoginStore = defineStore('login', {
             const transactionsStore = useTransactionsStore();
             const locationsStore = useLocationsStore();
 
-            await instructorsStore.setInstructors();
+            await instructorsStore.setInstructorsOrStudents();
             await subjectsStore.setSubjects();
             await announcementsStore.setAnnouncements();
             await lessonsStore.setLessons();

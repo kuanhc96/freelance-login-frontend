@@ -14,14 +14,10 @@ import LessonsList from '../pages/lessons/LessonsList.vue'
 import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
 import TransactionDetailsModal from '../components/transactions/TransactionDetailsModal.vue'
-import SubjectsList from '../pages/subjects/SubjectsList.vue'
-import SubjectDetails from '../pages/subjects/SubjectDetails.vue'
 import NotFound from '../pages/NotFound.vue'
 import Dashboard from '../pages/Dash-Board.vue'
 import {useLoginStore} from "@/store/login";
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
-import SubjectRegistrationForm from "@/pages/subjects/SubjectRegistrationForm.vue";
-import PackageRegistrationForm from "@/pages/packages/PackageRegistrationForm.vue";
 import ProfilePage from "@/pages/profile/ProfilePage.vue";
 
 const routes: RouteRecordRaw[] = [
