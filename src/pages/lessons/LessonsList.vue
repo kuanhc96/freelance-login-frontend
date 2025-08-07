@@ -110,15 +110,15 @@ import LessonSummary from '@/components/lessons/LessonSummary.vue';
 import { useLoginStore } from "@/store/login";
 import { useLessonsStore } from "@/store/lessons";
 // import TheCalendar from '@/components/layout/TheCalendar.vue';
+const TheCalendar = defineAsyncComponent(() => import('@/components/layout/TheCalendar.vue'));
 import { GetLessonResponse } from '@/dto/response/getLessonResponse';
 export default defineComponent({
     name: 'LessonsList',
     components: {
         LessonSummary,
-        // TheCalendar
+        TheCalendar
     },
     setup() {
-        const TheCalendar = defineAsyncComponent(() => import('@/components/layout/TheCalendar.vue'));
         const loginStore = useLoginStore();
         const lessonsStore = useLessonsStore();
         const userGUID: Ref<string> = computed(function() {
@@ -172,7 +172,6 @@ export default defineComponent({
             completedLessons,
             getInstructorOrStudentName,
             refresh,
-            TheCalendar
         }
     }
 })

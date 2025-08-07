@@ -1,4 +1,5 @@
 // router.js
+import {defineAsyncComponent} from "vue";
 import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router';
 import LoginForm from '../pages/login/LoginForm.vue';
 import CreateAccountForm from '../pages/login/CreateAccountForm.vue';
@@ -10,7 +11,7 @@ import AnnouncementsPage from '../pages/announcements/AnnouncementsPage.vue'
 import AnnouncementForm from '../pages/announcements/AnnouncementForm.vue'
 import InstructorDetails from '@/pages/instructorsOrStudents/InstructorDetails.vue'
 import InstructorContact from '@/pages/instructorsOrStudents/InstructorContact.vue'
-import LessonsList from '../pages/lessons/LessonsList.vue'
+// import LessonsList from '../pages/lessons/LessonsList.vue'
 import ScheduleLessonForm from '../pages/lessons/ScheduleLessonForm.vue'
 import TransactionsList from '../pages/transactions/TransactionsList.vue'
 import TransactionDetailsModal from '../components/transactions/TransactionDetailsModal.vue'
@@ -22,6 +23,8 @@ import {useLoginStore} from "@/store/login";
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import SubjectRegistrationForm from "@/pages/subjects/SubjectRegistrationForm.vue";
 import PackageRegistrationForm from "@/pages/packages/PackageRegistrationForm.vue";
+
+const LessonsList = defineAsyncComponent(() => import('../pages/lessons/LessonsList.vue'));
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
