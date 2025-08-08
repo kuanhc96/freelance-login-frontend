@@ -34,7 +34,7 @@ const props = defineProps({
 provide('disableToggle', props.disableToggle);
 
 const isStudent: Ref<boolean> = computed(() => {
-    return loginStore.isStudent;
+    return props.userInfo.role === 'STUDENT';
 });
 
 const isMyProfile: Ref<boolean> = computed(() => {
@@ -121,7 +121,7 @@ function getPackages(subjectGUID: string) {
                     > </subject-details-modal>
                     <span v-if="subjects.length > 2" class="fs-6"> ... </span>
                     <add-subject-modal
-                        v-if="isMyProfile"
+                        v-if="isMyProfile "
                     ></add-subject-modal>
                 </div>
             </div>
