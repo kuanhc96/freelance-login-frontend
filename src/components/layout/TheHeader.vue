@@ -26,10 +26,10 @@
                         <router-link to="/lessons" class="nav-link ">Lessons</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="/subjects" class="nav-link ">Subjects</router-link>
+                        <router-link to="/transactions" class="nav-link ">Transaction</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="/transactions" class="nav-link ">Transaction</router-link>
+                        <router-link to="/profile" class="nav-link ">Profile</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link to="#" class="nav-link " @click="logout">Logout</router-link>

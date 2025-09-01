@@ -3,15 +3,19 @@
         <div class="card-body">
             <div class="d-flex align-items-center justify-content-around">
                 <div class="portrait-img rounded-circle overflow-hidden border" style="width:100px; height:100px">
-                    <img :src="portraitPath" alt="portrait" class="h-100 w-100 object-fit-cover">
+                    <img :src="instructor.profilePicture" alt="portrait" class="h-100 w-100 object-fit-cover">
                 </div>
                 <div class="">
                     <div class="fs-3">
-                        {{ instructorName }}
+                        {{ instructor.name }}
                     </div>
-                    <div class="badge btn btn-secondary stretched-link">See Details >></div>
+                    <div
+                        class="badge btn btn-secondary stretched-link"
+                        :data-bs-target="'#modal' + instructor.userGUID"
+                        data-bs-toggle="modal"
+                    >See Details >></div>
                 </div>
-
+                <profile-details-modal :user="instructor"></profile-details-modal>
             </div>
         </div>
     </div>
@@ -19,24 +23,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+import ProfileDetailsModal from "@/components/profile/ProfileDetailsModal.vue";
+import {GetUserResponse} from "@/dto/response/getUserResponse";
 export default defineComponent({
     props: {
-        instructorGUID: {
-            type: String as PropType<string>,
+        instructor: {
+            type: Object as PropType<GetUserResponse>,
             required: true
-        },
-        instructorName: {
-            type: String as PropType<string>,
-            required: true
-        },
-        email: {
-            type: String as PropType<string>,
-            required: true
-        },
-        portraitPath: {
-            type: String as PropType<string>,
-            required: true
-        },
-    } 
+        }
+    },
+    components: {
+        ProfileDetailsModal
+    }
 })
 </script>

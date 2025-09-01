@@ -9,6 +9,7 @@ pinia.use(({ store }) => {
 
 export default pinia;
 
+export const USERS_ENDPOINT: string = 'http://localhost:8081/user/';
 export const SUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/instructors/';
 export const UNSUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/unsubscribed/';
 export const SUBSCRIBED_STUDENTS_ENDPOINT: string = 'http://localhost:8081/subscription/students/';
@@ -18,4 +19,5 @@ export const LESSONS_ENDPOINT: string =  "http://localhost:8081/lessons?";
 export const PACKAGES_ENDPOINT: string =  "http://localhost:8081/packages/";
 export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  PACKAGES_ENDPOINT + "subject/";
 export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transactions/";
+export const LOCATIONS_ENDPOINT: string =  "http://localhost:8081/locations/";
 

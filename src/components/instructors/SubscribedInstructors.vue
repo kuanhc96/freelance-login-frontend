@@ -12,7 +12,7 @@
             :instructorGUID="instructor.userGUID"
             :instructorName="instructor.name"
             :email="instructor.email"
-            :portraitPath="'/alice.jpg'"
+            :portraitPath="instructor.profilePicture"
             :display-subscribe="false"
         ></instructor-summary>
     </ul>
@@ -24,7 +24,7 @@
             :instructorGUID="instructor.userGUID"
             :instructorName="instructor.name"
             :email="instructor.email"
-            :portraitPath="'/alice.jpg'"
+            :portraitPath="instructor.profilePicture"
             :display-subscribe="false"
         ></instructor-summary>
     </ul>

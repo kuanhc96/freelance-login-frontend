@@ -9,6 +9,7 @@ import {useSubjectsStore} from "@/store/subjects";
 import {usePackagesStore} from "@/store/packages";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useTransactionsStore} from "@/store/transactions";
+import {useLocationsStore} from "@/store/locations";
 
 export interface LoginState {
     xsrfToken: string
@@ -138,18 +139,25 @@ export const useLoginStore = defineStore('login', {
         },
         async setup(): Promise<void> {
             const instructorsStore = useInstructorsOrStudentsStore();
-            const subjectsStore = useSubjectsStore();
-            const announcementsStore = useAnnouncementsStore();
-            const lessonsStore = useLessonsStore();
-            const packagesStore = usePackagesStore();
-            const transactionsStore = useTransactionsStore();
+            await instructorsStore.setInstructorsOrStudents();
 
-            await instructorsStore.setInstructors();
+            const subjectsStore = useSubjectsStore();
             await subjectsStore.setSubjects();
+
+            const announcementsStore = useAnnouncementsStore();
             await announcementsStore.setAnnouncements();
+
+            const lessonsStore = useLessonsStore();
             await lessonsStore.setLessons();
+
+            const packagesStore = usePackagesStore();
             await packagesStore.setPackages();
+
+            const transactionsStore = useTransactionsStore();
             await transactionsStore.setTransactions();
+
+            const locationsStore = useLocationsStore();
+            await locationsStore.setLocations();
         }
     },
 })

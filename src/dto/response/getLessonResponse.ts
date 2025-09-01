@@ -5,7 +5,8 @@ export interface GetLessonResponse {
     instructorGUID: string
     instructorName: string
     startDate: string
-    location: string
+    locationGUID: string
+    locationName: string
     topic: string
     subjectName: string
     endDate: string

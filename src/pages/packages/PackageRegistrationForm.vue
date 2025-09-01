@@ -29,7 +29,6 @@ export default defineComponent({
                 discountCode: discountCode.value,
                 discountRate: 1 - percentOff.value/100
             }
-            console.log(createPackageRequest);
             const csrfToken = Cookies.get('XSRF-TOKEN');
             const response: Response = await fetch(PACKAGES_ENDPOINT + 'createPackage', {
                 method: 'POST',

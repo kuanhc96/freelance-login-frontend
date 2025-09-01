@@ -61,7 +61,7 @@
                                     :lesson-g-u-i-d="lesson.lessonGUID"
                                     :student-or-instructor-name="getInstructorOrStudentName(lesson)"
                                     :date-time="lesson.startDate"
-                                    :location="lesson.location"
+                                    :location="lesson.locationName"
                                     :subject="lesson.subjectName"
                                 ></dashboard-lesson>
                                 <div v-if="lessons.length > 3" class="d-flex justify-content-center">
@@ -113,10 +113,8 @@
                                 <div v-if="isStudent" class="">
                                     <dashboard-instructor v-for="instructor in subscribedInstructors"
                                                           :key="instructor.userGUID"
-                                                          :instructorGUID="instructor.userGUID"
-                                                          :instructorName="instructor.name"
-                                                          :email="instructor.email"
-                                                          :portrait-path="'/alice.jpg'"></dashboard-instructor>
+                                                          :instructor="instructor"
+                                    ></dashboard-instructor>
                                     <div v-if="subscribedInstructors.length > 3" class="d-flex justify-content-center">
                                         <div class="fs-bold fs-2">...</div>
                                     </div>
@@ -127,13 +125,11 @@
                                     </div>
                                 </div>
                                 <div v-else class="">
-                                    <dashboard-student v-for="student in myStudents"
-                                                          :key="student.userGUID"
-                                                          :studentGUID="student.userGUID"
-                                                          :studentName="student.name"
-                                                          :email="student.email"
-                                                          :portrait-path="'/alice.jpg'">
-
+                                    <dashboard-student
+                                        v-for="student in myStudents"
+                                        :key="student.userGUID"
+                                        :student="student"
+                                    >
                                     </dashboard-student>
                                     <div v-if="myStudents.length > 3" class="d-flex justify-content-center">
                                         <div class="fs-bold fs-2">...</div>
@@ -151,10 +147,8 @@
                         <div class="card w-100 h-100 shadow">
                             <div class="card-body">
                                 <h2 class="card-title">Account Information</h2>
-                                <p class="card-text">
-                                    Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eos harum sapiente, cumque
-                                    rerum minus rem saepe consequuntur at culpa molestiae.
-                                </p>
+                                <dashboard-profile
+                                ></dashboard-profile>
                             </div>
                         </div>
                     </div>
@@ -180,6 +174,7 @@ import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import { useLessonsStore } from "@/store/lessons";
 import DashboardStudent from "@/components/students/DashboardStudent.vue";
 import DashboardTransaction from "@/components/transactions/DashboardTransaction.vue";
+import DashboardProfile from "@/components/profile/DashboardProfile.vue";
 import {useTransactionsStore} from "@/store/transactions";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 
@@ -192,6 +187,7 @@ export default defineComponent({
         DashboardInstructor,
         DashboardLesson,
         DashboardTransaction,
+        DashboardProfile
     },
     setup() {
         const loginStore = useLoginStore();
@@ -242,12 +238,6 @@ export default defineComponent({
                 (transaction: GetTransactionResponse) => transaction.transactionStatus === 'PENDING'
             ).slice(0, 3)
         });
-        async function refreshInstructorsOrStudents(): Promise<void> {
-            await    instructorsOrStudentsStore.setInstructorsOrStudents()
-        }
-        async function refreshAnnouncements(): Promise<void> {
-            await announcementsStore.setAnnouncements();
-        }
         function getInstructorOrStudentName(lesson: GetLessonResponse) {
             if (isStudent.value)  {
                 return lesson.instructorName;
@@ -255,18 +245,8 @@ export default defineComponent({
                 return lesson.studentName;
             }
         }
-
-        async function refreshLessons(): Promise<void> {
-            await lessonsStore.setLessons();
-        }
-        async function refreshTransactions(): Promise<void> {
-            await transactionsStore.setTransactions();
-        }
         async function refreshAll(): Promise<void> {
-            await refreshAnnouncements();
-            await refreshInstructorsOrStudents();
-            await refreshLessons();
-            await refreshTransactions();
+            await loginStore.setup();
         }
 
         onBeforeMount(async() => {

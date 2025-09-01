@@ -3,7 +3,7 @@ import {defineStore} from "pinia";
 import {
     SUBSCRIBED_INSTRUCTORS_ENDPOINT,
     SUBSCRIBED_STUDENTS_ENDPOINT,
-    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT
+    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT, USERS_ENDPOINT
 } from "@/store";
 import {useLoginStore} from "@/store/login";
 
@@ -11,13 +11,15 @@ export interface InstructorsState {
     subscribedInstructors: GetUserResponse[]
     unsubscribedInstructors: GetUserResponse[]
     myStudents: GetUserResponse[]
+    myInfo: GetUserResponse | null
 }
 
 export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents', {
     state: (): InstructorsState => ({
         subscribedInstructors: [],
         unsubscribedInstructors: [],
-        myStudents: []
+        myStudents: [],
+        myInfo: null
     }),
     getters: {
         getSubscribedInstructors: state => state.subscribedInstructors,
@@ -26,9 +28,22 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         hasUnsubscribedInstructors: state => state.unsubscribedInstructors && state.unsubscribedInstructors.length > 0,
         getAllInstructors: state => state.subscribedInstructors.concat(state.unsubscribedInstructors),
         hasAllInstructors: state => state.subscribedInstructors.concat(state.unsubscribedInstructors).length > 0,
-        getMyStudents: state => state.myStudents
+        getMyStudents: state => state.myStudents,
+        getMyInfo: state => state.myInfo
     },
     actions: {
+        async setMyInfo() {
+            const loginStore = useLoginStore();
+            const myInfoResponse: Response = await fetch(USERS_ENDPOINT + loginStore.getUserGUID, {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (myInfoResponse.ok) {
+                this.myInfo = await myInfoResponse.json();
+            }
+
+        },
         async setMyStudents() {
             const loginStore = useLoginStore();
             if (!loginStore.isStudent) {
@@ -70,10 +85,12 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         },
         async setInstructors() {
             await this.setSubscribedInstructors();
+            console.log(this.subscribedInstructors);
             await this.setUnsubscribedInstructors();
         },
         async setInstructorsOrStudents() {
             const loginStore = useLoginStore();
+            await this.setMyInfo();
             if (loginStore.isStudent) {
                 await this.setInstructors();
             } else {
