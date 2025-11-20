@@ -20,4 +20,7 @@ export const PACKAGES_ENDPOINT: string =  "http://localhost:8081/packages/";
 export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  PACKAGES_ENDPOINT + "subject/";
 export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transactions/";
 export const LOCATIONS_ENDPOINT: string =  "http://localhost:8081/locations/";
-
+export const AUTH_SERVER_LOCATION: string = "http://localhost:9000";
+export const AUTHORIZATION_ENDPOINT: string = "http://localhost:9000/oauth2/authorize";
+export const TOKEN_ENDPOINT: string = "http://localhost:9000/oauth2/token";
+export const CALLBACK_URL: string = "http://localhost:8080/callback";

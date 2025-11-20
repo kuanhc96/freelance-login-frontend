@@ -1,7 +1,5 @@
 // router.js
 import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router';
-import LoginForm from '../pages/login/LoginForm.vue';
-import CreateAccountForm from '../pages/login/CreateAccountForm.vue';
 import ForgetPasswordForm from '../pages/login/ForgetPasswordForm.vue';
 import ResetPasswordForm from '../pages/login/ResetPasswordForm.vue';
 
@@ -16,17 +14,20 @@ import TransactionsList from '../pages/transactions/TransactionsList.vue'
 import TransactionDetailsModal from '../components/transactions/TransactionDetailsModal.vue'
 import NotFound from '../pages/NotFound.vue'
 import Dashboard from '../pages/Dash-Board.vue'
-import {useLoginStore} from "@/store/login";
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import ProfilePage from "@/pages/profile/ProfilePage.vue";
+import CallbackPage from "@/pages/login/CallbackPage.vue";
+import AuthorizePage from "@/pages/login/AuthorizePage.vue";
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
-  { path: '/login', component: LoginForm, meta: { requiresLogout: true }},
-  { path: '/login?logout=true', component: LoginForm, meta: { requiresLogout: true }},
-
-    // paths that don't need to be protected
-  { path: '/createAccount', component: CreateAccountForm },
+  // { path: '/login', component: LoginForm, meta: { requiresLogout: true }},
+  // { path: '/login?logout=true', component: LoginForm, meta: { requiresLogout: true }},
+  //
+  //   // paths that don't need to be protected
+  // { path: '/createAccount', component: CreateAccountForm },
+    { path: '/callback', component: CallbackPage },
+  { path: '/authorize', component: AuthorizePage },
   { path: '/forgetPassword', component: ForgetPasswordForm },
   { path: '/resetPassword', component: ResetPasswordForm },
   { path: '/:notFound(.*)', redirect: '/notFound' },
@@ -54,16 +55,16 @@ const router: Router = createRouter({
   routes,
 });
 
-router.beforeEach(function(to, _, next) {
-    const loginStore = useLoginStore();
-
-    if (to.meta.requiresLogin && !loginStore.isLoggedIn) {
-        next('/login');
-    } else if (to.meta.requiresLogout && loginStore.isLoggedIn) {
-        next('/dashboard');
-    } else {
-        next();
-    }
-})
+// router.beforeEach(function(to, _, next) {
+    // const authClient = this.$vvAuth;
+    //
+    // if (to.meta.requiresLogin && !authClient.loggedIn) {
+    //     next('http://localhost:9000/login');
+    // } else if (to.meta.requiresLogout && authClient.loggedIn) {
+    //     next('/dashboard');
+    // } else {
+    //     next();
+    // }
+// })
 
 export default router;
