@@ -17,11 +17,12 @@ import Dashboard from '../pages/Dash-Board.vue'
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import ProfilePage from "@/pages/profile/ProfilePage.vue";
 import CallbackPage from "@/pages/login/CallbackPage.vue";
+import LoginForm from "@/pages/login/LoginForm.vue";
 import AuthorizePage from "@/pages/login/AuthorizePage.vue";
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
-  // { path: '/login', component: LoginForm, meta: { requiresLogout: true }},
+  { path: '/login', component: LoginForm, meta: { requiresLogout: true }},
   // { path: '/login?logout=true', component: LoginForm, meta: { requiresLogout: true }},
   //
   //   // paths that don't need to be protected
