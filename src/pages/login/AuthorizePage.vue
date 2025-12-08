@@ -1,6 +1,7 @@
 <template>
     <div class="mt-7">
         <button @click="startOAuth">Login with Auth Server</button>
+        <button @click="checkSession">Check Session</button>
     </div>
 </template>
 
@@ -9,6 +10,16 @@ export default {
     methods: {
         startOAuth() {
             window.location.href = "http://localhost:8072/authorize"
+        },
+        async checkSession() {
+            const response = await fetch("http://localhost:8072/checkSession", {
+                method: "POST",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                console.log(response);
+            }
         }
     }
 }

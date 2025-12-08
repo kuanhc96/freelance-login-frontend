@@ -15,6 +15,7 @@ onBeforeMount(async () => {
     const response: Response = await fetch(
         'http://localhost:8072/callback' + urlString, {
             method: 'POST',
+            credentials: 'include',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             }
