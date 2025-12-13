@@ -8,9 +8,6 @@ onBeforeMount(async () => {
     // authClient.handleCodeResponse(new URLSearchParams(urlParams));
     // router.replace("/");
     const urlString: string = window.location.search;
-    const urlParams = new URLSearchParams(urlString);
-    console.log("callback!!!!!");
-    console.log(urlParams);
     // const authCode = urlParams
     const response: Response = await fetch(
         'http://localhost:8072/callback' + urlString, {
@@ -21,7 +18,11 @@ onBeforeMount(async () => {
             }
         }
     );
-    console.log(response);
+
+    const responseBody = await response.json();
+    if (responseBody.successUrl) {
+        window.location.href = responseBody.successUrl;
+    }
 })
 
 </script>

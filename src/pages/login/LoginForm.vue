@@ -5,11 +5,11 @@
 <!--            <form class="login-form" action="http://localhost:8072/freelance-authserver/login" method="post">-->
                 <div class="mb-3">
                     <label class="form-label" for="email">User Email </label>
-                    <input class="form-control" name="email" type="email" id="email" v-model="email" required/>
+                    <input class="form-control" name="email" type="email" id="email" required/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="password">Password </label>
-                    <input class="form-control" name="password" type="password" id="password" v-model="password" required/>
+                    <input class="form-control" name="password" type="password" id="password" required/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Login as...</label>
@@ -20,7 +20,6 @@
                             name="role"
                             id="student"
                             value="STUDENT"
-                            v-model="selectedRole"
                             checked
                         />
                         <label for="student">Student</label>
@@ -32,10 +31,20 @@
                             name="role"
                             id="instructor"
                             value="INSTRUCTOR"
-                            v-model="selectedRole"
                         />
                         <label for="instructor">Instructor</label>
                     </div>
+                </div>
+                <div class="mb-3">
+                    <input
+                        class="form-check-input me-2"
+                        type="checkbox"
+                        name="rememberMe"
+                        id="rememberMe"
+                        value="true"
+                        v-model="rememberMe"
+                    />
+                    <label for="rememberMe">Remember Me</label>
                 </div>
                 <div class="d-grid vstack mb-3">
                     <button class="btn btn-secondary" type="submit">Login</button>
