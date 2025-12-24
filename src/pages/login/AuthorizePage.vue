@@ -9,11 +9,11 @@
 export default {
     methods: {
         startOAuth() {
-            window.location.href = "http://localhost:8072/authorize"
+            window.location.href = "http://localhost:8072/login"
         },
         async checkSession() {
-            const response = await fetch("http://localhost:8072/checkSession", {
-                method: "POST",
+            const response = await fetch("http://localhost:8072/openIdSession", {
+                method: "GET",
                 credentials: "include",
             });
 
