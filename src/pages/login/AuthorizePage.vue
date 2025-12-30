@@ -12,13 +12,15 @@ export default {
             window.location.href = "http://localhost:8072/login"
         },
         async checkSession() {
-            const response = await fetch("http://localhost:8072/openIdSession", {
+            const response = await fetch("http://localhost:8072/checkSession", {
                 method: "GET",
                 credentials: "include",
             });
 
             if (response.ok) {
-                console.log(response);
+                const responseBody = await response.json();
+                localStorage.setItem("email", responseBody.email)
+                localStorage.setItem("role", responseBody.role)
             }
         }
     }

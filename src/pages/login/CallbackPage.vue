@@ -21,6 +21,7 @@ onBeforeMount(async () => {
 
     const responseBody = await response.json();
     if (responseBody.successUrl) {
+        console.log(responseBody.successUrl);
         window.location.href = responseBody.successUrl;
     }
 })

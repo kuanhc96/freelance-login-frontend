@@ -13,11 +13,10 @@ import {useLocationsStore} from "@/store/locations";
 // import {useOAuthClient} from "@volverjs/auth-vue";
 
 export interface LoginState {
-    xsrfToken: string
+    // xsrfToken: string
     userGUID: string
     email: string
     role: string
-    expirationTimestamp: string
     didAutoLogout: boolean
 }
 
@@ -25,18 +24,18 @@ let timer: number;
 
 export const useLoginStore = defineStore('login', {
     state: (): LoginState => ({
-        xsrfToken: Cookies.get('XSRF-TOKEN') || '',
+        // xsrfToken: Cookies.get('XSRF-TOKEN') || '',
         userGUID: localStorage.getItem('userGUID') || '',
-        expirationTimestamp: localStorage.getItem('expirationTimestamp') || '0',
-        email: '',
-        role: '',
+        // expirationTimestamp: localStorage.getItem('expirationTimestamp') || '0',
+        email: localStorage.getItem('email') || '',
+        role: localStorage.getItem('role') || '',
         didAutoLogout: false
     }),
     getters: {
         isLoggedIn: (state) => {
-            return !!state.userGUID?.trim() && !!state.xsrfToken?.trim() && state.expirationTimestamp !== '0'
+            return !!state.userGUID?.trim() && !!state.email?.trim() && !!state.role?.trim() // && !!state.xsrfToken?.trim()
         },
-        getXsrfToken: state => state.xsrfToken,
+        // getXsrfToken: state => state.xsrfToken,
         getUserGUID: state => state.userGUID,
         getRole: state => state.role,
         isStudent: state => state.role === 'STUDENT',
@@ -45,60 +44,55 @@ export const useLoginStore = defineStore('login', {
     },
     actions: {
         async checkLogin(): Promise<void> {
-            if (this.isLoggedIn) {
-                const response = await fetch(
-                    'http://localhost:8081/checkLogin', {
-                        method: 'POST',
-                        credentials: 'include'
-                    }
-                );
-
-                if (response.ok) {
-                    const data: LoginResponse = await response.json();
-                    if (data) {
-                        this.userGUID = data.userGUID;
-                        localStorage.setItem('userGUID', data.userGUID);
-                        this.xsrfToken = Cookies.get('XSRF-TOKEN');
-                        this.role = data.role;
-                        this.email = data.email;
-                        const expiresIn = +this.expirationTimestamp - new Date().getTime();
-                        if (expiresIn < 0) {
-                            return;
-                        }
-
-                        timer = setTimeout(async() => {
-                            await this.autoLogout();
-                        }, expiresIn);
-
+            const response: Response = await fetch(
+                'http://localhost:8072/checkSession', {
+                    method: 'GET',
+                    credentials: 'include'
+                }
+            );
+            if (response.ok) {
+                const data: LoginResponse = await response.json();
+                if (data) {
+                    localStorage.setItem('email', data.email);
+                    localStorage.setItem('role', data.role);
+                    localStorage.setItem('userGUID', data.userGUID);
+                    // this.xsrfToken = Cookies.get('XSRF-TOKEN');
+                    this.role = data.role;
+                    this.email = data.email;
+                    this.userGUID = data.userGUID;
+                    // const expiresIn = +this.expirationTimestamp - new Date().getTime();
+                    // if (expiresIn < 0) {
+                    //     return;
+                    // }
+                    //
+                    // timer = setTimeout(async() => {
+                    //     await this.autoLogout();
+                    // }, expiresIn);
+                    //
+                    if (this.isLoggedIn) {
                         await this.setup();
                         await router.replace('/')
+                    } else {
+                        this.login();
                     }
-                } else {
-                    throw new Error('Not authenticated')
                 }
             } else {
-                await router.replace('/login');
+                this.login();
             }
-
         },
-        // async login(): Promise<void> {
-        //     const authClient = useOAuthClient();
-        //     await authClient.initialize();
-        //     await authClient.authorize();
-        // },
+        login(): void {
+            window.location.href = "http://localhost:8072/login"
+        },
         async logout(): Promise<void> {
             await fetch('http://localhost:8081/apiLogout', {
                 method: 'POST',
                 credentials: 'include'
             })
-            this.xsrfToken = '';
-            this.userGUID = '';
+            // this.xsrfToken = '';
             this.role = '';
             this.email = '';
-            this.expirationTimestamp = '0';
-            localStorage.removeItem('userGUID');
-            localStorage.removeItem('expirationTimestamp');
-            clearTimeout(timer);
+            this.userGUID = '';
+            // clearTimeout(timer);
             await router.replace('/login');
         },
         async autoLogout(): Promise<void> {
