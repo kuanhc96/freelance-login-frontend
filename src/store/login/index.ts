@@ -45,7 +45,7 @@ export const useLoginStore = defineStore('login', {
     actions: {
         async checkLogin(): Promise<void> {
             const response: Response = await fetch(
-                'http://localhost:8072/checkSession', {
+                'http://localhost:8072/status', {
                     method: 'GET',
                     credentials: 'include'
                 }
@@ -84,16 +84,16 @@ export const useLoginStore = defineStore('login', {
             window.location.href = "http://localhost:8072/login"
         },
         async logout(): Promise<void> {
-            await fetch('http://localhost:8081/apiLogout', {
-                method: 'POST',
-                credentials: 'include'
-            })
-            // this.xsrfToken = '';
-            this.role = '';
-            this.email = '';
-            this.userGUID = '';
-            // clearTimeout(timer);
-            await router.replace('/login');
+            // await fetch('http://localhost:8081/apiLogout', {
+            //     method: 'POST',
+            //     credentials: 'include'
+            // })
+            // // this.xsrfToken = '';
+            // this.role = '';
+            // this.email = '';
+            // this.userGUID = '';
+            // // clearTimeout(timer);
+            // await router.replace('/login');
         },
         async autoLogout(): Promise<void> {
             this.didAutoLogout = true;

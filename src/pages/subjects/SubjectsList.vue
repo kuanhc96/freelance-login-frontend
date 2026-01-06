@@ -40,6 +40,7 @@ import {defineComponent, computed, Ref, onBeforeMount} from 'vue';
 import { useLoginStore} from "@/store/login";
 import { useInstructorsOrStudentsStore } from "@/store/instructorsOrStudents";
 import { useSubjectsStore} from "@/store/subjects";
+import {SUBJECTS_ENDPOINT, SUBSCRIBED_INSTRUCTORS_ENDPOINT} from "@/store";
 
 
 export default defineComponent({
@@ -58,13 +59,13 @@ export default defineComponent({
             return loginStore.getUserGUID;
         })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/instructors/' + loginStore.getUserGUID;
+            return SUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID;
         })
         const subscribedInstructors: Ref<GetUserResponse[]> = computed(function() {
             return instructorsStore.getSubscribedInstructors;
         })
         function getSubjectsByInstructorEndpoint(instructorGUID: string): string {
-            return 'http://localhost:8081/subject/' + instructorGUID;
+            return SUBJECTS_ENDPOINT + instructorGUID;
         }
         function getSubjectsByInstructorGUID(instructorGUID: string): GetSubjectResponse[] {
             return subjectsStore.getSubjectsByInstructorGUID(instructorGUID);

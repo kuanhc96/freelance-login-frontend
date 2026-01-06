@@ -10,7 +10,7 @@ onBeforeMount(async () => {
     const urlString: string = window.location.search;
     // const authCode = urlParams
     const response: Response = await fetch(
-        'http://localhost:8072/callback' + urlString, {
+        'http://localhost:8072/tokens' + urlString, {
             method: 'POST',
             credentials: 'include',
             headers: {

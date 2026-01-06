@@ -12,7 +12,7 @@ export default {
             window.location.href = "http://localhost:8072/login"
         },
         async checkSession() {
-            const response = await fetch("http://localhost:8072/checkSession", {
+            const response = await fetch("http://localhost:8072/status", {
                 method: "GET",
                 credentials: "include",
             });

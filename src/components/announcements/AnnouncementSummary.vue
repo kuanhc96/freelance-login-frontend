@@ -123,6 +123,7 @@
 import Cookies from 'js-cookie';
 import { defineComponent, PropType, computed, ref, Ref } from 'vue';
 import { useLoginStore } from "@/store/login";
+import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
 
 export default defineComponent({
     emits: [
@@ -183,7 +184,7 @@ export default defineComponent({
         });
         async function submitEditedAnnouncement(): Promise<void> {
             const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response: Response = await fetch('http://localhost:8081/announcement/update', {
+            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {

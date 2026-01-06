@@ -9,18 +9,18 @@ pinia.use(({ store }) => {
 
 export default pinia;
 
-export const USERS_ENDPOINT: string = 'http://localhost:8081/user/';
-export const SUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/instructors/';
-export const UNSUBSCRIBED_INSTRUCTORS_ENDPOINT: string = 'http://localhost:8081/subscription/unsubscribed/';
-export const SUBSCRIBED_STUDENTS_ENDPOINT: string = 'http://localhost:8081/subscription/students/';
-export const ANNOUNCEMENTS_ENDPOINT: string =  "http://localhost:8081/announcements/";
-export const SUBJECTS_ENDPOINT: string =  "http://localhost:8081/subjects/";
-export const LESSONS_ENDPOINT: string =  "http://localhost:8081/lessons?";
-export const PACKAGES_ENDPOINT: string =  "http://localhost:8081/packages/";
-export const PACKAGES_BY_SUBJECT_ENDPOINT: string =  PACKAGES_ENDPOINT + "subject/";
-export const TRANSACTIONS_ENDPOINT: string =  "http://localhost:8081/transactions/";
-export const LOCATIONS_ENDPOINT: string =  "http://localhost:8081/locations/";
-export const AUTH_SERVER_LOCATION: string = "http://localhost:9000";
-export const AUTHORIZATION_ENDPOINT: string = "http://localhost:9000/oauth2/authorize";
-export const TOKEN_ENDPOINT: string = "http://localhost:9000/oauth2/token";
-export const CALLBACK_URL: string = "http://localhost:8080/callback";
+export const FREELANCE_RESOURCE_BACKEND: string = 'http://localhost:8072/freelance-resource-backend'
+export const FREELANCE_AUTHSERVER: string = 'http://localhost:8072/freelance-authserver'
+export const USERS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + '/users/';
+export const SUBSCRIPTION_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND +'/subscriptions/';
+export const SUBSCRIBED_INSTRUCTORS_ENDPOINT: string = SUBSCRIPTION_ENDPOINT + '/instructors/';
+export const UNSUBSCRIBED_INSTRUCTORS_ENDPOINT: string = SUBSCRIPTION_ENDPOINT + '/unsubscribed/';
+export const SUBSCRIBED_STUDENTS_ENDPOINT: string = SUBSCRIPTION_ENDPOINT + '/students/';
+export const ANNOUNCEMENTS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/announcements/";
+export const SUBJECTS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/subjects/";
+export const LESSONS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/lessons?";
+export const PACKAGES_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/packages/";
+export const PACKAGES_BY_SUBJECT_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + PACKAGES_ENDPOINT + "subjects/";
+export const TRANSACTIONS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/transactions/";
+export const LOCATIONS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + "/locations/";
+export const TOKEN_ENDPOINT: string = FREELANCE_AUTHSERVER + "/oauth/tokens";
