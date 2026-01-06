@@ -69,12 +69,12 @@ export const useLoginStore = defineStore('login', {
                     //     await this.autoLogout();
                     // }, expiresIn);
                     //
-                    if (this.isLoggedIn) {
-                        await this.setup();
-                        await router.replace('/')
-                    } else {
-                        this.login();
-                    }
+                    // if (this.isLoggedIn) {
+                    //     await this.setup();
+                    //     await router.replace('/')
+                    // } else {
+                    //     this.login();
+                    // }
                 }
             } else {
                 this.login();

@@ -17,7 +17,8 @@ import Dashboard from '../pages/Dash-Board.vue'
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import ProfilePage from "@/pages/profile/ProfilePage.vue";
 import CallbackPage from "@/pages/login/CallbackPage.vue";
-import AuthorizePage from "@/pages/login/AuthorizePage.vue";
+// import AuthorizePage from "@/pages/login/AuthorizePage.vue";
+import {useLoginStore} from "@/store/login";
 
 const routes: RouteRecordRaw[] = [
     // paths that can only be accessed if logged out
@@ -26,12 +27,12 @@ const routes: RouteRecordRaw[] = [
   //
   //   // paths that don't need to be protected
   // { path: '/createAccount', component: CreateAccountForm },
-    { path: '/callback', component: CallbackPage },
-  { path: '/authorize', component: AuthorizePage },
-  { path: '/forgetPassword', component: ForgetPasswordForm },
-  { path: '/resetPassword', component: ResetPasswordForm },
-  { path: '/:notFound(.*)', redirect: '/notFound' },
-  { path: '/notFound', component: NotFound },
+    { path: '/callback', component: CallbackPage, meta: {requiresLogin: false} },
+  // { path: '/authorize', component: AuthorizePage },
+  { path: '/forgetPassword', component: ForgetPasswordForm, meta: {requiresLogin: false} },
+  { path: '/resetPassword', component: ResetPasswordForm, meta: {requiresLogin: false} },
+  { path: '/:notFound(.*)', redirect: '/notFound', meta: {requiresLogin: false} },
+  { path: '/notFound', component: NotFound, meta: {requiresLogin: false} },
 
     // paths that can only be accessed if logged in
   { path: '/', redirect: '/dashboard' },
@@ -55,16 +56,21 @@ const router: Router = createRouter({
   routes,
 });
 
-// router.beforeEach(function(to, _, next) {
-    // const authClient = this.$vvAuth;
-    //
-    // if (to.meta.requiresLogin && !authClient.loggedIn) {
-    //     next('http://localhost:9000/login');
-    // } else if (to.meta.requiresLogout && authClient.loggedIn) {
-    //     next('/dashboard');
-    // } else {
-    //     next();
-    // }
-// })
+router.beforeEach(async(to, _, next) => {
+    const requiresLogin: boolean = to.matched.some(record => record.meta.requiresLogin);
+    const loginStore = useLoginStore();
+
+    if (requiresLogin) {
+        await loginStore.checkLogin();
+        if (loginStore.isLoggedIn) {
+          next();
+        } else {
+          loginStore.login();
+          return;
+        }
+    } else {
+        next();
+    }
+})
 
 export default router;
