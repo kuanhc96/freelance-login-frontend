@@ -3,5 +3,4 @@ export interface LoginResponse {
     userGUID: string
     email: string
     role: string
-    expirationTimestamp: number
 }
