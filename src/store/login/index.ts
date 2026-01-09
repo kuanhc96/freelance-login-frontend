@@ -25,10 +25,10 @@ let timer: number;
 export const useLoginStore = defineStore('login', {
     state: (): LoginState => ({
         // xsrfToken: Cookies.get('XSRF-TOKEN') || '',
-        userGUID: localStorage.getItem('userGUID') || '',
+        userGUID: sessionStorage.getItem('userGUID') || '',
         // expirationTimestamp: localStorage.getItem('expirationTimestamp') || '0',
-        email: localStorage.getItem('email') || '',
-        role: localStorage.getItem('role') || '',
+        email: sessionStorage.getItem('email') || '',
+        role: sessionStorage.getItem('role') || '',
         didAutoLogout: false
     }),
     getters: {
@@ -45,7 +45,7 @@ export const useLoginStore = defineStore('login', {
     actions: {
         async checkLogin(): Promise<void> {
             const response: Response = await fetch(
-                'http://localhost:8072/status', {
+                'http://localhost:8072/api/oauth/status', {
                     method: 'GET',
                     credentials: 'include'
                 }
@@ -53,9 +53,9 @@ export const useLoginStore = defineStore('login', {
             if (response.ok) {
                 const data: LoginResponse = await response.json();
                 if (data) {
-                    localStorage.setItem('email', data.email);
-                    localStorage.setItem('role', data.role);
-                    localStorage.setItem('userGUID', data.userGUID);
+                    sessionStorage.setItem('email', data.email);
+                    sessionStorage.setItem('role', data.role);
+                    sessionStorage.setItem('userGUID', data.userGUID);
                     // this.xsrfToken = Cookies.get('XSRF-TOKEN');
                     this.role = data.role;
                     this.email = data.email;
@@ -81,7 +81,7 @@ export const useLoginStore = defineStore('login', {
             }
         },
         login(): void {
-            window.location.href = "http://localhost:8072/login"
+            window.location.href = "http://localhost:8072/oauth/login"
         },
         async logout(): Promise<void> {
             // await fetch('http://localhost:8081/apiLogout', {
