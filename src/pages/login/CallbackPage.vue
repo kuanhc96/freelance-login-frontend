@@ -10,7 +10,7 @@ onBeforeMount(async () => {
     const urlString: string = window.location.search;
     // const authCode = urlParams
     const response: Response = await fetch(
-        'http://localhost:8072/tokens' + urlString, {
+        'http://localhost:8072/api/oauth/tokens' + urlString, {
             method: 'POST',
             credentials: 'include',
             headers: {
