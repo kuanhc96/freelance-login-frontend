@@ -252,7 +252,7 @@ export default defineComponent({
 
         onBeforeMount(async() => {
             if (!isLoggedIn.value) {
-                await router.push('/login');
+                await router.replace('/login');
             } else {
                 await refreshAll();
             }

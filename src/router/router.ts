@@ -17,7 +17,7 @@ import Dashboard from '../pages/Dash-Board.vue'
 import TransactionForm from "@/pages/transactions/TransactionForm.vue";
 import ProfilePage from "@/pages/profile/ProfilePage.vue";
 import CallbackPage from "@/pages/login/CallbackPage.vue";
-// import AuthorizePage from "@/pages/login/AuthorizePage.vue";
+import AuthorizePage from "@/pages/login/AuthorizePage.vue";
 import {useLoginStore} from "@/store/login";
 
 const routes: RouteRecordRaw[] = [
@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
   //   // paths that don't need to be protected
   // { path: '/createAccount', component: CreateAccountForm },
     { path: '/callback', component: CallbackPage, meta: {requiresLogin: false} },
-  // { path: '/authorize', component: AuthorizePage },
+  { path: '/authorize', component: AuthorizePage },
   { path: '/forgetPassword', component: ForgetPasswordForm, meta: {requiresLogin: false} },
   { path: '/resetPassword', component: ResetPasswordForm, meta: {requiresLogin: false} },
   { path: '/:notFound(.*)', redirect: '/notFound', meta: {requiresLogin: false} },
