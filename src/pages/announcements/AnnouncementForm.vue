@@ -30,6 +30,7 @@ import BaseCard from '@/components/ui/BaseCard.vue';
 import {CreateAnnouncementResponse} from '@/dto/response/createAnnouncementResponse';
 import {defineComponent, Ref, ref} from 'vue'
 import Cookies from "js-cookie";
+import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
 
 export default defineComponent({
     name: 'AnnouncementForm',
@@ -47,7 +48,7 @@ export default defineComponent({
             const csrfToken = Cookies.get('XSRF-TOKEN');
             if (subject.value !== '' && announcement.value !== '') {
                 const response: Response = await fetch(
-                    'http://localhost:8081/announcement/createAnnouncement', {
+                        ANNOUNCEMENTS_ENDPOINT, {
                         method: 'POST',
                         credentials: 'include',
                         headers: {

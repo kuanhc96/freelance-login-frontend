@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import {CreateLocationRequest} from "@/dto/request/createLocationRequest";
 import {useLoginStore} from "@/store/login";
 import {useLocationsStore} from "@/store/locations";
+import {LOCATIONS_ENDPOINT} from "@/store";
 
 export default defineComponent({
     name: "AddLocationModal" ,
@@ -29,7 +30,7 @@ export default defineComponent({
                 zipCode: zip.value,
 
             }
-            const response: Response = await fetch('http://localhost:8081/locations/createLocation', {
+            const response: Response = await fetch(LOCATIONS_ENDPOINT, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

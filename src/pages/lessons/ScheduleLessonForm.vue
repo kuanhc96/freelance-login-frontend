@@ -242,6 +242,7 @@ import {GetLessonResponse} from "@/dto/response/getLessonResponse";
 import {useLessonsStore} from "@/store/lessons";
 import {useLocationsStore} from "@/store/locations";
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
+import {LESSONS_ENDPOINT} from "@/store";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -337,7 +338,7 @@ export default defineComponent({
                 lessonFrequency: frequency.value
             }
             const response: Response = await fetch(
-                'http://localhost:8081/lessons/precreateLessons', {
+                LESSONS_ENDPOINT + '/draft', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -369,7 +370,7 @@ export default defineComponent({
                     precreatedLessons: precreatedLessons.value
                 };
                 const response: Response = await fetch(
-                    'http://localhost:8081/lessons/createLessons', {
+                        LESSONS_ENDPOINT, {
                         method: 'POST',
                         credentials: 'include',
                         headers: {

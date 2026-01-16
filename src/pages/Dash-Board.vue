@@ -177,6 +177,7 @@ import DashboardTransaction from "@/components/transactions/DashboardTransaction
 import DashboardProfile from "@/components/profile/DashboardProfile.vue";
 import {useTransactionsStore} from "@/store/transactions";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
+import {SUBSCRIBED_INSTRUCTORS_ENDPOINT} from "@/store";
 
 export default defineComponent({
     name: 'Dash-Board',
@@ -203,7 +204,7 @@ export default defineComponent({
             return loginStore.isLoggedIn;
         })
         const subscribedInstructorsEndpoint: Ref<string> = computed(function() {
-            return 'http://localhost:8081/subscription/instructors/' + userGUID.value;
+            return SUBSCRIBED_INSTRUCTORS_ENDPOINT + userGUID.value;
         })
         const isStudent: Ref<boolean> = computed(function() {
             return loginStore.isStudent;
@@ -251,7 +252,7 @@ export default defineComponent({
 
         onBeforeMount(async() => {
             if (!isLoggedIn.value) {
-                await router.push('/login');
+                await router.replace('/login');
             } else {
                 await refreshAll();
             }

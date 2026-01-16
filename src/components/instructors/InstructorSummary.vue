@@ -34,6 +34,7 @@ import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 import { useLoginStore } from "@/store/login";
 import {useSubjectsStore} from "@/store/subjects";
 import { useRoute } from 'vue-router'
+import {SUBSCRIPTION_ENDPOINT} from "@/store";
 
 export default defineComponent({
     props: {
@@ -94,7 +95,7 @@ export default defineComponent({
             try {
                 const csrfToken = Cookies.get('XSRF-TOKEN');
                 const response: Response = await fetch(
-                    'http://localhost:8081/subscription', {
+                        SUBSCRIPTION_ENDPOINT, {
                         method: props.displaySubscribe? 'POST' : 'DELETE',
                         credentials: 'include',
                         headers: {
