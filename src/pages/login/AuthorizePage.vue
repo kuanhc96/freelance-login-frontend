@@ -10,11 +10,12 @@
 export default {
     methods: {
         startOAuth() {
-            window.location.href = "http://localhost:8072/login"
+            window.location.href = "http://localhost:8083/login"
         },
         async testConnection() {
             const response = await fetch("http://localhost:8072/freelance/appInfo/version", {
                 method: "GET",
+                credentials:"include"
             });
 
             if (response.ok) {
@@ -22,7 +23,7 @@ export default {
             }
         },
         async checkSession() {
-            const response = await fetch("http://localhost:8072/status", {
+            const response = await fetch("http://localhost:8083/api/oauth/status", {
                 method: "GET",
                 credentials: "include",
             });

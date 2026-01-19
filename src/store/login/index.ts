@@ -45,7 +45,7 @@ export const useLoginStore = defineStore('login', {
     actions: {
         async checkLogin(): Promise<void> {
             const response: Response = await fetch(
-                'http://localhost:8072/api/oauth/status', {
+                'http://localhost:8083/api/oauth/status', {
                     method: 'GET',
                     credentials: 'include'
                 }
@@ -81,7 +81,7 @@ export const useLoginStore = defineStore('login', {
             }
         },
         login(): void {
-            window.location.href = "http://localhost:8072/oauth/login"
+            window.location.href = "http://localhost:8083/oauth/login"
         },
         async logout(): Promise<void> {
             // await fetch('http://localhost:8081/apiLogout', {
