@@ -34,7 +34,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
     actions: {
         async setMyInfo() {
             const loginStore = useLoginStore();
-            const myInfoResponse: Response = await fetch(USERS_ENDPOINT + loginStore.getUserGUID, {
+            const myInfoResponse: Response = await fetch(USERS_ENDPOINT + '/' +loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -47,7 +47,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         async setMyStudents() {
             const loginStore = useLoginStore();
             if (!loginStore.isStudent) {
-                const myStudentsResponse: Response = await fetch(SUBSCRIBED_STUDENTS_ENDPOINT + loginStore.getUserGUID, {
+                const myStudentsResponse: Response = await fetch(SUBSCRIBED_STUDENTS_ENDPOINT + '/' + loginStore.getUserGUID, {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -61,7 +61,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         async setSubscribedInstructors() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
-                const subscriptionResponse: Response = await fetch(SUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
+                const subscriptionResponse: Response = await fetch(SUBSCRIBED_INSTRUCTORS_ENDPOINT +'/' + loginStore.getUserGUID, {
                     method: 'GET',
                     credentials: 'include'
                 })
@@ -74,7 +74,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         async setUnsubscribedInstructors() {
             const loginStore = useLoginStore();
             if (!loginStore.isStudent) {
-                const unsubscribedResponse: Response = await fetch(UNSUBSCRIBED_INSTRUCTORS_ENDPOINT + loginStore.getUserGUID, {
+                const unsubscribedResponse: Response = await fetch(UNSUBSCRIBED_INSTRUCTORS_ENDPOINT + '/' +loginStore.getUserGUID, {
                     method: 'GET',
                     credentials: 'include'
                 })

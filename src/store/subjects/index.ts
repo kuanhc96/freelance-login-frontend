@@ -35,7 +35,7 @@ export const useSubjectsStore = defineStore('subjects', {
             const instructorsStore = useInstructorsOrStudentsStore();
             if (loginStore.isStudent) {
                 for (const instructor of instructorsStore.getSubscribedInstructors) {
-                    const response: Response = await fetch(SUBJECTS_ENDPOINT + instructor.userGUID, {
+                    const response: Response = await fetch(SUBJECTS_ENDPOINT + '/' + instructor.userGUID, {
                         method: 'GET',
                         credentials: 'include'
                     });
@@ -45,7 +45,7 @@ export const useSubjectsStore = defineStore('subjects', {
                     }
                 }
             } else {
-                const response: Response = await fetch(SUBJECTS_ENDPOINT + loginStore.getUserGUID, {
+                const response: Response = await fetch(SUBJECTS_ENDPOINT + '/' + loginStore.getUserGUID, {
                     method: 'GET',
                     credentials: 'include'
                 });

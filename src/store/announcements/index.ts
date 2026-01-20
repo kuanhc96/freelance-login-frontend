@@ -20,7 +20,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
             const instructorsStore = useInstructorsOrStudentsStore();
 
             for (const instructor of instructorsStore.getSubscribedInstructors) {
-                const response = await fetch(ANNOUNCEMENTS_ENDPOINT + instructor.userGUID, {
+                const response = await fetch(ANNOUNCEMENTS_ENDPOINT +'/' + instructor.userGUID, {
                     method: 'GET',
                     credentials: 'include'
                 });
@@ -32,7 +32,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         async setAnnouncementsForInstructor() {
             // userGUID is the instructorGUID
             const loginStore = useLoginStore();
-            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT + loginStore.getUserGUID, {
+            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT +'/' + loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include'
             });

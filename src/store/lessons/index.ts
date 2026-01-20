@@ -32,7 +32,7 @@ export const useLessonsStore = defineStore('lessons', {
     actions: {
         async setLessonsByStudentGUID() {
             const loginStore = useLoginStore();
-            const response: Response = await fetch(LESSONS_ENDPOINT + "studentGUID=" + loginStore.getUserGUID, {
+            const response: Response = await fetch(LESSONS_ENDPOINT + '?'+ "studentGUID=" + loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include',
             })
@@ -43,7 +43,7 @@ export const useLessonsStore = defineStore('lessons', {
         },
         async setLessonsByInstructorGUID() {
             const loginStore = useLoginStore();
-            const response: Response = await fetch(LESSONS_ENDPOINT + "instructorGUID=" + loginStore.getUserGUID, {
+            const response: Response = await fetch(LESSONS_ENDPOINT + '?' + "instructorGUID=" + loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include',
             })

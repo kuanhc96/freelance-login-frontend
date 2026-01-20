@@ -30,7 +30,7 @@ export const useLocationsStore = defineStore('locations', {
             const loginStore = useLoginStore();
             const instructorsStore = useInstructorsOrStudentsStore();
 
-            const response: Response = await fetch(LOCATIONS_ENDPOINT + loginStore.getUserGUID, {
+            const response: Response = await fetch(LOCATIONS_ENDPOINT + '/' + loginStore.getUserGUID, {
                 method: 'GET',
                 credentials: 'include'
             });
@@ -47,7 +47,7 @@ export const useLocationsStore = defineStore('locations', {
             }
 
             for (const subscriber of subscribers) {
-                const response: Response = await fetch(LOCATIONS_ENDPOINT + subscriber.userGUID, {
+                const response: Response = await fetch(LOCATIONS_ENDPOINT + '/' + subscriber.userGUID, {
                     method: 'GET',
                     credentials: 'include'
                 });
