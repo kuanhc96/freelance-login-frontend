@@ -9,7 +9,7 @@ pinia.use(({ store }) => {
 
 export default pinia;
 
-export const FREELANCE_RESOURCE_BACKEND: string = 'http://localhost:8072/freelance-resource-backend'
+export const FREELANCE_RESOURCE_BACKEND: string = 'http://localhost:8072/freelance-resource-backend/freelance'
 export const FREELANCE_AUTHSERVER: string = 'http://localhost:8072/freelance-authserver'
 export const USERS_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND + '/users';
 export const SUBSCRIPTION_ENDPOINT: string = FREELANCE_RESOURCE_BACKEND +'/subscriptions';

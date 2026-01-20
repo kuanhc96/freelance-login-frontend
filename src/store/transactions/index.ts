@@ -21,9 +21,9 @@ export const useTransactionsStore = defineStore('transactions', {
             const loginStore = useLoginStore();
             let transactionsEndpoint = TRANSACTIONS_ENDPOINT;
             if (loginStore.isStudent) {
-                transactionsEndpoint += 'student/' + loginStore.getUserGUID;
+                transactionsEndpoint += '/student' + '/' + loginStore.getUserGUID;
             } else {
-                transactionsEndpoint += 'instructor/' + loginStore.getUserGUID;
+                transactionsEndpoint += '/instructor' + '/' + loginStore.getUserGUID;
             }
             const response: Response = await fetch(transactionsEndpoint, {
                 method: 'GET',
