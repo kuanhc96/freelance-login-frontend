@@ -84,16 +84,22 @@ export const useLoginStore = defineStore('login', {
             window.location.href = "http://localhost:8083/oauth/login"
         },
         async logout(): Promise<void> {
-            // await fetch('http://localhost:8081/apiLogout', {
-            //     method: 'POST',
-            //     credentials: 'include'
-            // })
+            await fetch('http://localhost:8083/oauth/logout', {
+                method: 'POST',
+                credentials: 'include'
+            })
+            sessionStorage.setItem('email', '');
+            sessionStorage.setItem('role', '');
+            sessionStorage.setItem('userGUID', '');
+            this.role = '';
+            this.email = '';
+            this.userGUID = '';
             // // this.xsrfToken = '';
             // this.role = '';
             // this.email = '';
             // this.userGUID = '';
             // // clearTimeout(timer);
-            // await router.replace('/login');
+            this.login();
         },
         async autoLogout(): Promise<void> {
             this.didAutoLogout = true;
