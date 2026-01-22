@@ -84,7 +84,7 @@ export const useLoginStore = defineStore('login', {
             window.location.href = "http://localhost:8083/oauth/login"
         },
         async logout(): Promise<void> {
-            await fetch('http://localhost:8083/oauth/logout', {
+            await fetch('http://localhost:8083/api/oauth/logout', {
                 method: 'POST',
                 credentials: 'include'
             })
