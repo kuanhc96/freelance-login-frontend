@@ -1,20 +1,10 @@
 <template>
-  <div class="" id="app">
     <the-header></the-header>
     <router-view></router-view>
-  </div>
 </template>
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
+<script setup lang="ts">
 import TheHeader from './components/layout/TheHeader.vue'
 
-@Options({
-    components: {
-      TheHeader
-    },
-})
-export default class App extends Vue {
-}
 </script>
 
