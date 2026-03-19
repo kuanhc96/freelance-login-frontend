@@ -3,9 +3,10 @@ import {defineStore} from "pinia";
 import {
     SUBSCRIBED_INSTRUCTORS_ENDPOINT,
     SUBSCRIBED_STUDENTS_ENDPOINT,
-    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT, USERS_ENDPOINT
+    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT
 } from "@/store";
 import {useLoginStore} from "@/store/login";
+import UserService from "@/services/UserService";
 
 export interface InstructorsState {
     subscribedInstructors: GetUserResponse[]
@@ -32,16 +33,11 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         getMyInfo: state => state.myInfo
     },
     actions: {
-        async setMyInfo() {
+        setMyInfo() {
             const loginStore = useLoginStore();
-            const myInfoResponse: Response = await fetch(USERS_ENDPOINT + '/' +loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (myInfoResponse.ok) {
-                this.myInfo = await myInfoResponse.json();
-            }
+            UserService.getUserInfo(loginStore.getUserGUID).then((res) => {
+                this.myInfo = res.data;
+            })
 
         },
         async setMyStudents() {
@@ -90,7 +86,7 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         },
         async setInstructorsOrStudents() {
             const loginStore = useLoginStore();
-            await this.setMyInfo();
+            this.setMyInfo();
             if (loginStore.isStudent) {
                 await this.setInstructors();
             } else {
