@@ -120,10 +120,9 @@
 </template>
 
 <script lang="ts">
-import Cookies from 'js-cookie';
 import { defineComponent, PropType, computed, ref, Ref } from 'vue';
 import { useLoginStore } from "@/store/login";
-import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
+import AnnouncementService from "@/services/AnnouncementService";
 
 export default defineComponent({
     emits: [
@@ -183,25 +182,14 @@ export default defineComponent({
             return date.toLocaleDateString('en-US', options);
         });
         async function submitEditedAnnouncement(): Promise<void> {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT, {
-                method: 'PUT',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    'announcementGUID': props.announcementId,
-                    'title': editedTitle.value,
-                    'announcement': editedAnnouncement.value,
-                    'announcementStatus': editedStatus.value
-                })
-            });
-
-            if (response.ok) {
+            AnnouncementService.editAnnouncement(
+                props.announcementId,
+                editedTitle.value,
+                editedAnnouncement.value,
+                editedStatus.value
+            ).then(() => {
                 context.emit('announcementUpdated');
-            }
+            });
         }
 
         return {role, isNew, humanReadableDate, submitEditedAnnouncement, editedTitle, editedAnnouncement, editedStatus};

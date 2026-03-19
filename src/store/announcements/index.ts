@@ -1,8 +1,9 @@
 import {GetAnnouncementResponse} from '@/dto/response/getAnnouncementResponse';
 import {defineStore} from 'pinia';
-import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useLoginStore} from "@/store/login";
+import AnnouncementService from "@/services/AnnouncementService"
+import {AxiosResponse} from "axios";
 
 export interface AnnouncementsState {
     announcements: GetAnnouncementResponse[]
@@ -16,36 +17,32 @@ export const useAnnouncementsStore = defineStore('announcements', {
         getAnnouncements: state => state.announcements
     },
     actions: {
-        async setAnnouncementsForStudent() {
+        setAnnouncementsForStudent() {
             const instructorsStore = useInstructorsOrStudentsStore();
 
             for (const instructor of instructorsStore.getSubscribedInstructors) {
-                const response = await fetch(ANNOUNCEMENTS_ENDPOINT +'/' + instructor.userGUID, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    this.announcements = await response.json();
-                }
+                AnnouncementService.getAnnouncementsByGUID(instructor.userGUID)
+                    .then((res: AxiosResponse) => {
+                            this.announcements = res.data;
+                        }
+                    )
             }
         },
-        async setAnnouncementsForInstructor() {
+        setAnnouncementsForInstructor() {
             // userGUID is the instructorGUID
             const loginStore = useLoginStore();
-            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT +'/' + loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include'
-            });
-            if (response.ok) {
-                this.announcements = await response.json();
-            }
+            AnnouncementService.getAnnouncementsByGUID(loginStore.getUserGUID)
+                .then((res: AxiosResponse) => {
+                    this.announcements = res.data;
+                }
+            )
         },
-        async setAnnouncements() {
+        setAnnouncements() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
-                await this.setAnnouncementsForStudent();
+                this.setAnnouncementsForStudent();
             } else {
-                await this.setAnnouncementsForInstructor();
+                this.setAnnouncementsForInstructor();
             }
         }
     },
