@@ -5,7 +5,7 @@ import {
 } from "@/store";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
 import {CreateSubscriptionRequest} from "@/dto/request/createSubscriptionRequest";
-import resourceServerClient from "@/services/apiClient";
+import resourceServerClient from "@/services/clients/apiClient";
 
 export default {
     getSubscribedStudents(instructorGUID: string) {

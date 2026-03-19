@@ -1,4 +1,4 @@
-import apiClient from "@/services/apiClient";
+import apiClient from "@/services/clients/apiClient";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 import {useLoginStore} from "@/store/login";
 import {TRANSACTIONS_ENDPOINT} from "@/store";

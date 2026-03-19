@@ -1,4 +1,4 @@
-import bffServerClient from "@/services/bffClient";
+import bffServerClient from "@/services/clients/bffClient";
 import {LoginResponse} from "@/dto/response/loginResponse";
 
 export default {

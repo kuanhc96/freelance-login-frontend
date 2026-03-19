@@ -1,4 +1,4 @@
-import resourceServerClient from "@/services/apiClient";
+import resourceServerClient from "@/services/clients/apiClient";
 import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
 import {GetAnnouncementResponse} from "@/dto/response/getAnnouncementResponse";
 import {UpdateAnnouncementRequest} from "@/dto/request/updateAnnouncementRequest";
