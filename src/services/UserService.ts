@@ -1,9 +1,9 @@
 import {USERS_ENDPOINT} from "@/store";
-import apiClient from "@/services/apiClient";
 import {GetUserResponse} from "@/dto/response/getUserResponse";
+import resourceServerClient from "@/services/apiClient";
 
 export default {
     getUserInfo(userGUID: string) {
-        return apiClient.get<GetUserResponse>(USERS_ENDPOINT + '/' + userGUID);
+        return resourceServerClient.get<GetUserResponse>(USERS_ENDPOINT + '/' + userGUID);
     }
 }

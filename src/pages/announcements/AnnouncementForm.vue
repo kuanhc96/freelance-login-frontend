@@ -27,10 +27,8 @@
 </template>
 <script lang="ts">
 import BaseCard from '@/components/ui/BaseCard.vue';
-import {CreateAnnouncementResponse} from '@/dto/response/createAnnouncementResponse';
 import {defineComponent, Ref, ref} from 'vue'
-import Cookies from "js-cookie";
-import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
+import AnnouncementService from "@/services/AnnouncementService";
 
 export default defineComponent({
     name: 'AnnouncementForm',
@@ -45,27 +43,11 @@ export default defineComponent({
             announcement.value = ''
         }
         async function submit(): Promise<void> {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
             if (subject.value !== '' && announcement.value !== '') {
-                const response: Response = await fetch(
-                        ANNOUNCEMENTS_ENDPOINT, {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-XSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            instructorGUID: 'aa02e645-55ea-4aa3-953e-3ea543c8290f',
-                            title: subject.value,
-                            announcement: announcement.value
-                        })
-                    }
-                );
-                if (response.ok) {
-                    const data: CreateAnnouncementResponse = await response.json();
-                    console.log(data);
-                }
+                AnnouncementService.createAnnouncement('aa02e645-55ea-4aa3-953e-3ea543c8290f', subject.value, announcement.value)
+                    .then((res) => {
+                        console.log(res.data);
+                    });
             } else {
                 console.log('invalid input')
             }
