@@ -1,8 +1,4 @@
-import { LoginResponse } from '@/dto/response/loginResponse';
-// import { LoginRequest } from '@/dto/request/loginRequest';
 import { defineStore } from 'pinia';
-import Cookies from "js-cookie";
-import router from "@/router/router";
 import {useLessonsStore} from "@/store/lessons";
 import {useAnnouncementsStore} from "@/store/announcements";
 import {useSubjectsStore} from "@/store/subjects";
@@ -10,7 +6,8 @@ import {usePackagesStore} from "@/store/packages";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useTransactionsStore} from "@/store/transactions";
 import {useLocationsStore} from "@/store/locations";
-// import {useOAuthClient} from "@volverjs/auth-vue";
+import {LOGIN_ENDPOINT} from "@/store";
+import LoginService from "@/services/LoginService";
 
 export interface LoginState {
     // xsrfToken: string
@@ -44,62 +41,57 @@ export const useLoginStore = defineStore('login', {
     },
     actions: {
         async checkLogin(): Promise<void> {
-            const response: Response = await fetch(
-                'http://localhost:8083/api/oauth/status', {
-                    method: 'GET',
-                    credentials: 'include'
-                }
-            );
-            if (response.ok) {
-                const data: LoginResponse = await response.json();
-                if (data) {
-                    sessionStorage.setItem('email', data.email);
-                    sessionStorage.setItem('role', data.role);
-                    sessionStorage.setItem('userGUID', data.userGUID);
-                    // this.xsrfToken = Cookies.get('XSRF-TOKEN');
-                    this.role = data.role;
-                    this.email = data.email;
-                    this.userGUID = data.userGUID;
-                    // const expiresIn = +this.expirationTimestamp - new Date().getTime();
-                    // if (expiresIn < 0) {
-                    //     return;
-                    // }
-                    //
-                    // timer = setTimeout(async() => {
-                    //     await this.autoLogout();
-                    // }, expiresIn);
-                    //
-                    // if (this.isLoggedIn) {
-                    //     await this.setup();
-                    //     await router.replace('/')
-                    // } else {
-                    //     this.login();
-                    // }
-                }
-            } else {
-                this.login();
-            }
+            LoginService.checkLogin()
+                .then((res) => {
+                    const data = res.data;
+                    if (data) {
+                        sessionStorage.setItem('email', data.email);
+                        sessionStorage.setItem('role', data.role);
+                        sessionStorage.setItem('userGUID', data.userGUID);
+                        // this.xsrfToken = Cookies.get('XSRF-TOKEN');
+                        this.role = data.role;
+                        this.email = data.email;
+                        this.userGUID = data.userGUID;
+                        // const expiresIn = +this.expirationTimestamp - new Date().getTime();
+                        // if (expiresIn < 0) {
+                        //     return;
+                        // }
+                        //
+                        // timer = setTimeout(async() => {
+                        //     await this.autoLogout();
+                        // }, expiresIn);
+                        //
+                        // if (this.isLoggedIn) {
+                        //     await this.setup();
+                        //     await router.replace('/')
+                        // } else {
+                        //     this.login();
+                        // }
+                    }
+                })
+                .catch(() => {
+                    this.login();
+                });
         },
         login(): void {
-            window.location.href = "http://localhost:8083/oauth/login"
+            window.location.href = LOGIN_ENDPOINT;
         },
         async logout(): Promise<void> {
-            await fetch('http://localhost:8083/api/oauth/logout', {
-                method: 'POST',
-                credentials: 'include'
-            })
-            sessionStorage.setItem('email', '');
-            sessionStorage.setItem('role', '');
-            sessionStorage.setItem('userGUID', '');
-            this.role = '';
-            this.email = '';
-            this.userGUID = '';
-            // // this.xsrfToken = '';
-            // this.role = '';
-            // this.email = '';
-            // this.userGUID = '';
-            // // clearTimeout(timer);
-            this.login();
+            LoginService.logout()
+                .then(() => {
+                    sessionStorage.setItem('email', '');
+                    sessionStorage.setItem('role', '');
+                    sessionStorage.setItem('userGUID', '');
+                    this.role = '';
+                    this.email = '';
+                    this.userGUID = '';
+                    // // this.xsrfToken = '';
+                    // this.role = '';
+                    // this.email = '';
+                    // this.userGUID = '';
+                    // // clearTimeout(timer);
+                    this.login();
+                });
         },
         async autoLogout(): Promise<void> {
             this.didAutoLogout = true;
