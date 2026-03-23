@@ -13,5 +13,8 @@ export default {
             transactionsEndpoint += '/instructor' + '/' + userGUID;
         }
         return resourceServerClient.get(transactionsEndpoint);
+    },
+    deleteTransactionByTransactionGUID(transactionGUID: string): Promise<void> {
+        return resourceServerClient.delete(TRANSACTIONS_ENDPOINT + '/' + transactionGUID);
     }
 }
