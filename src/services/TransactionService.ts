@@ -1,7 +1,7 @@
-import apiClient from "@/services/clients/apiClient";
 import {GetTransactionResponse} from "@/dto/response/getTransactionResponse";
 import {useLoginStore} from "@/store/login";
 import {TRANSACTIONS_ENDPOINT} from "@/store";
+import resourceServerClient from "@/services/clients/apiClient";
 
 export default {
     getTransactionsByUserGUID(userGUID: string): Promise<GetTransactionResponse[]> {
@@ -12,6 +12,6 @@ export default {
         } else {
             transactionsEndpoint += '/instructor' + '/' + userGUID;
         }
-        return apiClient.get(transactionsEndpoint);
+        return resourceServerClient.get(transactionsEndpoint);
     }
 }

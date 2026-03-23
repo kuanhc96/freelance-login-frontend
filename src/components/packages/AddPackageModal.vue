@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import Cookies from "js-cookie";
 import {reactive, defineProps, inject} from "vue";
-import {PACKAGES_ENDPOINT} from "@/store";
 import {usePackagesStore} from "@/store/packages";
+import PackageService from "@/services/PackageService";
 
 const disableToggle = inject('disableToggle');
 
@@ -22,27 +21,8 @@ const state = reactive({
 })
 
 async function registerPackage() {
-    const csrfToken = Cookies.get('XSRF-TOKEN');
-    const createPackageRequest = {
-        subjectGUID: props.subjectGUID,
-        discountCode: state.discountCode,
-        numberOfLessons: state.numberOfLessons,
-        discountRate: 1 - state.percentOff / 100
-    };
-
-    const response: Response = await fetch(PACKAGES_ENDPOINT + 'createPackage', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-XSRF-TOKEN': csrfToken
-        },
-        body: JSON.stringify(createPackageRequest)
-    });
-
-    if (response.ok) {
-        await packagesStore.setPackages();
-    }
+    await PackageService.createPackage(props.subjectGUID, state.numberOfLessons, state.discountCode, 1 - state.percentOff / 100);
+    await packagesStore.setPackages();
 }
 
 </script>
@@ -127,7 +107,3 @@ async function registerPackage() {
     </div>
 
 </template>
-
-<style scoped>
-
-</style>

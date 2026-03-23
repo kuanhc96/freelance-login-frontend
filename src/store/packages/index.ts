@@ -5,6 +5,7 @@ import {useLoginStore} from "@/store/login";
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useSubjectsStore} from "@/store/subjects";
 import {PACKAGES_BY_SUBJECT_ENDPOINT} from "@/store";
+import PackageService from "@/services/PackageService";
 
 export interface PackagesState {
     subjectGUIDToPackagesMap: Record<string, GetPackageResponse[]>
@@ -39,28 +40,14 @@ export const usePackagesStore = defineStore('packages', {
             if (loginStore.isStudent) {
                 for (const instructor of instructorsStore.getSubscribedInstructors) {
                     for (const subject of subjectsStore.getSubjectsByInstructorGUID(instructor.userGUID)) {
-                        const response: Response = await fetch(PACKAGES_BY_SUBJECT_ENDPOINT + '/' + subject.subjectGUID, {
-                            method: 'GET',
-                            credentials: 'include'
-                        });
-
-                        if (response.ok) {
-                            this.subjectGUIDToPackagesMap[subject.subjectGUID] = await response.json();
-                        }
+                        this.subjectGUIDToPackagesMap[subject.subjectGUID] = await PackageService.getPackagesBySubjectGUID(subject.subjectGUID);
                     }
 
                 }
             } else {
                 const subjects: GetSubjectResponse[] = subjectsStore.getSubjectsByInstructorGUID(loginStore.getUserGUID);
                 for (const subject of subjects) {
-                    const response: Response = await fetch(PACKAGES_BY_SUBJECT_ENDPOINT + '/' + subject.subjectGUID, {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-
-                    if (response.ok) {
-                        this.subjectGUIDToPackagesMap[subject.subjectGUID] = await response.json();
-                    }
+                    this.subjectGUIDToPackagesMap[subject.subjectGUID] = await PackageService.getPackagesBySubjectGUID(subject.subjectGUID);
                 }
             }
         }
