@@ -3,7 +3,6 @@ import {defineStore} from 'pinia';
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useLoginStore} from "@/store/login";
 import AnnouncementService from "@/services/AnnouncementService"
-import {AxiosResponse} from "axios";
 
 export interface AnnouncementsState {
     announcements: GetAnnouncementResponse[]
@@ -17,27 +16,20 @@ export const useAnnouncementsStore = defineStore('announcements', {
         getAnnouncements: state => state.announcements
     },
     actions: {
-        setAnnouncementsForStudent() {
+        async setAnnouncementsForStudent() {
             const instructorsStore = useInstructorsOrStudentsStore();
 
             for (const instructor of instructorsStore.getSubscribedInstructors) {
-                AnnouncementService.getAnnouncementsByGUID(instructor.userGUID)
-                    .then((res: AxiosResponse) => {
-                            this.announcements = res.data;
-                        }
-                    )
+                const data: GetAnnouncementResponse[] = await AnnouncementService.getAnnouncementsByGUID(instructor.userGUID);
+                this.announcements = this.announcements.concat(data);
             }
         },
-        setAnnouncementsForInstructor() {
+        async setAnnouncementsForInstructor() {
             // userGUID is the instructorGUID
             const loginStore = useLoginStore();
-            AnnouncementService.getAnnouncementsByGUID(loginStore.getUserGUID)
-                .then((res: AxiosResponse) => {
-                    this.announcements = res.data;
-                }
-            )
+            this.announcements = await AnnouncementService.getAnnouncementsByGUID(loginStore.getUserGUID);
         },
-        setAnnouncements() {
+        async setAnnouncements() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
                 this.setAnnouncementsForStudent();

@@ -6,8 +6,8 @@ import {CreateAnnouncementRequest} from "@/dto/request/CreateAnnouncementRequest
 import {CreateAnnouncementResponse} from "@/dto/response/createAnnouncementResponse";
 
 export default {
-    getAnnouncementsByGUID(userGUID: string) {
-        return resourceServerClient.get<GetAnnouncementResponse[]>(ANNOUNCEMENTS_ENDPOINT + '/' + userGUID);
+    getAnnouncementsByGUID(userGUID: string): Promise<GetAnnouncementResponse[]> {
+        return resourceServerClient.get(ANNOUNCEMENTS_ENDPOINT + '/' + userGUID);
     },
     editAnnouncement(announcementId: string, title: string, announcement: string, announcementStatus: string) {
         const body: UpdateAnnouncementRequest = {

@@ -31,10 +31,7 @@ export const useLocationsStore = defineStore('locations', {
             const loginStore = useLoginStore();
             const instructorsStore = useInstructorsOrStudentsStore();
 
-            LocationService.getLocationsByUserGUID(loginStore.getUserGUID)
-                .then((res) => {
-                this.userGUIDToLocationsMap[loginStore.getUserGUID] = res.data;
-            });
+            this.userGUIDToLocationsMap[loginStore.getUserGUID] = await LocationService.getLocationsByUserGUID(loginStore.getUserGUID);
 
             let subscribers: GetUserResponse[];
             if (loginStore.isStudent) {
@@ -44,10 +41,7 @@ export const useLocationsStore = defineStore('locations', {
             }
 
             for (const subscriber of subscribers) {
-                LocationService.getLocationsByUserGUID(subscriber.userGUID)
-                    .then((res) => {
-                        this.userGUIDToLocationsMap[subscriber.userGUID] = res.data;
-                    });
+                this.userGUIDToLocationsMap[subscriber.userGUID] = await LocationService.getLocationsByUserGUID(subscriber.userGUID);
             }
         }
     }

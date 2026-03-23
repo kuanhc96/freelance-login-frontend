@@ -92,38 +92,27 @@ export default defineComponent({
         function resolveImage(path: string): string {
             return new URL(path, import.meta.url).href;
         }
-        function subscribeOrUnsubscribe(): void {
+        async function subscribeOrUnsubscribe(): Promise<void> {
             if (props.displaySubscribe) {
-                SubscriptionService.subscribe(userGUID.value, props.instructorGUID)
-                    .then((res) => {
-                        if (res.data) {
-                            console.log(res.data);
-                            // TODO: should have a pop-up that says success
-                        } else {
-                            console.log(res.data)
-                            // TODO: should have a pop-up that says failed
-
-                        }
-                    }).catch((err) => {
-                    console.log('FAILED')
+                const subscribed: boolean = await SubscriptionService.subscribe(userGUID.value, props.instructorGUID)
+                if (subscribed) {
+                    console.log(subscribed);
+                    // TODO: should have a pop-up that says success
+                } else {
+                    console.log(subscribed)
+                    console.log('failed')
                     // TODO: should have a pop-up that says failed
-                })
+                }
             } else {
-                SubscriptionService.unsubscribe(userGUID.value, props.instructorGUID)
-                    .then((res) => {
-                        if (res.data) {
-                            console.log(res.data);
-                            // TODO: should have a pop-up that says success
-                        } else {
-                            console.log(res.data)
-                            // TODO: should have a pop-up that says failed
-
-                        }
-                    }).catch((err) => {
-                    console.log('FAILED')
-                    console.log(err)
+                const unsubscribed = await SubscriptionService.unsubscribe(userGUID.value, props.instructorGUID);
+                if (unsubscribed) {
+                    console.log(unsubscribed);
+                    // TODO: should have a pop-up that says success
+                } else {
+                    console.log(unsubscribed)
                     // TODO: should have a pop-up that says failed
-                })
+
+                }
 
             }
         }

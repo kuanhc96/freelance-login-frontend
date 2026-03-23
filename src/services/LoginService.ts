@@ -2,13 +2,13 @@ import bffServerClient from "@/services/clients/bffClient";
 import {LoginResponse} from "@/dto/response/loginResponse";
 
 export default {
-    checkLogin() {
-        return bffServerClient.get<LoginResponse>('/api/oauth/status');
+    checkLogin(): Promise<LoginResponse> {
+        return bffServerClient.get('/api/oauth/status');
     },
-    logout() {
+    logout(): Promise<void> {
         return bffServerClient.post('/api/oauth/logout');
     },
-    tokenLogin() {
+    tokenLogin(): Promise<any> {
         const urlString: string = window.location.search;
         return bffServerClient.post('/api/oauth/tokens' + urlString, null, {
             headers: {

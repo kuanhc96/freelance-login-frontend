@@ -21,12 +21,9 @@ export default defineComponent({
         const description: Ref<string> = ref('');
 
         async function registerSubject() {
-            SubjectService.createSubject(subjectName.value, loginStore.getUserGUID, price.value, duration.value, description.value)
-                .then(() => {
-                    subjectsStore.setSubjects();
-                    router.push('/subjects');
-
-                });
+            await SubjectService.createSubject(subjectName.value, loginStore.getUserGUID, price.value, duration.value, description.value)
+            await subjectsStore.setSubjects();
+            await router.push('/subjects');
         }
 
         return {

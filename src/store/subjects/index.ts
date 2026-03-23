@@ -36,16 +36,10 @@ export const useSubjectsStore = defineStore('subjects', {
             const instructorsStore = useInstructorsOrStudentsStore();
             if (loginStore.isStudent) {
                 for (const instructor of instructorsStore.getSubscribedInstructors) {
-                    SubjectService.getSubjectsByUserGUID(instructor.userGUID)
-                        .then((res) => {
-                            this.instructorGUIDToSubjectsMap[instructor.userGUID] = res.data;
-                        });
+                    this.instructorGUIDToSubjectsMap[instructor.userGUID] = await SubjectService.getSubjectsByUserGUID(instructor.userGUID);
                 }
             } else {
-                SubjectService.getSubjectsByUserGUID(loginStore.getUserGUID)
-                    .then((res) => {
-                        this.instructorGUIDToSubjectsMap[loginStore.getUserGUID] = res.data;
-                    });
+                this.instructorGUIDToSubjectsMap[loginStore.getUserGUID] = await SubjectService.getSubjectsByUserGUID(loginStore.getUserGUID)
             }
         }
     },

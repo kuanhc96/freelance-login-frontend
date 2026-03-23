@@ -29,52 +29,41 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
         getMyInfo: state => state.myInfo
     },
     actions: {
-        setMyInfo() {
+        async setMyInfo() {
             const loginStore = useLoginStore();
-            UserService.getUserInfo(loginStore.getUserGUID).then((res) => {
-                this.myInfo = res.data;
-            })
+            this.myInfo = await UserService.getUserInfo(loginStore.getUserGUID);
 
         },
-        setMyStudents() {
+        async setMyStudents() {
             const loginStore = useLoginStore();
             if (!loginStore.isStudent) {
-                SubscriptionService.getSubscribedStudents(loginStore.getUserGUID)
-                    .then((res) => {
-                        this.myStudents = res.data;
-                    })
+                this.myStudents = await SubscriptionService.getSubscribedStudents(loginStore.getUserGUID);
             }
 
         },
-        setSubscribedInstructors() {
+        async setSubscribedInstructors() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
-                SubscriptionService.getSubscribedInstructors(loginStore.getUserGUID)
-                    .then((res) => {
-                        this.subscribedInstructors = res.data;
-                    })
+                this.subscribedInstructors = await SubscriptionService.getSubscribedInstructors(loginStore.getUserGUID);
             }
         },
-        setUnsubscribedInstructors() {
+        async setUnsubscribedInstructors() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
-                SubscriptionService.getUnsubscribedInstructors(loginStore.getUserGUID)
-                    .then((res) => {
-                        this.unsubscribedInstructors = res.data;
-                    })
+                this.unsubscribedInstructors = await SubscriptionService.getUnsubscribedInstructors(loginStore.getUserGUID);
             }
         },
-        setInstructors() {
-            this.setSubscribedInstructors();
-            this.setUnsubscribedInstructors();
+        async setInstructors() {
+            await this.setSubscribedInstructors();
+            await this.setUnsubscribedInstructors();
         },
-        setInstructorsOrStudents() {
+        async setInstructorsOrStudents() {
             const loginStore = useLoginStore();
-            this.setMyInfo();
+            await this.setMyInfo();
             if (loginStore.isStudent) {
-                this.setInstructors();
+                await this.setInstructors();
             } else {
-                this.setMyStudents();
+                await this.setMyStudents();
             }
         }
     },

@@ -4,7 +4,7 @@ import {useLoginStore} from "@/store/login";
 import {TRANSACTIONS_ENDPOINT} from "@/store";
 
 export default {
-    getTransactionsByUserGUID(userGUID: string) {
+    getTransactionsByUserGUID(userGUID: string): Promise<GetTransactionResponse[]> {
         const loginStore = useLoginStore();
         let transactionsEndpoint = TRANSACTIONS_ENDPOINT;
         if (loginStore.isStudent) {
@@ -12,6 +12,6 @@ export default {
         } else {
             transactionsEndpoint += '/instructor' + '/' + userGUID;
         }
-        return apiClient.get<GetTransactionResponse[]>(transactionsEndpoint);
+        return apiClient.get(transactionsEndpoint);
     }
 }

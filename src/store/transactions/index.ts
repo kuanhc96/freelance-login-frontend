@@ -19,10 +19,7 @@ export const useTransactionsStore = defineStore('transactions', {
     actions: {
         async setTransactions() {
             const loginStore = useLoginStore();
-            TransactionService.getTransactionsByUserGUID(loginStore.getUserGUID)
-                .then((res) => {
-                     this.transactions = res.data;
-                });
+            this.transactions = await TransactionService.getTransactionsByUserGUID(loginStore.getUserGUID);
         }
     }
 })

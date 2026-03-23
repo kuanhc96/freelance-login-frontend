@@ -21,11 +21,9 @@ export default defineComponent({
         const zip: Ref<string> = ref('');
 
         async function submit() {
-            LocationService.createLocation(loginStore.userGUID, locationName.value, country.value, city.value, street.value, zip.value)
-                .then((res) => {
-                    const locationStore = useLocationsStore();
-                    locationStore.setLocations();
-                })
+            await LocationService.createLocation(loginStore.userGUID, locationName.value, country.value, city.value, street.value, zip.value)
+            const locationStore = useLocationsStore();
+            await locationStore.setLocations();
         }
 
         return {

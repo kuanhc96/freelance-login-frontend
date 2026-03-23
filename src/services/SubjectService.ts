@@ -2,12 +2,13 @@ import resourceServerClient from "@/services/clients/apiClient";
 import {GetSubjectResponse} from "@/dto/response/getSubjectResponse";
 import {SUBJECTS_ENDPOINT} from "@/store";
 import {CreateSubjectRequest} from "@/dto/request/createSubjectRequest";
+import {CreateSubjectResponse} from "@/dto/response/createSubjectResponse";
 
 export default {
-    getSubjectsByUserGUID(userGUID: string) {
-        return resourceServerClient.get<GetSubjectResponse[]>(SUBJECTS_ENDPOINT + '/' + userGUID);
+    getSubjectsByUserGUID(userGUID: string): Promise<GetSubjectResponse[]> {
+        return resourceServerClient.get(SUBJECTS_ENDPOINT + '/' + userGUID);
     },
-    createSubject(subjectName: string, instructorGUID: string, price: number, duration: number, description: string) {
+    createSubject(subjectName: string, instructorGUID: string, price: number, duration: number, description: string): Promise<CreateSubjectResponse> {
         const createSubjectRequest: CreateSubjectRequest = {
             subjectName: subjectName,
             instructorGUID: instructorGUID,

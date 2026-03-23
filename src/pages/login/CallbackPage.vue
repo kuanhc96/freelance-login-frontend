@@ -3,14 +3,12 @@ import {onBeforeMount} from "vue";
 import LoginService from "@/services/LoginService";
 
 onBeforeMount(async () => {
-    LoginService.tokenLogin()
-        .then((res) => {
-            if (res.data.successUrl) {
-                console.log(res.data.successUrl);
-                window.location.href = res.data.successUrl;
-            }
+    const data = await LoginService.tokenLogin();
+    if (data.successUrl) {
+        console.log(data.successUrl);
+        window.location.href = data.successUrl;
+    }
 
-        });
 })
 
 </script>

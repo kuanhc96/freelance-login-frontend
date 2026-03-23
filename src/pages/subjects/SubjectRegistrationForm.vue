@@ -6,6 +6,7 @@ import {CreateSubjectRequest} from "@/dto/request/createSubjectRequest";
 import {useLoginStore} from "@/store/login";
 import {useSubjectsStore} from "@/store/subjects";
 import {useRouter} from "vue-router";
+import SubjectService from "@/services/SubjectService";
 
 export default defineComponent({
     name: 'SubjectRegistrationForm',
@@ -19,28 +20,10 @@ export default defineComponent({
         const description: Ref<string> = ref('');
 
         async function registerSubject() {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const createSubjectRequest: CreateSubjectRequest = {
-                subjectName: subjectName.value,
-                instructorGUID: loginStore.getUserGUID,
-                price: price.value,
-                duration: duration.value,
-                subjectDescription: description.value
-            }
-            const response: Response = await fetch(SUBJECTS_ENDPOINT + 'createSubject', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(createSubjectRequest)
-            });
+            await SubjectService.createSubject(subjectName.value, loginStore.getUserGUID, price.value, duration.value, description.value);
 
-            if (response.ok) {
-                await subjectsStore.setSubjects();
-                await router.push('/subjects');
-            }
+            await subjectsStore.setSubjects();
+            await router.push('/subjects');
         }
 
         return {
