@@ -8,6 +8,8 @@ import {PACKAGES_ENDPOINT} from "@/store";
 import Cookies from "js-cookie";
 import router from "@/router/router";
 import {usePackagesStore} from "@/store/packages";
+import {CreatePackageResponse} from "@/dto/response/createPackageResponse";
+import PackageService from "@/services/PackageService";
 export default defineComponent({
     name: 'PackageRegistrationForm',
     setup() {
@@ -23,27 +25,9 @@ export default defineComponent({
         })
 
         async function registerPackage() {
-            const createPackageRequest: CreatePackageRequest = {
-                subjectGUID: selectedSubjectGUID.value,
-                numberOfLessons: numberOfLessons.value,
-                discountCode: discountCode.value,
-                discountRate: 1 - percentOff.value/100
-            }
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response: Response = await fetch(PACKAGES_ENDPOINT + 'createPackage', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(createPackageRequest)
-            });
-
-            if (response.ok) {
-                await packagesStore.setPackages();
-                await router.push('/subjects');
-            }
+            await PackageService.createPackage(selectedSubjectGUID.value, numberOfLessons.value, discountCode.value, 1 - percentOff.value/100)
+            await packagesStore.setPackages();
+            await router.push('/subjects');
         }
 
         return {

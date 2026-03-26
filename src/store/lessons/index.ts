@@ -2,6 +2,7 @@ import {GetLessonResponse} from '@/dto/response/getLessonResponse'
 import {defineStore} from 'pinia';
 import {LESSONS_ENDPOINT} from "@/store";
 import {useLoginStore} from "@/store/login";
+import LessonService from "@/services/LessonService";
 
 export interface LessonsState {
     studentGUIDToLessonsMap: Record<string, GetLessonResponse[]>,
@@ -32,25 +33,11 @@ export const useLessonsStore = defineStore('lessons', {
     actions: {
         async setLessonsByStudentGUID() {
             const loginStore = useLoginStore();
-            const response: Response = await fetch(LESSONS_ENDPOINT + '?'+ "studentGUID=" + loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include',
-            })
-
-            if (response.ok) {
-                this.studentGUIDToLessonsMap[loginStore.getUserGUID] = await response.json();
-            }
+            this.studentGUIDToLessonsMap[loginStore.getUserGUID] = await LessonService.getLessonsByStudentGUID(loginStore.getUserGUID);
         },
         async setLessonsByInstructorGUID() {
             const loginStore = useLoginStore();
-            const response: Response = await fetch(LESSONS_ENDPOINT + '?' + "instructorGUID=" + loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include',
-            })
-
-            if (response.ok) {
-                this.instructorGUIDToLessonsMap[loginStore.getUserGUID] = await response.json();
-            }
+            this.instructorGUIDToLessonsMap[loginStore.getUserGUID] = await LessonService.getLessonsByInstructorGUID(loginStore.getUserGUID);
         },
         async setLessons() {
             const loginStore = useLoginStore();

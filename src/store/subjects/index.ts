@@ -3,6 +3,7 @@ import {defineStore} from 'pinia';
 import {useInstructorsOrStudentsStore} from "@/store/instructorsOrStudents";
 import {useLoginStore} from "@/store/login";
 import {SUBJECTS_ENDPOINT} from "@/store";
+import SubjectService from "@/services/SubjectService";
 
 export interface SubjectsState {
     instructorGUIDToSubjectsMap: Record<string, GetSubjectResponse[]>
@@ -35,23 +36,10 @@ export const useSubjectsStore = defineStore('subjects', {
             const instructorsStore = useInstructorsOrStudentsStore();
             if (loginStore.isStudent) {
                 for (const instructor of instructorsStore.getSubscribedInstructors) {
-                    const response: Response = await fetch(SUBJECTS_ENDPOINT + '/' + instructor.userGUID, {
-                        method: 'GET',
-                        credentials: 'include'
-                    });
-
-                    if (response.ok) {
-                        this.instructorGUIDToSubjectsMap[instructor.userGUID] = await response.json();
-                    }
+                    this.instructorGUIDToSubjectsMap[instructor.userGUID] = await SubjectService.getSubjectsByUserGUID(instructor.userGUID);
                 }
             } else {
-                const response: Response = await fetch(SUBJECTS_ENDPOINT + '/' + loginStore.getUserGUID, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    this.instructorGUIDToSubjectsMap[loginStore.getUserGUID] = await response.json();
-                }
+                this.instructorGUIDToSubjectsMap[loginStore.getUserGUID] = await SubjectService.getSubjectsByUserGUID(loginStore.getUserGUID)
             }
         }
     },

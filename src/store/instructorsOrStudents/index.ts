@@ -1,11 +1,8 @@
 import {GetUserResponse} from '@/dto/response/getUserResponse'
 import {defineStore} from "pinia";
-import {
-    SUBSCRIBED_INSTRUCTORS_ENDPOINT,
-    SUBSCRIBED_STUDENTS_ENDPOINT,
-    UNSUBSCRIBED_INSTRUCTORS_ENDPOINT, USERS_ENDPOINT
-} from "@/store";
 import {useLoginStore} from "@/store/login";
+import UserService from "@/services/UserService";
+import SubscriptionService from "@/services/SubscriptionService";
 
 export interface InstructorsState {
     subscribedInstructors: GetUserResponse[]
@@ -34,58 +31,30 @@ export const useInstructorsOrStudentsStore = defineStore('instructorsOrStudents'
     actions: {
         async setMyInfo() {
             const loginStore = useLoginStore();
-            const myInfoResponse: Response = await fetch(USERS_ENDPOINT + '/' +loginStore.getUserGUID, {
-                method: 'GET',
-                credentials: 'include'
-            });
-
-            if (myInfoResponse.ok) {
-                this.myInfo = await myInfoResponse.json();
-            }
+            this.myInfo = await UserService.getUserInfo(loginStore.getUserGUID);
 
         },
         async setMyStudents() {
             const loginStore = useLoginStore();
             if (!loginStore.isStudent) {
-                const myStudentsResponse: Response = await fetch(SUBSCRIBED_STUDENTS_ENDPOINT + '/' + loginStore.getUserGUID, {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
-                if (myStudentsResponse.ok) {
-                    this.myStudents = await myStudentsResponse.json();
-                }
+                this.myStudents = await SubscriptionService.getSubscribedStudents(loginStore.getUserGUID);
             }
 
         },
         async setSubscribedInstructors() {
             const loginStore = useLoginStore();
             if (loginStore.isStudent) {
-                const subscriptionResponse: Response = await fetch(SUBSCRIBED_INSTRUCTORS_ENDPOINT +'/' + loginStore.getUserGUID, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-
-                if (subscriptionResponse.ok) {
-                    this.subscribedInstructors = await subscriptionResponse.json();
-                }
+                this.subscribedInstructors = await SubscriptionService.getSubscribedInstructors(loginStore.getUserGUID);
             }
         },
         async setUnsubscribedInstructors() {
             const loginStore = useLoginStore();
-            if (!loginStore.isStudent) {
-                const unsubscribedResponse: Response = await fetch(UNSUBSCRIBED_INSTRUCTORS_ENDPOINT + '/' +loginStore.getUserGUID, {
-                    method: 'GET',
-                    credentials: 'include'
-                })
-                if (unsubscribedResponse.ok) {
-                    this.unsubscribedInstructors = await unsubscribedResponse.json();
-                }
+            if (loginStore.isStudent) {
+                this.unsubscribedInstructors = await SubscriptionService.getUnsubscribedInstructors(loginStore.getUserGUID);
             }
         },
         async setInstructors() {
             await this.setSubscribedInstructors();
-            console.log(this.subscribedInstructors);
             await this.setUnsubscribedInstructors();
         },
         async setInstructorsOrStudents() {

@@ -35,6 +35,7 @@ import { useLoginStore } from "@/store/login";
 import {useSubjectsStore} from "@/store/subjects";
 import { useRoute } from 'vue-router'
 import {SUBSCRIPTION_ENDPOINT} from "@/store";
+import SubscriptionService from "@/services/SubscriptionService";
 
 export default defineComponent({
     props: {
@@ -92,36 +93,27 @@ export default defineComponent({
             return new URL(path, import.meta.url).href;
         }
         async function subscribeOrUnsubscribe(): Promise<void> {
-            try {
-                const csrfToken = Cookies.get('XSRF-TOKEN');
-                const response: Response = await fetch(
-                        SUBSCRIPTION_ENDPOINT, {
-                        method: props.displaySubscribe? 'POST' : 'DELETE',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-XSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify({
-                            'studentGUID': userGUID.value,
-                            'instructorGUID': props.instructorGUID
-                        })
-                    }
-                );
-
-                if (response.ok) {
-                    const result: boolean = await response.json();
-                    console.log(result);
+            if (props.displaySubscribe) {
+                const subscribed: boolean = await SubscriptionService.subscribe(userGUID.value, props.instructorGUID)
+                if (subscribed) {
+                    console.log(subscribed);
                     // TODO: should have a pop-up that says success
                 } else {
-                    const result: boolean = await response.json();
-                    console.log(result)
+                    console.log(subscribed)
+                    console.log('failed')
+                    // TODO: should have a pop-up that says failed
+                }
+            } else {
+                const unsubscribed = await SubscriptionService.unsubscribe(userGUID.value, props.instructorGUID);
+                if (unsubscribed) {
+                    console.log(unsubscribed);
+                    // TODO: should have a pop-up that says success
+                } else {
+                    console.log(unsubscribed)
                     // TODO: should have a pop-up that says failed
 
                 }
-            } catch(err) {
-                console.log('FAILED')
-                // TODO: should have a pop-up that says failed
+
             }
         }
 

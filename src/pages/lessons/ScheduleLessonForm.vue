@@ -243,6 +243,7 @@ import {useLessonsStore} from "@/store/lessons";
 import {useLocationsStore} from "@/store/locations";
 import {GetLocationResponse} from "@/dto/response/getLocationResponse";
 import {LESSONS_ENDPOINT} from "@/store";
+import LessonService from "@/services/LessonService";
 
 export default defineComponent({
     name: 'ScheduleLessonForm',
@@ -327,62 +328,32 @@ export default defineComponent({
         });
 
         async function precreateLessons(): Promise<void> {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const precreateLessonsRequest: PrecreateLessonsRequest = {
-                studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
-                instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
-                startDate: inputDateTime.value,
-                locationGUID: selectedLocation.value? selectedLocation.value.locationGUID: "",
-                subjectGUID: selectedSubject.value!.subjectGUID,
-                packageGUID: selectedPackageGUID.value,
-                lessonFrequency: frequency.value
-            }
-            const response: Response = await fetch(
-                LESSONS_ENDPOINT + '/draft', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-XSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify(precreateLessonsRequest)
-                }
+            precreatedLessons.value = await LessonService.createDraftLessons(
+                isStudent.value? userGUID.value : selectedStudentGUID.value,
+                isStudent.value? selectedInstructorGUID.value: userGUID.value,
+                inputDateTime.value,
+                selectedLocation.value? selectedLocation.value.locationGUID: "",
+                selectedSubject.value!.subjectGUID,
+                selectedPackageGUID.value,
+                frequency.value
+            )
+            scheduledPrecreatedLessons.value = precreatedLessons.value.filter(
+                lesson => lesson.lessonStatus === 'SCHEDULED'
             );
-
-            if (response.ok) {
-                precreatedLessons.value = await response.json();
-                scheduledPrecreatedLessons.value = precreatedLessons.value.filter(
-                    lesson => lesson.lessonStatus === 'SCHEDULED'
-                );
-            }
         }
 
         watch([inputDateTime, frequency], precreateLessons);
 
         async function submitSchedule(): Promise<void> {
             if (precreatedLessons.value.length > 0) {
-                const csrfToken = Cookies.get('XSRF-TOKEN');
-                const createLessonsRequest: CreateLessonsRequest = {
-                    studentGUID: isStudent.value? userGUID.value : selectedStudentGUID.value,
-                    instructorGUID: isStudent.value? selectedInstructorGUID.value: userGUID.value,
-                    subjectGUID: selectedSubject.value!.subjectGUID,
-                    packageGUID: selectedPackageGUID.value,
-                    precreatedLessons: precreatedLessons.value
-                };
-                const response: Response = await fetch(
-                        LESSONS_ENDPOINT, {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-XSRF-TOKEN': csrfToken
-                        },
-                        body: JSON.stringify(createLessonsRequest)
-                    }
+                await LessonService.createLessons(
+                    isStudent.value? userGUID.value : selectedStudentGUID.value,
+                    isStudent.value? selectedInstructorGUID.value: userGUID.value,
+                    selectedSubject.value!.subjectGUID,
+                    selectedPackageGUID.value,
+                    precreatedLessons.value
                 );
-                if (response.ok) {
-                    await router.push('/lessons')
-                }
+                await router.push('/lessons')
 
             }
         }

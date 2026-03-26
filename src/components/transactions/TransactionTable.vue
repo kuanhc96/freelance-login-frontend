@@ -7,6 +7,7 @@ import { useLoginStore } from "@/store/login";
 import {TRANSACTIONS_ENDPOINT} from "@/store";
 import {useTransactionsStore} from "@/store/transactions";
 import Cookies from 'js-cookie';
+import TransactionService from "@/services/TransactionService";
 
 export default defineComponent({
     name: 'TransactionTable',
@@ -41,19 +42,8 @@ export default defineComponent({
         }
 
         async function cancelTransaction(transactionGUID: string) {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response: Response = await fetch(TRANSACTIONS_ENDPOINT + transactionGUID, {
-                method: 'DELETE',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                }
-            })
-
-            if (response.status === 204) {
-                await transactionsStore.setTransactions();
-            }
+            await TransactionService.deleteTransactionByTransactionGUID(transactionGUID);
+            await transactionsStore.setTransactions();
         }
 
         return {

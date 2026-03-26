@@ -102,10 +102,9 @@
 </template>
 
 <script lang="ts">
-import Cookies from 'js-cookie';
 import { defineComponent, PropType, Ref, ref, computed } from 'vue';
 import { useLoginStore } from "@/store/login";
-import {ANNOUNCEMENTS_ENDPOINT} from "@/store";
+import AnnouncementService from "@/services/AnnouncementService";
 
 export default defineComponent({
     emits: [
@@ -140,9 +139,9 @@ export default defineComponent({
     },
     setup(props, context) {
         const loginStore = useLoginStore();
-        const editedTitle: Ref<string> = ref('');
-        const editedAnnouncement: Ref<string> = ref('');
-        const editedStatus: Ref<string> = ref('');
+        const editedTitle: Ref<string> = ref(props.title);
+        const editedAnnouncement: Ref<string> = ref(props.announcement);
+        const editedStatus: Ref<string> = ref(props.status);
         const isStudent: Ref<boolean> = computed(function() {
             return loginStore.isStudent;
         });
@@ -165,26 +164,15 @@ export default defineComponent({
             return date.toLocaleDateString('en-US', options);
         });
 
-        async function submitEditedAnnouncement(): Promise<void> {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const response: Response = await fetch(ANNOUNCEMENTS_ENDPOINT, {
-                method: 'PUT',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify({
-                    'announcementGUID': props.announcementId,
-                    'title': editedTitle.value,
-                    'announcement': editedAnnouncement.value,
-                    'announcementStatus': editedStatus.value
-                })
-            });
-
-            if (response.ok) {
+        function submitEditedAnnouncement(): void {
+            AnnouncementService.editAnnouncement(
+                props.announcementId,
+                editedTitle.value,
+                editedAnnouncement.value,
+                editedStatus.value
+            ).then(() => {
                 context.emit('announcementUpdated');
-            }
+            });
         }
 
         return {

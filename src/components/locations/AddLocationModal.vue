@@ -5,6 +5,7 @@ import {CreateLocationRequest} from "@/dto/request/createLocationRequest";
 import {useLoginStore} from "@/store/login";
 import {useLocationsStore} from "@/store/locations";
 import {LOCATIONS_ENDPOINT} from "@/store";
+import LocationService from "@/services/LocationService";
 
 export default defineComponent({
     name: "AddLocationModal" ,
@@ -20,31 +21,9 @@ export default defineComponent({
         const zip: Ref<string> = ref('');
 
         async function submit() {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const createLocationRequest: CreateLocationRequest = {
-                userGUID: loginStore.getUserGUID,
-                locationName: locationName.value,
-                country: country.value,
-                city: city.value,
-                street: street.value,
-                zipCode: zip.value,
-
-            }
-            const response: Response = await fetch(LOCATIONS_ENDPOINT, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify( createLocationRequest )
-            })
-
-            if (response.ok) {
-                const locationStore = useLocationsStore();
-                await locationStore.setLocations();
-            }
-
+            await LocationService.createLocation(loginStore.userGUID, locationName.value, country.value, city.value, street.value, zip.value)
+            const locationStore = useLocationsStore();
+            await locationStore.setLocations();
         }
 
         return {

@@ -6,6 +6,7 @@ import {useRouter} from "vue-router";
 import Cookies from "js-cookie";
 import {CreateSubjectRequest} from "@/dto/request/createSubjectRequest";
 import {SUBJECTS_ENDPOINT} from "@/store";
+import SubjectService from "@/services/SubjectService";
 
 export default defineComponent({
     name: 'AddSubjectModal',
@@ -20,28 +21,9 @@ export default defineComponent({
         const description: Ref<string> = ref('');
 
         async function registerSubject() {
-            const csrfToken = Cookies.get('XSRF-TOKEN');
-            const createSubjectRequest: CreateSubjectRequest = {
-                subjectName: subjectName.value,
-                instructorGUID: loginStore.getUserGUID,
-                price: price.value,
-                duration: duration.value,
-                subjectDescription: description.value
-            }
-            const response: Response = await fetch(SUBJECTS_ENDPOINT + 'createSubject', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(createSubjectRequest)
-            });
-
-            if (response.ok) {
-                await subjectsStore.setSubjects();
-                await router.push('/subjects');
-            }
+            await SubjectService.createSubject(subjectName.value, loginStore.getUserGUID, price.value, duration.value, description.value)
+            await subjectsStore.setSubjects();
+            await router.push('/subjects');
         }
 
         return {
